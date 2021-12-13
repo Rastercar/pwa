@@ -67,6 +67,10 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
+      env: {
+        API_BASE_URL: 'http://localhost:3000/',
+      },
+
       // transpile: false,
       // publicPath: '/',
 
@@ -93,7 +97,8 @@ module.exports = configure(function (ctx) {
       extendWebpack (cfg) {
         cfg.resolve.alias = {
           ...cfg.resolve.alias, // This adds the existing alias
-          'layout': path.resolve(__dirname, './src/layout'),
+          'api': path.resolve(__dirname, './src/api'),
+          'graphql': path.resolve(__dirname, './src/graphql'),
         }
     }
     },

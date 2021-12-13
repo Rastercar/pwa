@@ -26,12 +26,13 @@
     "commitizen": "^4.2.4",
     "commitlint": "^15.0.0",
     "cz-conventional-changelog": "3.3.0",
+    "dotenv": "^10.0.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "husky": "^7.0.0",
-    "prettier": "^2.5.1",
-    "lint-staged": "^12.1.2"
+    "lint-staged": "^12.1.2",
+    "prettier": "^2.5.1"
   },
   "browserslist": [
     "last 10 Chrome versions",

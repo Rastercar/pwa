@@ -1,0 +1,10 @@
+Create way to have a folder of env jsons that are loaded dynamically depending on how you start the app, just like in the api
+
+integrate with apollo
+integrate with a form validation lib
+integrate with rest api
+
+start work on global state
+start work on route access authentication
+
+study how type definitions are shared in a graphql context and start to get those types on the frontend

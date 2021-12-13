@@ -1,4 +1,5 @@
 <script lang="ts">
+import { apiLoginWithEmailAndPassword } from '../../api/auth.api';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -7,6 +8,8 @@ export default defineComponent({
   setup() {
     const email = ref('');
     const password = ref('');
+
+    apiLoginWithEmailAndPassword({ email: '', password: '' });
 
     return { email, password };
   },
