@@ -1,11 +1,11 @@
 import { route } from 'quasar/wrappers';
+import { routes } from './routes';
 import {
-  createMemoryHistory,
-  createRouter,
   createWebHashHistory,
+  createMemoryHistory,
   createWebHistory,
+  createRouter,
 } from 'vue-router';
-import routes from './routes';
 
 /*
  * If not building with SSR mode, you can
@@ -16,7 +16,7 @@ import routes from './routes';
  * with the Router instance.
  */
 
-export default route((/* { store, ssrContext } */) => {
+const createAppRouter = route((/* { store, ssrContext } */) => {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -25,6 +25,7 @@ export default route((/* { store, ssrContext } */) => {
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     routes,
 
     // Leave this as is and make changes in quasar.conf.js instead!
@@ -37,3 +38,5 @@ export default route((/* { store, ssrContext } */) => {
 
   return Router;
 });
+
+export default createAppRouter({});

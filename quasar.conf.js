@@ -9,6 +9,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers');
+const path = require('path')
 
 module.exports = configure(function (ctx) {
   return {
@@ -88,6 +89,13 @@ module.exports = configure(function (ctx) {
       chainWebpack (/* chain */) {
         //
       },
+
+      extendWebpack (cfg) {
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias, // This adds the existing alias
+          'layout': path.resolve(__dirname, './src/layout'),
+        }
+    }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
