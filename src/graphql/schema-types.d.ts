@@ -19,6 +19,33 @@ export type Scalars = {
   Float: number;
 };
 
+/** JSON Web Token */
+export type JwtModel = {
+  __typename?: 'JwtModel';
+  type: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type LoginInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  token: JwtModel;
+  user: UserModel;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  login: LoginResponse;
+};
+
+export type MutationLoginArgs = {
+  input: LoginInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   me: UserModel;
@@ -26,12 +53,15 @@ export type Query = {
 };
 
 export type QueryUserArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 /** user */
 export type UserModel = {
   __typename?: 'UserModel';
+  email: Scalars['String'];
+  emailVerified: Scalars['Boolean'];
+  googleProfileId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   username: Scalars['String'];
 };

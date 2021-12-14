@@ -1,8 +1,8 @@
 import { loadFromLS, syncWithLS } from './utils/persist-state';
-import { computed, reactive, readonly } from 'vue';
-import { merge } from 'lodash';
 import { UserModel } from 'src/graphql/schema-types';
+import { computed, reactive, readonly } from 'vue';
 import { DeepPartial } from 'quasar';
+import { merge } from 'lodash';
 
 /*
  | Auth: 

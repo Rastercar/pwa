@@ -42,6 +42,7 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
       'axios',
+      'apollo'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -69,6 +70,7 @@ module.exports = configure(function (ctx) {
 
       env: {
         API_BASE_URL: 'http://localhost:3000/',
+        GRAPHQL_URI: 'http://localhost:3000/graphql',
       },
 
       // transpile: false,
@@ -98,7 +100,7 @@ module.exports = configure(function (ctx) {
         cfg.resolve.alias = {
           ...cfg.resolve.alias, // This adds the existing alias
           'api': path.resolve(__dirname, './src/api'),
-          'graphql': path.resolve(__dirname, './src/graphql'),
+          'gql': path.resolve(__dirname, './src/graphql'),
         }
     }
     },

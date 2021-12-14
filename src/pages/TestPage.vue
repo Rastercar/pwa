@@ -1,8 +1,22 @@
 <script lang="ts">
+import { LOGIN_MUTATION } from '../graphql/auth/auth.mutations';
+import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'TestPage',
+
+  setup() {
+    const { mutate: login } = useMutation(LOGIN_MUTATION, {
+      variables: {
+        input: { email: 'admin.user@gmail.com', password: '12345' },
+      },
+    });
+
+    login().then(console.log).catch(console.error);
+
+    return {};
+  },
 });
 </script>
 
