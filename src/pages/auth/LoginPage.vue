@@ -9,7 +9,9 @@ export default defineComponent({
     const email = ref('');
     const password = ref('');
 
-    apiLoginWithEmailAndPassword({ email: '', password: '' });
+    apiLoginWithEmailAndPassword({ email: '', password: '' }).catch(
+      console.error
+    );
 
     return { email, password };
   },
