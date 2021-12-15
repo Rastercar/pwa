@@ -1,19 +1,31 @@
 <script lang="ts">
-import { apiLoginWithEmailAndPassword } from '../../api/auth.api';
+import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
+import { useMutation } from '@vue/apollo-composable';
+import { useAuth } from 'src/state/auth.state';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'LoginPage',
 
   setup() {
-    const email = ref('');
     const password = ref('');
+    const email = ref('');
 
-    apiLoginWithEmailAndPassword({ email: '', password: '' }).catch(
-      console.error
-    );
+    const { AUTH_LOGIN } = useAuth();
 
-    return { email, password };
+    const { mutate: login, error } = useMutation(LoginMutationDocument, {
+      fetchPolicy: 'no-cache',
+    });
+
+    const attemptLogin = () => {
+      login({ input: { email: email.value, password: password.value } })
+        .then((res) => {
+          if (res?.data) AUTH_LOGIN(res.data.login);
+        })
+        .catch(() => null);
+    };
+
+    return { email, password, attemptLogin, error };
   },
 });
 </script>
@@ -27,6 +39,7 @@ export default defineComponent({
         <q-card bordered class="q-pa-md shadow-1">
           <q-card-section>
             <div class="text-h5">Rastercar</div>
+            {{ error }}
           </q-card-section>
 
           <q-card-section>
@@ -55,6 +68,7 @@ export default defineComponent({
               size="lg"
               class="full-width"
               label="Login"
+              @click="attemptLogin"
             />
 
             <q-btn

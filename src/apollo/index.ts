@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createHttpLink, InMemoryCache } from '@apollo/client/core';
 import type { ApolloClientOptions } from '@apollo/client/core';
 import type { BootFileParams } from '@quasar/app';

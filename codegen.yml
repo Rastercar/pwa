@@ -1,10 +1,36 @@
 overwrite: true
-schema: 'src/graphql/schema.gql'
-# documents: 'src/**/*.gql'
+schema: http://localhost:3000/graphql
+documents: 'src/**/*.gql'
+watch: true
 generates:
-  src/graphql/schema-types.d.ts:
+  ./src/graphql/generated/schema.graphql:
     plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-graphql-files-modules'
-      - 'typescript-document-nodes'
+      - add:
+          content: "#\n# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)\n#\n"
+      - schema-ast
+
+  ./src/graphql/generated/schema.json:
+    plugins:
+      - introspection
+
+  # ./src/graphql/generated/graph.ts:
+  #   plugins:
+  #     - add:
+  #         content: "//\n// THIS FILE IS GENERATED, DO NOT EDIT!\n//\n"
+  #     - 'typescript'
+  #     - 'typescript-operations'
+  #     - 'typescript-document-nodes'
+  #   hooks:
+  #     afterOneFileWrite:
+  #       - prettier --write
+
+  ./src/graphql/generated/graphql-operations.ts:
+    plugins:
+      - add:
+          content: "//\n// THIS FILE IS GENERATED, DO NOT EDIT!\n//\n"
+      - typescript
+      - typescript-operations
+      - typed-document-node
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
