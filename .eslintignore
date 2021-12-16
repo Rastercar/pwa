@@ -7,4 +7,4 @@
 .eslintrc.js
 babel.config.js
 /src-ssr
-/src/graphql/schema-types.d.ts
+/src/graphql/generated/graphql-operations.ts

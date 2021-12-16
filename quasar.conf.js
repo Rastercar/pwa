@@ -70,7 +70,7 @@ module.exports = configure(function (ctx) {
 
       env: {
         API_BASE_URL: 'http://localhost:3000/',
-        GRAPHQL_URI: 'http://localhost:3000/graphql',
+        GRAPHQL_ENDPOINT: 'http://localhost:3000/graphql', // note: for some reason GRAPHQL_URI does not get set
       },
 
       // transpile: false,
@@ -92,8 +92,11 @@ module.exports = configure(function (ctx) {
 
       // https://quasar.dev/quasar-cli/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      chainWebpack (/* chain */) {
-        //
+      chainWebpack (chain) {
+        chain.module.rule('gql')
+          .test(/\.(graphql|gql)$/)
+          .use('graphql-tag/loader')
+          .loader('graphql-tag/loader')
       },
 
       extendWebpack (cfg) {

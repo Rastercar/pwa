@@ -1,48 +1,47 @@
+import { LoginResponse } from 'src/graphql/generated/graphql-operations';
 import { loadFromLS, syncWithLS } from './utils/persist-state';
-import { LoginResponse, UserModel } from 'src/graphql/schema-types';
+import { API_TOKEN_KEY } from 'src/constants/local-storage-keys';
 import { computed, reactive, readonly } from 'vue';
-import { DeepPartial } from 'quasar';
-import { merge } from 'lodash';
 
 /*
  | Auth State: 
  | 
- | Here should lie all state related logic related to authentication, permissions, etc.
+ | Here should lie all state related logic related to
+ | authentication, permissions, etc.
  */
 
 interface AuthState {
-  user: UserModel | null;
-  userToken: string | null;
+  apiToken: string | null;
 }
 
-const state: AuthState = reactive(
-  loadFromLS('authState', { user: null, userToken: null })
-);
+const state: AuthState = reactive(loadFromLS('authState', { apiToken: null }));
 
+syncWithLS({ authState: state });
+
+/**
+ *
+ */
 const AUTH_LOGIN = (loginResponse: LoginResponse) => {
-  console.log('authLOGIN', loginResponse);
-  state.user = loginResponse.user;
-  state.userToken = loginResponse.token.value;
+  state.apiToken = loginResponse.token.value;
 };
 
 const AUTH_LOGOUT = () => {
-  state.user = null;
-  state.userToken = null;
+  state.apiToken = null;
 };
 
-const UPDATE_USER = (data: DeepPartial<UserModel>) => {
-  state.user = merge(state.user, data);
-};
-
-syncWithLS({ authState: state });
+/**
+ * Gets the bearer token (without the bearer prefix) that should be sent on the 'authentication''
+ * header in order to authenticate with the api graphql endpoint or rest endpoints
+ */
+const getApiToken = () => localStorage.getItem(API_TOKEN_KEY);
 
 export const useAuth = () => ({
   AUTH_LOGIN,
   AUTH_LOGOUT,
 
-  UPDATE_USER,
+  getApiToken,
 
-  isLoggedIn: computed(() => !!state.userToken),
+  isLoggedIn: computed(() => !!state.apiToken),
 
   state: readonly(state),
 });

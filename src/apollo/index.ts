@@ -1,23 +1,50 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createHttpLink, InMemoryCache } from '@apollo/client/core';
 import type { ApolloClientOptions } from '@apollo/client/core';
-import type { BootFileParams } from '@quasar/app';
+import { setContext } from '@apollo/client/link/context';
+import { useAuth } from '../state/auth.state';
 
-export function getClientOptions(options?: Partial<BootFileParams<unknown>>) {
-  return <ApolloClientOptions<unknown>>Object.assign(
-    // General options.
-    {
-      link: createHttpLink({
-        uri: process.env.GRAPHQL_URI || 'http://localhost:3000/graphql',
-      }),
+import authTypeDefs from '../graphql/auth/auth.local-schema.gql';
 
-      cache: new InMemoryCache(),
+type apolloOptions = ApolloClientOptions<unknown>;
+type partialOptions = Partial<apolloOptions>;
+
+export function getClientOptions() {
+  const httpLink = createHttpLink({ uri: process.env.GRAPHQL_ENDPOINT });
+
+  /**
+   * Tries to set the request as authenticated whenever
+   */
+  const authLink = setContext((_, previousContext) => {
+    const { headers } = previousContext as { headers: Record<string, unknown> };
+
+    const { getApiToken } = useAuth();
+    const token = getApiToken();
+
+    return token ? { ...headers, authorization: `Bearer ${token}` } : headers;
+  });
+
+  const cache = new InMemoryCache();
+
+  const generalOptions: apolloOptions = {
+    link: authLink.concat(httpLink),
+    cache,
+    typeDefs: authTypeDefs,
+    resolvers: {
+      Mutation: {
+        logout: () => {
+          console.log('resolving logout');
+          return false;
+        },
+      },
     },
+  };
 
-    // Specific Quasar mode options.
+  const ssrServerOptions: partialOptions = { ssrMode: true };
+  const ssrClientOptions: partialOptions = { ssrForceFetchDelay: 100 };
+
+  return Object.assign(
+    generalOptions,
+
     process.env.MODE === 'spa' ? {} : {},
     process.env.MODE === 'ssr' ? {} : {},
     process.env.MODE === 'pwa' ? {} : {},
@@ -26,15 +53,10 @@ export function getClientOptions(options?: Partial<BootFileParams<unknown>>) {
     process.env.MODE === 'capacitor' ? {} : {},
     process.env.MODE === 'electron' ? {} : {},
 
-    // dev/prod options.
     process.env.DEV ? {} : {},
     process.env.PROD ? {} : {},
 
-    // For ssr mode, when on server.
-    process.env.MODE === 'ssr' && process.env.SERVER ? { ssrMode: true } : {},
-    // For ssr mode, when on client.
-    process.env.MODE === 'ssr' && process.env.CLIENT
-      ? { ssrForceFetchDelay: 100 }
-      : {}
-  );
+    process.env.MODE === 'ssr' && process.env.SERVER ? ssrServerOptions : {},
+    process.env.MODE === 'ssr' && process.env.CLIENT ? ssrClientOptions : {}
+  ) as apolloOptions;
 }

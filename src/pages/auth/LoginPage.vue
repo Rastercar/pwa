@@ -1,8 +1,8 @@
 <script lang="ts">
 import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
+import { defineComponent, ref, computed } from 'vue';
 import { useMutation } from '@vue/apollo-composable';
 import { useAuth } from 'src/state/auth.state';
-import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'LoginPage',
@@ -13,9 +13,9 @@ export default defineComponent({
 
     const { AUTH_LOGIN } = useAuth();
 
-    const { mutate: login, error } = useMutation(LoginMutationDocument, {
-      fetchPolicy: 'no-cache',
-    });
+    const { mutate: login, error: loginError } = useMutation(
+      LoginMutationDocument
+    );
 
     const attemptLogin = () => {
       login({ input: { email: email.value, password: password.value } })
@@ -24,6 +24,13 @@ export default defineComponent({
         })
         .catch(() => null);
     };
+
+    const error = computed(() => {
+      console.log(loginError.value?.message);
+      return loginError.value?.message
+        ? `Message: ${loginError.value?.message}`
+        : 'No message';
+    });
 
     return { email, password, attemptLogin, error };
   },

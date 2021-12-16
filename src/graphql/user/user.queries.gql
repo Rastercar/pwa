@@ -1,0 +1,17 @@
+query meQuery {
+  me {
+    id
+    email
+    username
+    emailVerified
+  }
+}
+
+query userByIdQuery($id: Int!) {
+  user(id: $id) {
+    id
+    email
+    username
+    emailVerified
+  }
+}

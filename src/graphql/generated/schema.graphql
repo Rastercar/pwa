@@ -20,6 +20,7 @@ type LoginResponse {
 
 type Mutation {
   login(input: LoginInput!): LoginResponse!
+  logout: Boolean!
 }
 
 type Query {

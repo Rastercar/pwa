@@ -1,10 +1,20 @@
-Create way to have a folder of env jsons that are loaded dynamically depending on how you start the app, just like in the api
+1- learn to handle global state with apollo, we probably need to manually write 
+the local queries and mutations, in a way they suplement the remote schema, we also need
+generated typescript resolver anotations 
 
-integrate with apollo
-integrate with a form validation lib
-integrate with rest api
+2- Change way to get auth token in apollo instance
 
-start work on global state
-start work on route access authentication
+2- Create way to have a folder of env jsons that are loaded dynamically
+depending on how you start the app, just like in the api, and validate said envs
 
-study how type definitions are shared in a graphql context and start to get those types on the frontend
+3- create way to extract errors from graphql, (return error code on the api ?)
+
+4- integrate with a form validation lib
+
+5- start work on route access authentication
+
+
+---- NOTES ----
+
+graphql values are reactive ! (thank god, whenever theyre updated the components react)
+avaliable mutations are defined server side, client side can create their own definitions to query agains such mutations using variables 
