@@ -5,7 +5,9 @@ schema:
 documents: 'src/**/*.gql'
 watch: true
 overwrite: true
-
+config:
+  scalars:
+    Void: 'void'
 generates:
   ./src/graphql/generated/schema.graphql:
     plugins:

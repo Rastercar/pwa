@@ -1,12 +1,26 @@
-import { createHttpLink, InMemoryCache } from '@apollo/client/core';
+import { createHttpLink, InMemoryCache, gql } from '@apollo/client/core';
 import type { ApolloClientOptions } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { useAuth } from '../state/auth.state';
-
-import authTypeDefs from '../graphql/auth/auth.local-schema.gql';
+// import { typeDefs } from './typedefs';
 
 type apolloOptions = ApolloClientOptions<unknown>;
 type partialOptions = Partial<apolloOptions>;
+
+const typeDefs = gql`
+  extend type Query {
+    isLoggedIn: Boolean!
+    cartItems: [Launch]!
+  }
+
+  extend type Launch {
+    isInCart: Boolean!
+  }
+
+  extend type Mutation {
+    addOrRemoveFromCart(id: ID!): [Launch]
+  }
+`;
 
 export function getClientOptions() {
   const httpLink = createHttpLink({ uri: process.env.GRAPHQL_ENDPOINT });
@@ -28,7 +42,7 @@ export function getClientOptions() {
   const generalOptions: apolloOptions = {
     link: authLink.concat(httpLink),
     cache,
-    typeDefs: authTypeDefs,
+    typeDefs,
     resolvers: {
       Mutation: {
         logout: () => {

@@ -2,7 +2,11 @@
 // THIS FILE IS GENERATED, DO NOT EDIT!
 //
 
-import { GraphQLResolveInfo } from 'graphql';
+import {
+  GraphQLResolveInfo,
+  GraphQLScalarType,
+  GraphQLScalarTypeConfig,
+} from 'graphql';
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -25,6 +29,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Void: void;
 };
 
 /** JSON Web Token */
@@ -48,7 +53,7 @@ export type LoginResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   login: LoginResponse;
-  logout: Scalars['Boolean'];
+  logout?: Maybe<Scalars['Void']>;
 };
 
 export type MutationLoginArgs = {
@@ -73,13 +78,6 @@ export type UserModel = {
   googleProfileId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   username: Scalars['String'];
-};
-
-export type LogoutMutationMutationVariables = Exact<{ [key: string]: never }>;
-
-export type LogoutMutationMutation = {
-  __typename?: 'Mutation';
-  logout: boolean;
 };
 
 export type LoginMutationMutationVariables = Exact<{
@@ -129,31 +127,6 @@ export type UserByIdQueryQuery = {
   };
 };
 
-export const LogoutMutationDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'logoutMutation' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'logout' },
-            directives: [
-              { kind: 'Directive', name: { kind: 'Name', value: 'client' } },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  LogoutMutationMutation,
-  LogoutMutationMutationVariables
->;
 export const LoginMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -437,6 +410,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   UserModel: ResolverTypeWrapper<UserModel>;
+  Void: ResolverTypeWrapper<Scalars['Void']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -451,6 +425,7 @@ export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String'];
   UserModel: UserModel;
+  Void: Scalars['Void'];
 };
 
 export type JwtModelResolvers<
@@ -481,7 +456,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationLoginArgs, 'input'>
   >;
-  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
 };
 
 export type QueryResolvers<
@@ -513,10 +488,16 @@ export type UserModelResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export interface VoidScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['Void'], any> {
+  name: 'Void';
+}
+
 export type Resolvers<ContextType = any> = {
   JwtModel?: JwtModelResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   UserModel?: UserModelResolvers<ContextType>;
+  Void?: GraphQLScalarType;
 };

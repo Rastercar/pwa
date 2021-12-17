@@ -20,7 +20,7 @@ type LoginResponse {
 
 type Mutation {
   login(input: LoginInput!): LoginResponse!
-  logout: Boolean!
+  logout: Void
 }
 
 type Query {
@@ -36,3 +36,5 @@ type UserModel {
   id: ID!
   username: String!
 }
+
+scalar Void

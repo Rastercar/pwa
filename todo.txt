@@ -1,6 +1,5 @@
-1- learn to handle global state with apollo, we probably need to manually write 
-the local queries and mutations, in a way they suplement the remote schema, we also need
-generated typescript resolver anotations 
+1- learn to handle global state with apollo, we probably need to use local fields and
+type policies for these fields
 
 2- Change way to get auth token in apollo instance
 

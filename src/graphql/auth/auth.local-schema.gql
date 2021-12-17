@@ -1,7 +1,6 @@
-extend type Mutation {
-  logout: Boolean!
-}
+# https://stackoverflow.com/questions/44737043/is-it-possible-to-not-return-any-data-when-using-a-graphql-mutation
+scalar Void
 
-mutation logoutMutation {
-  logout @client
+extend type Mutation {
+  logout: Void
 }
