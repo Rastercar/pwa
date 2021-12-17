@@ -1,8 +1,8 @@
 <script lang="ts">
 import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
 import { useMutation } from '@vue/apollo-composable';
-import { defineComponent } from 'vue';
 import { useAuth } from 'src/state/auth.state';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'TestPage',

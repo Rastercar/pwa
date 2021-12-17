@@ -12,5 +12,7 @@ depending on how you start the app, just like in the api, and validate said envs
 
 ---- NOTES ----
 
+if a graphql query fails, if the data it would fetch is set by another query or mutation, the query data will not be reactive since it failed !
+
 graphql values are reactive ! (thank god, whenever theyre updated the components react)
 avaliable mutations are defined server side, client side can create their own definitions to query agains such mutations using variables 

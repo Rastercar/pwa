@@ -1,5 +1,5 @@
-query userByIdQuery($id: Int!) {
-  user(id: $id) {
+query currentUserQuery {
+  me {
     id
     email
     username

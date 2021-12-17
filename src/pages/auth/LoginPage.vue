@@ -1,5 +1,8 @@
 <script lang="ts">
-import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
+import {
+  CurrentUserQueryDocument,
+  LoginMutationDocument,
+} from 'src/graphql/generated/graphql-operations';
 import { defineComponent, ref, computed } from 'vue';
 import { useMutation } from '@vue/apollo-composable';
 import { useAuth } from 'src/state/auth.state';
@@ -14,7 +17,8 @@ export default defineComponent({
     const { AUTH_LOGIN } = useAuth();
 
     const { mutate: login, error: loginError } = useMutation(
-      LoginMutationDocument
+      LoginMutationDocument,
+      { refetchQueries: [CurrentUserQueryDocument] }
     );
 
     const attemptLogin = () => {

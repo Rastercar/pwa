@@ -66,7 +66,7 @@ export type UserModel = {
   email: Scalars['String'];
   emailVerified: Scalars['Boolean'];
   googleProfileId?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   username: Scalars['String'];
 };
 
@@ -81,7 +81,7 @@ export type LoginMutationMutation = {
     token: { __typename?: 'JwtModel'; value: string; type: string };
     user: {
       __typename?: 'UserModel';
-      id: string;
+      id: number;
       email: string;
       username: string;
       emailVerified: boolean;
@@ -89,13 +89,13 @@ export type LoginMutationMutation = {
   };
 };
 
-export type MeQueryQueryVariables = Exact<{ [key: string]: never }>;
+export type CurrentUserQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MeQueryQuery = {
+export type CurrentUserQueryQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'UserModel';
-    id: string;
+    id: number;
     email: string;
     username: string;
     emailVerified: boolean;
@@ -110,7 +110,7 @@ export type UserByIdQueryQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'UserModel';
-    id: string;
+    id: number;
     email: string;
     username: string;
     emailVerified: boolean;
@@ -200,13 +200,13 @@ export const LoginMutationDocument = {
   LoginMutationMutation,
   LoginMutationMutationVariables
 >;
-export const MeQueryDocument = {
+export const CurrentUserQueryDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'meQuery' },
+      name: { kind: 'Name', value: 'currentUserQuery' },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -230,7 +230,10 @@ export const MeQueryDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<MeQueryQuery, MeQueryQueryVariables>;
+} as unknown as DocumentNode<
+  CurrentUserQueryQuery,
+  CurrentUserQueryQueryVariables
+>;
 export const UserByIdQueryDocument = {
   kind: 'Document',
   definitions: [

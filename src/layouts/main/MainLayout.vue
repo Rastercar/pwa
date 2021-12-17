@@ -1,12 +1,12 @@
 <script lang="ts">
-import SidebarContent from './SidebarContent.vue';
+import Sidebar from './sidebar/Sidebar.vue';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    SidebarContent,
+    Sidebar,
   },
 
   setup() {
@@ -25,7 +25,7 @@ export default defineComponent({
 <template>
   <q-layout view="hHh lpR fFf">
     <q-drawer v-model="isDrawerOpen" behavior="desktop" side="left" bordered>
-      <SidebarContent />
+      <Sidebar />
     </q-drawer>
 
     <q-page-container>
