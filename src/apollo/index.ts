@@ -3,8 +3,6 @@ import type { ApolloClientOptions } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { useAuth } from '../state/auth.state';
 
-import authTypeDefs from '../graphql/auth/auth.local-schema.gql';
-
 type apolloOptions = ApolloClientOptions<unknown>;
 type partialOptions = Partial<apolloOptions>;
 
@@ -16,11 +14,11 @@ export function getClientOptions() {
    */
   const authLink = setContext((_, previousContext) => {
     const { headers } = previousContext as { headers: Record<string, unknown> };
+    const { state: authState } = useAuth();
 
-    const { getApiToken } = useAuth();
-    const token = getApiToken();
-
-    return token ? { ...headers, authorization: `Bearer ${token}` } : headers;
+    return authState.apiToken
+      ? { ...headers, authorization: `Bearer ${authState.apiToken}` }
+      : headers;
   });
 
   const cache = new InMemoryCache();
@@ -28,15 +26,6 @@ export function getClientOptions() {
   const generalOptions: apolloOptions = {
     link: authLink.concat(httpLink),
     cache,
-    typeDefs: authTypeDefs,
-    resolvers: {
-      Mutation: {
-        logout: () => {
-          console.log('resolving logout');
-          return false;
-        },
-      },
-    },
   };
 
   const ssrServerOptions: partialOptions = { ssrMode: true };

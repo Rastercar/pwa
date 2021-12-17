@@ -1,18 +1,41 @@
 <script lang="ts">
+import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
+import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
+import { useAuth } from 'src/state/auth.state';
 
 export default defineComponent({
   name: 'TestPage',
 
   setup() {
-    return {};
+    const { mutate: login } = useMutation(LoginMutationDocument, {
+      variables: {
+        input: { email: 'admin.user@gmail.com', password: '12345' },
+      },
+    });
+
+    const { AUTH_LOGIN, AUTH_LOGOUT } = useAuth();
+
+    const attemptLogin = () => {
+      login()
+        .then((res) => {
+          if (res?.data?.login) AUTH_LOGIN(res.data.login);
+        })
+        .catch(console.error);
+    };
+
+    const attemptLogout = () => {
+      AUTH_LOGOUT();
+    };
+
+    return { attemptLogin, attemptLogout };
   },
 });
 </script>
 
 <template>
   <div>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
-    exercitationem cum placeat quo?
+    <button @click="attemptLogin">LOGIN</button>
+    <button @click="attemptLogout">LOGOUT</button>
   </div>
 </template>

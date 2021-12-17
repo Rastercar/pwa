@@ -24,7 +24,6 @@ generates:
       - typescript
       - typescript-operations
       - typed-document-node
-      - typescript-resolvers
     hooks:
       afterOneFileWrite:
         - prettier --write

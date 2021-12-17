@@ -1,7 +1,0 @@
-extend type Mutation {
-  logout: Boolean!
-}
-
-mutation logoutMutation {
-  logout @client
-}
