@@ -4,7 +4,9 @@ export const mainRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/main/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/TestPage.vue') }],
+    children: [
+      { path: '', component: () => import('src/pages/dev/TestPage.vue') },
+    ],
   },
 ];
 

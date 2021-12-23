@@ -23,10 +23,16 @@ const state: AuthState = reactive(loadFromLS('authState', { apiToken: null }));
 
 syncWithLS({ authState: state });
 
+/**
+ * Sets the API token
+ */
 const AUTH_LOGIN = (loginResponse: LoginResponse) => {
   state.apiToken = loginResponse.token.value;
 };
 
+/**
+ * Unsets the API token
+ */
 const AUTH_LOGOUT = () => {
   state.apiToken = null;
 };

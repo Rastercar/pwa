@@ -5,7 +5,10 @@ export const authRoutes: RouteRecordRaw[] = [
     path: '/login',
     component: () => import('layouts/centralized/CentralizedLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/auth/LoginPage.vue') },
+      {
+        path: '',
+        component: () => import('src/pages/auth/login/LoginPage.vue'),
+      },
     ],
     meta: {
       requiresLogoff: true,
