@@ -1,26 +1,32 @@
 <script lang="ts">
 import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
 import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
-import { defineComponent, reactive, ref, Ref } from 'vue';
 import { HTTP_STATUS } from 'src/constants/http-status';
+import { defineComponent, reactive, ref } from 'vue';
 import { useMutation } from '@vue/apollo-composable';
 import PasswordInput from './PasswordInput.vue';
 import { useAuth } from 'src/state/auth.state';
+import { useVuelidate } from '@vuelidate/core';
+import GoogleButton from './GoogleButton.vue';
+import MainButton from './MainButton.vue';
 import EmailInput from './EmailInput.vue';
-import { QForm } from 'quasar';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'LoginPage',
 
-  components: { EmailInput, PasswordInput },
+  components: {
+    EmailInput,
+    MainButton,
+    GoogleButton,
+    PasswordInput,
+  },
 
   setup() {
-    const { AUTH_LOGIN } = useAuth();
     const formState = reactive({ password: '', email: '' });
 
     const userWithEmailNotFound = ref(false);
     const passwordIsInvalid = ref(false);
-    const loginForm: Ref<null | QForm> = ref(null);
 
     const {
       mutate: login,
@@ -34,16 +40,21 @@ export default defineComponent({
 
       if (error.statusCode === HTTP_STATUS.NOT_FOUND) {
         userWithEmailNotFound.value = true;
-      } else if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
+        return;
+      }
+
+      if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
         passwordIsInvalid.value = true;
       }
     });
 
-    const attemptLogin = async () => {
-      // This should be impossible
-      if (!loginForm.value) return;
+    const v = useVuelidate({ $autoDirty: true });
+    const router = useRouter();
 
-      const isFormValid = await loginForm.value.validate().catch(() => false);
+    const { AUTH_LOGIN } = useAuth();
+
+    const attemptLogin = async () => {
+      const isFormValid = await v.value.$validate().catch(() => false);
 
       if (!isFormValid) return;
 
@@ -55,15 +66,16 @@ export default defineComponent({
           passwordIsInvalid.value = false;
 
           AUTH_LOGIN(res.data.login);
+
+          router.push('/').catch(() => null);
         })
         .catch(() => null);
     };
 
     return {
-      xd: (x: unknown) => console.log('xd!!!', x),
+      v,
       loading,
       formState,
-      loginForm,
       attemptLogin,
       passwordIsInvalid,
       userWithEmailNotFound,
@@ -88,12 +100,7 @@ export default defineComponent({
           </q-card-section>
 
           <q-card-section>
-            <q-form
-              ref="loginForm"
-              class="q-gutter-md"
-              greedy
-              @validation-error="xd"
-            >
+            <q-form class="q-gutter-md" greedy>
               <EmailInput
                 v-model="formState.email"
                 :disable="loading"
@@ -105,28 +112,19 @@ export default defineComponent({
                 v-model="formState.password"
                 :disable="loading"
                 :is-invalid="passwordIsInvalid"
+                @update:modelValue="passwordIsInvalid = false"
               />
             </q-form>
           </q-card-section>
 
           <q-card-actions class="q-px-md">
-            <q-btn
+            <MainButton
               :loading="loading"
-              unelevated
-              color="light-green-7"
-              size="lg"
-              class="full-width"
-              label="Login"
+              :disable="v.$invalid"
               @click="attemptLogin"
             />
 
-            <q-btn
-              unelevated
-              color="grey-7"
-              size="lg"
-              class="full-width q-mt-md"
-              label="Login with Google"
-            />
+            <GoogleButton />
           </q-card-actions>
 
           <q-card-section class="text-center q-pa-none q-mt-sm">

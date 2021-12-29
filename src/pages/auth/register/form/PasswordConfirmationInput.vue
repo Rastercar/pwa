@@ -1,39 +1,30 @@
 <script lang="ts">
-import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils';
+import { helpers, required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'LoginPasswordInput',
+  name: 'RegistrationPasswordConfirmationInput',
 
   props: {
     modelValue: {
       type: String,
       required: true,
     },
-    /**
-     * Indicates that there was a failed attempt to login with the
-     * password on the modelValue prop
-     */
-    isInvalid: {
+    visible: {
       type: Boolean,
       default: false,
     },
   },
 
-  setup(props) {
-    const { withMessage } = helpers;
+  emits: ['update:visible'],
 
+  setup(props) {
+    // TODO: make me better
     const rules = {
       modelValue: {
-        required: withMessage('Campo obrigatório', required),
-        minLength: withMessage('Mínimo 5 caractéres', minLength(5)),
-        maxLength: withMessage('Máximo 200 caractéres', maxLength(200)),
-        isNotMarkedAsNotInvalid: withMessage(
-          'Senha inválida',
-          () => !props.isInvalid
-        ),
+        required: helpers.withMessage('Campo obrigatório', required),
       },
     };
 
@@ -49,8 +40,15 @@ export default defineComponent({
     v-bind="{ ...$props, ...$attrs }"
     :error="v.modelValue.$error"
     :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
+    label="Confirmação de senha *"
     outlined
-    type="password"
-    label="Senha"
-  />
+  >
+    <template #append>
+      <q-icon
+        :name="visible ? 'visibility_off' : 'visibility'"
+        class="cursor-pointer"
+        @click="$emit('update:visible', !visible)"
+      />
+    </template>
+  </q-input>
 </template>

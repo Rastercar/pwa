@@ -5,22 +5,20 @@ import { useVuelidate } from '@vuelidate/core';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'LoginPasswordInput',
+  name: 'RegistrationPasswordInput',
 
   props: {
     modelValue: {
       type: String,
       required: true,
     },
-    /**
-     * Indicates that there was a failed attempt to login with the
-     * password on the modelValue prop
-     */
-    isInvalid: {
+    visible: {
       type: Boolean,
       default: false,
     },
   },
+
+  emits: ['update:visible'],
 
   setup(props) {
     const { withMessage } = helpers;
@@ -30,9 +28,20 @@ export default defineComponent({
         required: withMessage('Campo obrigatório', required),
         minLength: withMessage('Mínimo 5 caractéres', minLength(5)),
         maxLength: withMessage('Máximo 200 caractéres', maxLength(200)),
-        isNotMarkedAsNotInvalid: withMessage(
-          'Senha inválida',
-          () => !props.isInvalid
+        containsUppercase: withMessage(
+          'Deve conter um caractére maiúsculo',
+          (value: string) => /[A-Z]/.test(value ?? '')
+        ),
+        containsLowercase: withMessage(
+          'Deve conter um caractére minúsculo',
+          (value: string) => /[a-z]/.test(value ?? '')
+        ),
+        containsNumber: withMessage('Deve conter um número', (value: string) =>
+          /[0-9]/.test(value ?? '')
+        ),
+        containsSpecial: withMessage(
+          'Deve conter um caractére especial (exemplo: #?!@$%^&*-)',
+          (value: string) => /[#?!@$%^&*-]/.test(value ?? '')
         ),
       },
     };
@@ -49,8 +58,16 @@ export default defineComponent({
     v-bind="{ ...$props, ...$attrs }"
     :error="v.modelValue.$error"
     :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
+    :type="visible ? 'password' : 'text'"
+    label="Senha *"
     outlined
-    type="password"
-    label="Senha"
-  />
+  >
+    <template #append>
+      <q-icon
+        :name="visible ? 'visibility_off' : 'visibility'"
+        class="cursor-pointer"
+        @click="$emit('update:visible', !visible)"
+      />
+    </template>
+  </q-input>
 </template>

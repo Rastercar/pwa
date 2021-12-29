@@ -14,4 +14,17 @@ export const authRoutes: RouteRecordRaw[] = [
       requiresLogoff: true,
     },
   },
+  {
+    path: '/register',
+    component: () => import('layouts/centralized/CentralizedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/auth/register/RegistrationPage.vue'),
+      },
+    ],
+    meta: {
+      requiresLogoff: true,
+    },
+  },
 ];
