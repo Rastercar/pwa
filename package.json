@@ -9,8 +9,7 @@
     "start:dev": "quasar dev",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "gen-gql": "graphql-codegen --config codegen.yml",
-    "gql-sync": "bash ./scripts/sync-gql-schema.sh"
+    "gen-gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.5.6",

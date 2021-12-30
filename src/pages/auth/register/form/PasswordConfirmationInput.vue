@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { defineComponent } from 'vue';
 
@@ -16,6 +16,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    password: {
+      type: String,
+      required: true,
+    },
   },
 
   emits: ['update:visible'],
@@ -24,7 +28,10 @@ export default defineComponent({
     // TODO: make me better
     const rules = {
       modelValue: {
-        required: helpers.withMessage('Campo obrigatório', required),
+        equalsPassword: helpers.withMessage(
+          'Confirmação inválida',
+          (v: string) => v === props.password
+        ),
       },
     };
 
@@ -40,12 +47,14 @@ export default defineComponent({
     v-bind="{ ...$props, ...$attrs }"
     :error="v.modelValue.$error"
     :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
+    :type="!visible ? 'password' : 'text'"
     label="Confirmação de senha *"
+    no-error-icon
     outlined
   >
     <template #append>
       <q-icon
-        :name="visible ? 'visibility_off' : 'visibility'"
+        :name="visible ? 'visibility' : 'visibility_off'"
         class="cursor-pointer"
         @click="$emit('update:visible', !visible)"
       />

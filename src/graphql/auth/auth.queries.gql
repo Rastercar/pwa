@@ -6,3 +6,16 @@ query currentUserQuery {
     emailVerified
   }
 }
+
+query isEmailInUseQuery($email: String!) {
+  isEmailInUse(email: $email)
+}
+
+query unregisteredUserQuery($uuid: String!) {
+  unregisteredUser(uuid: $uuid) {
+    uuid
+    email
+    username
+    emailVerified
+  }
+}

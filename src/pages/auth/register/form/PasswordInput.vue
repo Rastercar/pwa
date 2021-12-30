@@ -58,13 +58,14 @@ export default defineComponent({
     v-bind="{ ...$props, ...$attrs }"
     :error="v.modelValue.$error"
     :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
-    :type="visible ? 'password' : 'text'"
+    :type="!visible ? 'password' : 'text'"
     label="Senha *"
+    no-error-icon
     outlined
   >
     <template #append>
       <q-icon
-        :name="visible ? 'visibility_off' : 'visibility'"
+        :name="visible ? 'visibility' : 'visibility_off'"
         class="cursor-pointer"
         @click="$emit('update:visible', !visible)"
       />

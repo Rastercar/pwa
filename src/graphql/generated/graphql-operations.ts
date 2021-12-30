@@ -52,12 +52,31 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  isEmailInUse: Scalars['Boolean'];
   me: UserModel;
+  unregisteredUser: UnregisteredUserModel;
   user: UserModel;
+};
+
+export type QueryIsEmailInUseArgs = {
+  email: Scalars['String'];
+};
+
+export type QueryUnregisteredUserArgs = {
+  uuid: Scalars['String'];
 };
 
 export type QueryUserArgs = {
   id: Scalars['Int'];
+};
+
+/** unregistered user */
+export type UnregisteredUserModel = {
+  __typename?: 'UnregisteredUserModel';
+  email: Scalars['String'];
+  emailVerified: Scalars['Boolean'];
+  username?: Maybe<Scalars['String']>;
+  uuid: Scalars['String'];
 };
 
 /** user */
@@ -98,6 +117,30 @@ export type CurrentUserQueryQuery = {
     id: number;
     email: string;
     username: string;
+    emailVerified: boolean;
+  };
+};
+
+export type IsEmailInUseQueryQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+export type IsEmailInUseQueryQuery = {
+  __typename?: 'Query';
+  isEmailInUse: boolean;
+};
+
+export type UnregisteredUserQueryQueryVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+export type UnregisteredUserQueryQuery = {
+  __typename?: 'Query';
+  unregisteredUser: {
+    __typename?: 'UnregisteredUserModel';
+    uuid: string;
+    email: string;
+    username?: string | null | undefined;
     emailVerified: boolean;
   };
 };
@@ -233,6 +276,111 @@ export const CurrentUserQueryDocument = {
 } as unknown as DocumentNode<
   CurrentUserQueryQuery,
   CurrentUserQueryQueryVariables
+>;
+export const IsEmailInUseQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'isEmailInUseQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'email' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'isEmailInUse' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'email' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  IsEmailInUseQueryQuery,
+  IsEmailInUseQueryQueryVariables
+>;
+export const UnregisteredUserQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'unregisteredUserQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'uuid' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'unregisteredUser' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'uuid' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'uuid' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'uuid' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'emailVerified' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UnregisteredUserQueryQuery,
+  UnregisteredUserQueryQueryVariables
 >;
 export const UserByIdQueryDocument = {
   kind: 'Document',

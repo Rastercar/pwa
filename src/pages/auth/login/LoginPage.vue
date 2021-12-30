@@ -4,6 +4,7 @@ import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
 import { HTTP_STATUS } from 'src/constants/http-status';
 import { defineComponent, reactive, ref } from 'vue';
 import { useMutation } from '@vue/apollo-composable';
+import LoginCardFooter from './LoginCardFooter.vue';
 import PasswordInput from './PasswordInput.vue';
 import { useAuth } from 'src/state/auth.state';
 import { useVuelidate } from '@vuelidate/core';
@@ -20,6 +21,7 @@ export default defineComponent({
     MainButton,
     GoogleButton,
     PasswordInput,
+    LoginCardFooter,
   },
 
   setup() {
@@ -31,19 +33,17 @@ export default defineComponent({
     const {
       mutate: login,
       onError,
-      loading,
+      loading: isLoggingIn,
     } = useMutation(LoginMutationDocument, { fetchPolicy: 'network-only' });
 
     onError(({ graphQLErrors }) => {
       const error = graphQLErrors[0]?.extensions?.response;
+
       if (!isApiErrorResponse(error)) return;
 
       if (error.statusCode === HTTP_STATUS.NOT_FOUND) {
         userWithEmailNotFound.value = true;
-        return;
-      }
-
-      if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
+      } else if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
         passwordIsInvalid.value = true;
       }
     });
@@ -74,8 +74,8 @@ export default defineComponent({
 
     return {
       v,
-      loading,
       formState,
+      isLoggingIn,
       attemptLogin,
       passwordIsInvalid,
       userWithEmailNotFound,
@@ -103,14 +103,14 @@ export default defineComponent({
             <q-form class="q-gutter-md" greedy>
               <EmailInput
                 v-model="formState.email"
-                :disable="loading"
+                :disable="isLoggingIn"
                 :user-with-email-not-found="userWithEmailNotFound"
                 @update:modelValue="userWithEmailNotFound = false"
               />
 
               <PasswordInput
                 v-model="formState.password"
-                :disable="loading"
+                :disable="isLoggingIn"
                 :is-invalid="passwordIsInvalid"
                 @update:modelValue="passwordIsInvalid = false"
               />
@@ -119,17 +119,15 @@ export default defineComponent({
 
           <q-card-actions class="q-px-md">
             <MainButton
-              :loading="loading"
+              :loading="isLoggingIn"
               :disable="v.$invalid"
               @click="attemptLogin"
             />
 
-            <GoogleButton />
+            <GoogleButton :disable="isLoggingIn" />
           </q-card-actions>
 
-          <q-card-section class="text-center q-pa-none q-mt-sm">
-            <p class="text-grey-6">Não é registrado? Crie uma conta</p>
-          </q-card-section>
+          <LoginCardFooter />
         </q-card>
       </div>
     </div>

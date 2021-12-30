@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import RegistrationForm from './form/RegistrationForm.vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'RegistrationPage',
@@ -11,20 +10,8 @@ export default defineComponent({
   },
 
   setup() {
-    const route = useRoute();
-
-    const userToFinishRegistrationForUuid = route.query.finishFor;
-
-    console.log({ userToFinishRegistrationForUuid });
-
-    const formState = reactive({ password: '', email: '' });
-
-    const isPasswordVisible = ref(false);
-
-    return {
-      formState,
-      isPasswordVisible,
-    };
+    const canSubmit = ref(false);
+    return { canSubmit };
   },
 });
 </script>
@@ -43,22 +30,16 @@ export default defineComponent({
           </q-card-section>
 
           <q-card-section>
-            <RegistrationForm />
+            <RegistrationForm v-model:canSubmit="canSubmit" />
           </q-card-section>
 
           <q-card-actions class="q-px-md">
             <q-btn
+              :disable="!canSubmit"
               class="q-ml-auto"
-              label="Submit"
+              label="Cadastrar"
               type="submit"
               color="primary"
-            />
-            <q-btn
-              label="Reset"
-              type="reset"
-              color="primary"
-              flat
-              class="q-ml-sm"
             />
           </q-card-actions>
         </q-card>

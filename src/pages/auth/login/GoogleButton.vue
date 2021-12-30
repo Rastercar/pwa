@@ -17,6 +17,7 @@ export default defineComponent({
 
 <template>
   <q-btn
+    v-bind="{ ...$props, ...$attrs }"
     unelevated
     color="grey-7"
     size="lg"
