@@ -18,8 +18,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <button @click="$router.push('/login')">LOGIN</button>
-    <button @click="attemptLogout">LOGOUT</button>
+  <div class="q-pa-lg">
+    <button class="q-mr-lg" @click="$router.push('/login')">LOGIN</button>
+    <button class="q-mr-lg" @click="$router.push('/register')">REGISTER</button>
+    <button class="q-mr-lg" @click="attemptLogout">LOGOUT</button>
   </div>
 </template>

@@ -4,7 +4,7 @@ import { getVuelidateErrorMsg } from 'src/utils/validation.utils';
 import { helpers, email, required } from '@vuelidate/validators';
 import { useApolloClient } from '@vue/apollo-composable';
 import { useVuelidate } from '@vuelidate/core';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { debounce } from 'quasar';
 
 export default defineComponent({
@@ -24,6 +24,14 @@ export default defineComponent({
     willCheckEmail: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * List of emails that are in use or cannot be accepted for other reasons
+     */
+    invalidEmails: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
 
     /**
@@ -54,7 +62,8 @@ export default defineComponent({
         email: withMessage('Email inválido', email),
         isNotInUse: withMessage(
           'Endereço de email indisponível',
-          () => isInUse.value === false
+          (v: string): boolean =>
+            isInUse.value === false && !props.invalidEmails.includes(v)
         ),
       },
     };
@@ -77,7 +86,6 @@ export default defineComponent({
           variables: { email: props.modelValue },
         })
         .then(({ data }) => {
-          console.log({ data });
           isInUse.value = !!data.isEmailInUse;
         })
         .catch(() => null)

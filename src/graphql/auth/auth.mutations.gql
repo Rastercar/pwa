@@ -1,5 +1,20 @@
-mutation loginMutation($input: LoginInput!) {
-  login(input: $input) {
+mutation loginMutation($credentials: LoginInput!) {
+  login(credentials: $credentials) {
+    token {
+      value
+      type
+    }
+    user {
+      id
+      email
+      username
+      emailVerified
+    }
+  }
+}
+
+mutation registerUserMutation($user: RegisterUserDTO!) {
+  register(user: $user) {
     token {
       value
       type

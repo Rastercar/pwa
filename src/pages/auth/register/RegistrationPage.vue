@@ -1,17 +1,11 @@
 <script lang="ts">
 import RegistrationForm from './form/RegistrationForm.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'RegistrationPage',
-
   components: {
     RegistrationForm,
-  },
-
-  setup() {
-    const canSubmit = ref(false);
-    return { canSubmit };
   },
 });
 </script>
@@ -29,19 +23,7 @@ export default defineComponent({
             </div>
           </q-card-section>
 
-          <q-card-section>
-            <RegistrationForm v-model:canSubmit="canSubmit" />
-          </q-card-section>
-
-          <q-card-actions class="q-px-md">
-            <q-btn
-              :disable="!canSubmit"
-              class="q-ml-auto"
-              label="Cadastrar"
-              type="submit"
-              color="primary"
-            />
-          </q-card-actions>
+          <RegistrationForm />
         </q-card>
       </div>
     </div>

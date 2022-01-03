@@ -44,10 +44,15 @@ export type LoginResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   login: LoginResponse;
+  register: LoginResponse;
 };
 
 export type MutationLoginArgs = {
-  input: LoginInput;
+  credentials: LoginInput;
+};
+
+export type MutationRegisterArgs = {
+  user: RegisterUserDto;
 };
 
 export type Query = {
@@ -55,7 +60,7 @@ export type Query = {
   isEmailInUse: Scalars['Boolean'];
   me: UserModel;
   unregisteredUser: UnregisteredUserModel;
-  user: UserModel;
+  user?: Maybe<UserModel>;
 };
 
 export type QueryIsEmailInUseArgs = {
@@ -68,6 +73,14 @@ export type QueryUnregisteredUserArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['Int'];
+};
+
+export type RegisterUserDto = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  /** UUID of the unregistered user this registration refers to, once finished the referred unregistered user will be deleted, this is also used to determine wheter the user being registered uses oauth for authentication */
+  refersToUnregisteredUser?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 /** unregistered user */
@@ -90,12 +103,31 @@ export type UserModel = {
 };
 
 export type LoginMutationMutationVariables = Exact<{
-  input: LoginInput;
+  credentials: LoginInput;
 }>;
 
 export type LoginMutationMutation = {
   __typename?: 'Mutation';
   login: {
+    __typename?: 'LoginResponse';
+    token: { __typename?: 'JwtModel'; value: string; type: string };
+    user: {
+      __typename?: 'UserModel';
+      id: number;
+      email: string;
+      username: string;
+      emailVerified: boolean;
+    };
+  };
+};
+
+export type RegisterUserMutationMutationVariables = Exact<{
+  user: RegisterUserDto;
+}>;
+
+export type RegisterUserMutationMutation = {
+  __typename?: 'Mutation';
+  register: {
     __typename?: 'LoginResponse';
     token: { __typename?: 'JwtModel'; value: string; type: string };
     user: {
@@ -151,13 +183,16 @@ export type UserByIdQueryQueryVariables = Exact<{
 
 export type UserByIdQueryQuery = {
   __typename?: 'Query';
-  user: {
-    __typename?: 'UserModel';
-    id: number;
-    email: string;
-    username: string;
-    emailVerified: boolean;
-  };
+  user?:
+    | {
+        __typename?: 'UserModel';
+        id: number;
+        email: string;
+        username: string;
+        emailVerified: boolean;
+      }
+    | null
+    | undefined;
 };
 
 export const LoginMutationDocument = {
@@ -172,7 +207,7 @@ export const LoginMutationDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'input' },
+            name: { kind: 'Name', value: 'credentials' },
           },
           type: {
             kind: 'NonNullType',
@@ -192,10 +227,10 @@ export const LoginMutationDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'input' },
+                name: { kind: 'Name', value: 'credentials' },
                 value: {
                   kind: 'Variable',
-                  name: { kind: 'Name', value: 'input' },
+                  name: { kind: 'Name', value: 'credentials' },
                 },
               },
             ],
@@ -242,6 +277,86 @@ export const LoginMutationDocument = {
 } as unknown as DocumentNode<
   LoginMutationMutation,
   LoginMutationMutationVariables
+>;
+export const RegisterUserMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'registerUserMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'user' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'RegisterUserDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'register' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'user' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'user' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'token' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'username' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'emailVerified' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  RegisterUserMutationMutation,
+  RegisterUserMutationMutationVariables
 >;
 export const CurrentUserQueryDocument = {
   kind: 'Document',

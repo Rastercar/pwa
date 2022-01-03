@@ -58,7 +58,7 @@ export default defineComponent({
 
       if (!isFormValid) return;
 
-      login({ input: formState })
+      login({ credentials: formState })
         .then((res) => {
           if (!res?.data) throw new Error('Invalid login response');
 
