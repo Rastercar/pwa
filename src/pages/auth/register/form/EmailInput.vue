@@ -3,8 +3,8 @@ import { IsEmailInUseQueryDocument } from 'src/graphql/generated/graphql-operati
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils';
 import { helpers, email, required } from '@vuelidate/validators';
 import { useApolloClient } from '@vue/apollo-composable';
+import { defineComponent, PropType, ref, Ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { defineComponent, PropType, ref } from 'vue';
 import { debounce } from 'quasar';
 
 export default defineComponent({
@@ -54,7 +54,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { withMessage } = helpers;
 
-    const isInUse = ref(false);
+    const internalInvalidEmails: Ref<string[]> = ref([]);
 
     const rules = {
       modelValue: {
@@ -62,8 +62,9 @@ export default defineComponent({
         email: withMessage('Email inválido', email),
         isNotInUse: withMessage(
           'Endereço de email indisponível',
-          (v: string): boolean =>
-            isInUse.value === false && !props.invalidEmails.includes(v)
+          (v: string) =>
+            !props.invalidEmails.includes(v) &&
+            !internalInvalidEmails.value.includes(v)
         ),
       },
     };
@@ -73,10 +74,10 @@ export default defineComponent({
     const apollo = useApolloClient();
 
     const checkEmailInUse = () => {
-      const { required, email } = v.value.modelValue;
+      const { required, email, isNotInUse } = v.value.modelValue;
 
-      // If the email address is invalid due to other reasons dont bother checking
-      if (required.$invalid || email.$invalid) return;
+      // If the email address is already invalid dont bother checking
+      if (email.$invalid || required.$invalid || isNotInUse.$invalid) return;
 
       emit('update:isCheckingEmail', true);
 
@@ -84,9 +85,11 @@ export default defineComponent({
         .query({
           query: IsEmailInUseQueryDocument,
           variables: { email: props.modelValue },
+          fetchPolicy: 'network-only',
         })
         .then(({ data }) => {
-          isInUse.value = !!data.isEmailInUse;
+          if (!data.isEmailInUse) return;
+          internalInvalidEmails.value.push(props.modelValue);
         })
         .catch(() => null)
         .finally(() => {

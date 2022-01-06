@@ -1,12 +1,3 @@
-query currentUserQuery {
-  me {
-    id
-    email
-    username
-    emailVerified
-  }
-}
-
 query isEmailInUseQuery($email: String!) {
   isEmailInUse(email: $email)
 }

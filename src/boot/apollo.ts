@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApolloClients } from '@vue/apollo-composable';
 import { ApolloClient } from '@apollo/client/core';
 import { getClientOptions } from 'src/apollo';

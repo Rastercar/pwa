@@ -11,13 +11,7 @@ export default defineComponent({
 
   setup() {
     const isDrawerOpen = ref(true);
-
-    // TODO: USE ME
-    const toggleDrawer = () => {
-      isDrawerOpen.value = !isDrawerOpen.value;
-    };
-
-    return { isDrawerOpen, toggleDrawer };
+    return { isDrawerOpen };
   },
 });
 </script>

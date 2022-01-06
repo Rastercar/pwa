@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useApolloClient } from '@vue/apollo-composable';
 import { useAuth } from 'src/state/auth.state';
 import { defineComponent } from 'vue';
 
@@ -7,9 +8,11 @@ export default defineComponent({
 
   setup() {
     const { AUTH_LOGOUT } = useAuth();
+    const { client } = useApolloClient();
 
     const attemptLogout = () => {
       AUTH_LOGOUT();
+      client.clearStore().catch(() => null);
     };
 
     return { attemptLogout };

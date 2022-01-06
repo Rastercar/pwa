@@ -16,7 +16,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    password: {
+    passwordToMatch: {
       type: String,
       required: true,
     },
@@ -25,19 +25,18 @@ export default defineComponent({
   emits: ['update:visible'],
 
   setup(props) {
-    // TODO: make me better
     const rules = {
       modelValue: {
         equalsPassword: helpers.withMessage(
           'Confirmação inválida',
-          (v: string) => v === props.password
+          (v: string) => v === props.passwordToMatch
         ),
       },
     };
 
     const v = useVuelidate(rules, props, { $autoDirty: true });
 
-    return { rules, getVuelidateErrorMsg, v };
+    return { getVuelidateErrorMsg, v };
   },
 });
 </script>
@@ -51,13 +50,5 @@ export default defineComponent({
     label="Confirmação de senha *"
     no-error-icon
     outlined
-  >
-    <template #append>
-      <q-icon
-        :name="visible ? 'visibility' : 'visibility_off'"
-        class="cursor-pointer"
-        @click="$emit('update:visible', !visible)"
-      />
-    </template>
-  </q-input>
+  />
 </template>

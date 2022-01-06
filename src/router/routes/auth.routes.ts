@@ -15,6 +15,19 @@ export const authRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/auto-login',
+    component: () => import('layouts/centralized/CentralizedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/auth/auto-login/AutoLoginPage.vue'),
+      },
+    ],
+    meta: {
+      requiresLogoff: true,
+    },
+  },
+  {
     path: '/register',
     component: () => import('layouts/centralized/CentralizedLayout.vue'),
     children: [

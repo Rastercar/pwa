@@ -1,22 +1,25 @@
 <script lang="ts">
-import { UnregisteredUserQueryDocument } from 'src/graphql/generated/graphql-operations';
+import {
+  RegisterUserMutationDocument,
+  UnregisteredUserQueryDocument,
+} from 'src/graphql/generated/graphql-operations';
+import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
 import PasswordConfirmationInput from './PasswordConfirmationInput.vue';
+import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes';
 import { defineComponent, reactive, ref, computed, Ref } from 'vue';
-import { useQuery } from '@vue/apollo-composable';
+import { useQuery, useMutation } from '@vue/apollo-composable';
+import { useRoute, useRouter } from 'vue-router';
 import UsernameInput from './UsernameInput.vue';
 import PasswordInput from './PasswordInput.vue';
 import { useVuelidate } from '@vuelidate/core';
+import { useAuth } from 'src/state/auth.state';
 import EmailInput from './EmailInput.vue';
-import { useRoute } from 'vue-router';
-import SubmitButton from './SubmitButton.vue';
-import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes';
 
 export default defineComponent({
   name: 'RegistrationPage',
 
   components: {
     EmailInput,
-    SubmitButton,
     PasswordInput,
     UsernameInput,
     PasswordConfirmationInput,
@@ -27,7 +30,7 @@ export default defineComponent({
 
     // The uuid of unregistered user to finish the registration for
     const uuid = route.query.finishFor as string;
-    const enabled = typeof uuid === 'string' && !!uuid;
+    const shouldFetchUnregisteredUser = typeof uuid === 'string' && !!uuid;
 
     const formState = reactive({
       email: '',
@@ -39,14 +42,14 @@ export default defineComponent({
     const { loading: isFetchingUser, onResult } = useQuery(
       UnregisteredUserQueryDocument,
       { uuid },
-      { enabled, fetchPolicy: 'network-only' }
+      { enabled: shouldFetchUnregisteredUser, fetchPolicy: 'network-only' }
     );
 
     onResult(({ data }) => {
-      if (data?.unregisteredUser) {
-        formState.email = data.unregisteredUser.email;
-        formState.username = data.unregisteredUser.username ?? '';
-      }
+      if (!data?.unregisteredUser) return;
+
+      formState.email = data.unregisteredUser.email;
+      formState.username = data.unregisteredUser.username ?? '';
     });
 
     const isCheckingEmail = ref(false);
@@ -59,31 +62,54 @@ export default defineComponent({
 
     const v = useVuelidate({ $autoDirty: true });
 
-    const canSubmit = computed(() => {
-      const can =
+    const canSubmit = computed(
+      () =>
         !isCheckingEmail.value &&
-        !v.value.$invalid &&
         !isFetchingUser.value &&
-        !willCheckEmail.value;
+        !willCheckEmail.value &&
+        !v.value.$invalid
+    );
 
-      return can;
-    });
+    const { mutate: register, onError } = useMutation(
+      RegisterUserMutationDocument,
+      { variables: { user: formState }, fetchPolicy: 'network-only' }
+    );
 
-    const onValidationError = (errorCode: string) => {
-      if (errorCode === ERROR_CODES.EMAIL_IN_USE) {
-        invalidEmails.value.push(formState.email);
-      }
+    const { AUTH_LOGIN } = useAuth();
+    const router = useRouter();
+
+    const submitForm = () => {
+      register()
+        .then((res) => {
+          if (!res?.data) return;
+
+          AUTH_LOGIN(res.data.register);
+
+          router.push('/').catch(() => null);
+        })
+        .catch(() => null);
     };
 
+    onError(({ graphQLErrors }) => {
+      const error = graphQLErrors[0]?.extensions?.response;
+
+      if (!isApiErrorResponse(error)) return;
+
+      if (error.message === ERROR_CODES.EMAIL_IN_USE) {
+        invalidEmails.value.push(formState.email);
+      }
+    });
+
     return {
+      v,
       canSubmit,
       formState,
+      submitForm,
       invalidEmails,
       willCheckEmail,
       isFetchingUser,
       isCheckingEmail,
       isPasswordVisible,
-      onValidationError,
       passwordConfirmation,
     };
   },
@@ -91,43 +117,43 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <q-card-section>
-      <q-form class="q-gutter-md" :style="{ minWidth: '300px' }">
-        <UsernameInput
-          v-model="formState.username"
-          :loading="isFetchingUser"
-          :disable="isFetchingUser"
-        />
-
-        <EmailInput
-          v-model="formState.email"
-          v-model:isCheckingEmail="isCheckingEmail"
-          v-model:willCheckEmail="willCheckEmail"
-          :loading="isFetchingUser"
-          :invalid-emails="invalidEmails"
-          :disable="isFetchingUser"
-        />
-
-        <PasswordInput
-          v-model="formState.password"
-          v-model:visible="isPasswordVisible"
-        />
-
-        <PasswordConfirmationInput
-          v-model="passwordConfirmation"
-          v-model:visible="isPasswordVisible"
-          :password="formState.password"
-        />
-      </q-form>
-    </q-card-section>
-
-    <q-card-actions class="q-px-md">
-      <SubmitButton
-        :form-value="formState"
-        :disable="!canSubmit"
-        @validation-error="onValidationError"
+  <q-card-section @keypress.enter="canSubmit ? submitForm() : v.$touch()">
+    <q-form class="q-gutter-md" :style="{ minWidth: '300px' }">
+      <UsernameInput
+        v-model="formState.username"
+        :loading="isFetchingUser"
+        :disable="isFetchingUser"
       />
-    </q-card-actions>
-  </div>
+
+      <EmailInput
+        v-model="formState.email"
+        v-model:isCheckingEmail="isCheckingEmail"
+        v-model:willCheckEmail="willCheckEmail"
+        :loading="isFetchingUser"
+        :invalid-emails="invalidEmails"
+        :disable="isFetchingUser"
+      />
+
+      <PasswordInput
+        v-model="formState.password"
+        v-model:visible="isPasswordVisible"
+      />
+
+      <PasswordConfirmationInput
+        v-model="passwordConfirmation"
+        :visible="isPasswordVisible"
+        :password-to-match="formState.password"
+      />
+    </q-form>
+  </q-card-section>
+
+  <q-card-actions class="q-px-md">
+    <q-btn
+      class="q-ml-auto"
+      label="Cadastrar"
+      type="submit"
+      color="primary"
+      @click="submitForm"
+    />
+  </q-card-actions>
 </template>

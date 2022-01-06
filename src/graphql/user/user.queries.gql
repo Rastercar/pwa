@@ -1,3 +1,12 @@
+query currentUserQuery {
+  me {
+    id
+    email
+    username
+    emailVerified
+  }
+}
+
 query userByIdQuery($id: Int!) {
   user(id: $id) {
     id

@@ -13,8 +13,8 @@ mutation loginMutation($credentials: LoginInput!) {
   }
 }
 
-mutation registerUserMutation($user: RegisterUserDTO!) {
-  register(user: $user) {
+mutation loginByTokenMutation($token: String!) {
+  loginWithToken(token: $token) {
     token {
       value
       type

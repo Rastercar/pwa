@@ -1,0 +1,14 @@
+mutation registerUserMutation($user: RegisterUserDTO!) {
+  register(user: $user) {
+    token {
+      value
+      type
+    }
+    user {
+      id
+      email
+      username
+      emailVerified
+    }
+  }
+}
