@@ -1,26 +1,51 @@
 <script lang="ts">
-import { useMutation } from '@vue/apollo-composable';
 import { LoginByTokenMutationDocument } from 'src/graphql/generated/graphql-operations';
+import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
+import { HTTP_STATUS } from 'src/constants/http-status';
+import { useMutation } from '@vue/apollo-composable';
 import { useAuth } from 'src/state/auth.state';
-import { defineComponent } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { defineComponent, Ref, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'AutoLoginPage',
 
-  setup() {
-    const route = useRoute();
+  props: {
+    /**
+     * The JWT token used to login
+     */
+    token: {
+      type: String,
+      default: '',
+    },
+  },
+
+  setup(props) {
     const router = useRouter();
 
     const { AUTH_LOGIN } = useAuth();
 
-    // The temporary JWT used to login as
-    const token = route.query.token as string;
+    const autoLoginErrorType: Ref<null | 'unauthorized' | 'other'> = ref(null);
+    const willLoginSoon = ref(true);
 
-    // TODO: fail if token is not set (route guard ?)
+    const {
+      mutate: login,
+      onError,
+      loading: isLoggingIn,
+    } = useMutation(LoginByTokenMutationDocument, {
+      variables: { token: props.token },
+      fetchPolicy: 'network-only',
+    });
 
-    const { mutate: login } = useMutation(LoginByTokenMutationDocument, {
-      variables: { token },
+    onError(({ graphQLErrors }) => {
+      const error = graphQLErrors[0]?.extensions?.response;
+
+      if (!isApiErrorResponse(error)) return;
+
+      autoLoginErrorType.value =
+        error.statusCode === HTTP_STATUS.UNAUTHORIZED
+          ? 'unauthorized'
+          : 'other';
     });
 
     const attemptLogin = () => {
@@ -32,12 +57,15 @@ export default defineComponent({
 
           router.push('/').catch(() => null);
         })
-        .catch(console.warn);
+        .catch(() => null)
+        .finally(() => {
+          willLoginSoon.value = false;
+        });
     };
 
-    setTimeout(attemptLogin, 2000);
+    if (props.token) setTimeout(attemptLogin, 500);
 
-    return {};
+    return { autoLoginErrorType, isLoggingIn, willLoginSoon };
   },
 });
 </script>
@@ -46,10 +74,37 @@ export default defineComponent({
   <div
     class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
   >
-    <div>
-      <!-- TODO: find better msg -->
+    <div v-if="!token || autoLoginErrorType === 'unauthorized'">
+      <div class="text-h1">401</div>
+      <div class="text-h3" style="opacity: 0.5">não autorizado</div>
+      <q-btn
+        color="grey-7"
+        class="full-width q-mt-md"
+        label="Voltar para login"
+        @click="$router.push('/login')"
+      />
+    </div>
+
+    <div v-else-if="autoLoginErrorType === 'other'">
+      <div class="text-h1">Oops</div>
+      <div class="text-h3" style="opacity: 0.5">algo deu errado</div>
+      <q-btn
+        color="grey-7"
+        class="full-width q-mt-md"
+        label="Voltar para login"
+        @click="$router.push('/login')"
+      />
+    </div>
+
+    <div v-else>
       <div class="text-h1">acessando</div>
       <div class="text-h3" style="opacity: 0.5">aguarde um minuto...</div>
+      <q-linear-progress
+        v-show="isLoggingIn || willLoginSoon"
+        indeterminate
+        color="white"
+        class="q-mt-md"
+      />
     </div>
   </div>
 </template>

@@ -21,6 +21,7 @@ export const authRoutes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/pages/auth/auto-login/AutoLoginPage.vue'),
+        props: (route) => ({ token: route.query.token }),
       },
     ],
     meta: {

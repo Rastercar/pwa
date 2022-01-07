@@ -14,7 +14,7 @@ export const isApiErrorResponse = (
   response: unknown
 ): response is ApiErrorResponse => {
   const cast = response as ApiErrorResponse;
-  return !!(cast && cast.error && cast.statusCode && cast.message);
+  return !!(cast && cast.statusCode && cast.message);
 };
 
 const logErrorMessage = (msg: string | unknown[] | Record<string, unknown>) => {
