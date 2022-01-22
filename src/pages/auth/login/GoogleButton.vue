@@ -1,23 +1,13 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'LoginGoogleButton',
-
-  setup() {
-    const loginWithGoogle = () => {
-      // TODO-PROD: UNMOCK ME
-      window.location.href = 'http://localhost:3000/auth/google/login';
-    };
-
-    return { loginWithGoogle };
-  },
-});
+<script setup lang="ts">
+const loginWithGoogle = () => {
+  // TODO-PROD: UNMOCK ME
+  window.location.href = 'http://localhost:3000/auth/google/login'
+}
 </script>
 
 <template>
   <q-btn
-    v-bind="{ ...$props, ...$attrs }"
+    v-bind="({ ...$props, ...$attrs } as any)"
     unelevated
     color="grey-7"
     size="lg"

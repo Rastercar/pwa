@@ -1,13 +1,5 @@
-<script lang="ts">
-import RegistrationForm from './form/RegistrationForm.vue';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'RegistrationPage',
-  components: {
-    RegistrationForm,
-  },
-});
+<script setup lang="ts">
+import RegistrationForm from './form/RegistrationForm.vue'
 </script>
 
 <template>

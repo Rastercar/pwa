@@ -1,23 +1,14 @@
-<script lang="ts">
-import { useApolloClient } from '@vue/apollo-composable';
-import { useAuth } from 'src/state/auth.state';
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { useApolloClient } from '@vue/apollo-composable'
+import { useAuth } from 'src/state/auth.state'
 
-export default defineComponent({
-  name: 'TestPage',
+const { AUTH_LOGOUT } = useAuth()
+const { client } = useApolloClient()
 
-  setup() {
-    const { AUTH_LOGOUT } = useAuth();
-    const { client } = useApolloClient();
-
-    const attemptLogout = () => {
-      AUTH_LOGOUT();
-      client.clearStore().catch(() => null);
-    };
-
-    return { attemptLogout };
-  },
-});
+const attemptLogout = () => {
+  AUTH_LOGOUT()
+  client.clearStore().catch(() => null)
+}
 </script>
 
 <template>

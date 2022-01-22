@@ -1,119 +1,93 @@
-<script lang="ts">
+<script setup lang="ts">
 import {
   RegisterUserMutationDocument,
   UnregisteredUserQueryDocument,
-} from 'src/graphql/generated/graphql-operations';
-import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
-import PasswordConfirmationInput from './PasswordConfirmationInput.vue';
-import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes';
-import { defineComponent, reactive, ref, computed, Ref } from 'vue';
-import { useQuery, useMutation } from '@vue/apollo-composable';
-import { useRoute, useRouter } from 'vue-router';
-import UsernameInput from './UsernameInput.vue';
-import PasswordInput from './PasswordInput.vue';
-import { useVuelidate } from '@vuelidate/core';
-import { useAuth } from 'src/state/auth.state';
-import EmailInput from './EmailInput.vue';
+} from 'src/graphql/generated/graphql-operations'
+import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
+import PasswordConfirmationInput from './PasswordConfirmationInput.vue'
+import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
+import { useQuery, useMutation } from '@vue/apollo-composable'
+import { reactive, ref, computed, Ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import UsernameInput from './UsernameInput.vue'
+import PasswordInput from './PasswordInput.vue'
+import { useVuelidate } from '@vuelidate/core'
+import { useAuth } from 'src/state/auth.state'
+import EmailInput from './EmailInput.vue'
 
-export default defineComponent({
-  name: 'RegistrationPage',
+const route = useRoute()
 
-  components: {
-    EmailInput,
-    PasswordInput,
-    UsernameInput,
-    PasswordConfirmationInput,
-  },
+// The uuid of unregistered user to finish the registration for
+const uuid = route.query.finishFor as string
+const shouldFetchUnregisteredUser = typeof uuid === 'string' && !!uuid
 
-  setup() {
-    const route = useRoute();
+const formState = reactive({
+  email: '',
+  username: '',
+  password: '',
+  refersToUnregisteredUser: uuid ?? null,
+})
 
-    // The uuid of unregistered user to finish the registration for
-    const uuid = route.query.finishFor as string;
-    const shouldFetchUnregisteredUser = typeof uuid === 'string' && !!uuid;
+const { loading: isFetchingUser, onResult } = useQuery(
+  UnregisteredUserQueryDocument,
+  { uuid },
+  { enabled: shouldFetchUnregisteredUser, fetchPolicy: 'network-only' }
+)
 
-    const formState = reactive({
-      email: '',
-      username: '',
-      password: '',
-      refersToUnregisteredUser: uuid ?? null,
-    });
+onResult(({ data }) => {
+  if (!data?.unregisteredUser) return
 
-    const { loading: isFetchingUser, onResult } = useQuery(
-      UnregisteredUserQueryDocument,
-      { uuid },
-      { enabled: shouldFetchUnregisteredUser, fetchPolicy: 'network-only' }
-    );
+  formState.email = data.unregisteredUser.email
+  formState.username = data.unregisteredUser.username ?? ''
+})
 
-    onResult(({ data }) => {
-      if (!data?.unregisteredUser) return;
+const isCheckingEmail = ref(false)
+const willCheckEmail = ref(false)
 
-      formState.email = data.unregisteredUser.email;
-      formState.username = data.unregisteredUser.username ?? '';
-    });
+const passwordConfirmation = ref('')
+const invalidEmails: Ref<string[]> = ref([])
 
-    const isCheckingEmail = ref(false);
-    const willCheckEmail = ref(false);
+const isPasswordVisible = ref(false)
 
-    const passwordConfirmation = ref('');
-    const invalidEmails: Ref<string[]> = ref([]);
+const v = useVuelidate({ $autoDirty: true })
 
-    const isPasswordVisible = ref(false);
+const canSubmit = computed(
+  () =>
+    !isCheckingEmail.value &&
+    !isFetchingUser.value &&
+    !willCheckEmail.value &&
+    !v.value.$invalid
+)
 
-    const v = useVuelidate({ $autoDirty: true });
+const { mutate: register, onError } = useMutation(
+  RegisterUserMutationDocument,
+  { variables: { user: formState }, fetchPolicy: 'network-only' }
+)
 
-    const canSubmit = computed(
-      () =>
-        !isCheckingEmail.value &&
-        !isFetchingUser.value &&
-        !willCheckEmail.value &&
-        !v.value.$invalid
-    );
+const { AUTH_LOGIN } = useAuth()
+const router = useRouter()
 
-    const { mutate: register, onError } = useMutation(
-      RegisterUserMutationDocument,
-      { variables: { user: formState }, fetchPolicy: 'network-only' }
-    );
+const submitForm = () => {
+  register()
+    .then((res) => {
+      if (!res?.data) return
 
-    const { AUTH_LOGIN } = useAuth();
-    const router = useRouter();
+      AUTH_LOGIN(res.data.register)
 
-    const submitForm = () => {
-      register()
-        .then((res) => {
-          if (!res?.data) return;
+      router.push('/').catch(() => null)
+    })
+    .catch(() => null)
+}
 
-          AUTH_LOGIN(res.data.register);
+onError(({ graphQLErrors }) => {
+  const error = graphQLErrors[0]?.extensions?.response
 
-          router.push('/').catch(() => null);
-        })
-        .catch(() => null);
-    };
+  if (!isApiErrorResponse(error)) return
 
-    onError(({ graphQLErrors }) => {
-      const error = graphQLErrors[0]?.extensions?.response;
-
-      if (!isApiErrorResponse(error)) return;
-
-      if (error.message === ERROR_CODES.EMAIL_IN_USE) {
-        invalidEmails.value.push(formState.email);
-      }
-    });
-
-    return {
-      v,
-      canSubmit,
-      formState,
-      submitForm,
-      invalidEmails,
-      willCheckEmail,
-      isFetchingUser,
-      isCheckingEmail,
-      isPasswordVisible,
-      passwordConfirmation,
-    };
-  },
-});
+  if (error.message === ERROR_CODES.EMAIL_IN_USE) {
+    invalidEmails.value.push(formState.email)
+  }
+})
 </script>
 
 <template>

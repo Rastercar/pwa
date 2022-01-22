@@ -1,17 +1,10 @@
 {
+  "prettier.enable": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
-  "typescript.tsdk": "node_modules/typescript/lib",
-
-  "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-
+  "editor.formatOnPaste": true,
   "editor.codeActionsOnSave": {
-      "source.fixAll": true
+    "source.fixAll.eslint": true
   },
-
-  "vetur.format.enable": false,
-  "vetur.validation.template": false,
-  "vetur.experimental.templateInterpolationService": true,
-  "vetur.format.defaultFormatter.html": "prettyhtml",
-  "vetur.format.defaultFormatter.js": "prettier-eslint"
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

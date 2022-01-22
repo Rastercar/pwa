@@ -1,73 +1,63 @@
-<script lang="ts">
-import { LoginByTokenMutationDocument } from 'src/graphql/generated/graphql-operations';
-import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
-import { HTTP_STATUS } from 'src/constants/http-status';
-import { useMutation } from '@vue/apollo-composable';
-import { useAuth } from 'src/state/auth.state';
-import { defineComponent, Ref, ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { LoginByTokenMutationDocument } from 'src/graphql/generated/graphql-operations'
+import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
+import { HTTP_STATUS } from 'src/constants/http-status'
+import { useMutation } from '@vue/apollo-composable'
+import { useAuth } from 'src/state/auth.state'
+import { useRouter } from 'vue-router'
+import { Ref, ref } from 'vue'
 
-export default defineComponent({
-  name: 'AutoLoginPage',
-
-  props: {
-    /**
-     * The JWT token used to login
-     */
-    token: {
-      type: String,
-      default: '',
-    },
+const props = defineProps({
+  /**
+   * The JWT token used to login
+   */
+  token: {
+    type: String,
+    default: '',
   },
+})
 
-  setup(props) {
-    const router = useRouter();
+const router = useRouter()
 
-    const { AUTH_LOGIN } = useAuth();
+const { AUTH_LOGIN } = useAuth()
 
-    const autoLoginErrorType: Ref<null | 'unauthorized' | 'other'> = ref(null);
-    const willLoginSoon = ref(true);
+const autoLoginErrorType: Ref<null | 'unauthorized' | 'other'> = ref(null)
+const willLoginSoon = ref(true)
 
-    const {
-      mutate: login,
-      onError,
-      loading: isLoggingIn,
-    } = useMutation(LoginByTokenMutationDocument, {
-      variables: { token: props.token },
-      fetchPolicy: 'network-only',
-    });
+const {
+  mutate: login,
+  onError,
+  loading: isLoggingIn,
+} = useMutation(LoginByTokenMutationDocument, {
+  variables: { token: props.token },
+  fetchPolicy: 'network-only',
+})
 
-    onError(({ graphQLErrors }) => {
-      const error = graphQLErrors[0]?.extensions?.response;
+onError(({ graphQLErrors }) => {
+  const error = graphQLErrors[0]?.extensions?.response
 
-      if (!isApiErrorResponse(error)) return;
+  if (!isApiErrorResponse(error)) return
 
-      autoLoginErrorType.value =
-        error.statusCode === HTTP_STATUS.UNAUTHORIZED
-          ? 'unauthorized'
-          : 'other';
-    });
+  autoLoginErrorType.value =
+    error.statusCode === HTTP_STATUS.UNAUTHORIZED ? 'unauthorized' : 'other'
+})
 
-    const attemptLogin = () => {
-      login()
-        .then((res) => {
-          if (!res?.data) throw new Error('Invalid login response');
+const attemptLogin = () => {
+  login()
+    .then((res) => {
+      if (!res?.data) throw new Error('Invalid login response')
 
-          AUTH_LOGIN(res.data.loginWithToken);
+      AUTH_LOGIN(res.data.loginWithToken)
 
-          router.push('/').catch(() => null);
-        })
-        .catch(() => null)
-        .finally(() => {
-          willLoginSoon.value = false;
-        });
-    };
+      router.push('/').catch(() => null)
+    })
+    .catch(() => null)
+    .finally(() => {
+      willLoginSoon.value = false
+    })
+}
 
-    if (props.token) setTimeout(attemptLogin, 500);
-
-    return { autoLoginErrorType, isLoggingIn, willLoginSoon };
-  },
-});
+if (props.token) setTimeout(attemptLogin, 500)
 </script>
 
 <template>

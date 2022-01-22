@@ -1,19 +1,8 @@
-<script lang="ts">
-import Sidebar from './sidebar/Sidebar.vue';
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import Sidebar from './sidebar/Sidebar.vue'
+import { ref } from 'vue'
 
-export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    Sidebar,
-  },
-
-  setup() {
-    const isDrawerOpen = ref(true);
-    return { isDrawerOpen };
-  },
-});
+const isDrawerOpen = ref(true)
 </script>
 
 <template>

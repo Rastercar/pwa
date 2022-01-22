@@ -1,87 +1,64 @@
-<script lang="ts">
-import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations';
-import { isApiErrorResponse } from 'src/apollo/links/error-handler.link';
-import { HTTP_STATUS } from 'src/constants/http-status';
-import { defineComponent, reactive, ref } from 'vue';
-import { useMutation } from '@vue/apollo-composable';
-import LoginCardFooter from './LoginCardFooter.vue';
-import PasswordInput from './PasswordInput.vue';
-import { useAuth } from 'src/state/auth.state';
-import { useVuelidate } from '@vuelidate/core';
-import GoogleButton from './GoogleButton.vue';
-import MainButton from './MainButton.vue';
-import EmailInput from './EmailInput.vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations'
+import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
+import { HTTP_STATUS } from 'src/constants/http-status'
+import { useMutation } from '@vue/apollo-composable'
+import LoginCardFooter from './LoginCardFooter.vue'
+import PasswordInput from './PasswordInput.vue'
+import { useAuth } from 'src/state/auth.state'
+import { useVuelidate } from '@vuelidate/core'
+import GoogleButton from './GoogleButton.vue'
+import MainButton from './MainButton.vue'
+import EmailInput from './EmailInput.vue'
+import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue'
 
-export default defineComponent({
-  name: 'LoginPage',
+const formState = reactive({ password: '', email: '' })
 
-  components: {
-    EmailInput,
-    MainButton,
-    GoogleButton,
-    PasswordInput,
-    LoginCardFooter,
-  },
+const userWithEmailNotFound = ref(false)
+const passwordIsInvalid = ref(false)
 
-  setup() {
-    const formState = reactive({ password: '', email: '' });
+const {
+  mutate: login,
+  onError,
+  loading: isLoggingIn,
+} = useMutation(LoginMutationDocument, { fetchPolicy: 'network-only' })
 
-    const userWithEmailNotFound = ref(false);
-    const passwordIsInvalid = ref(false);
+onError(({ graphQLErrors }) => {
+  const error = graphQLErrors[0]?.extensions?.response
 
-    const {
-      mutate: login,
-      onError,
-      loading: isLoggingIn,
-    } = useMutation(LoginMutationDocument, { fetchPolicy: 'network-only' });
+  if (!isApiErrorResponse(error)) return
 
-    onError(({ graphQLErrors }) => {
-      const error = graphQLErrors[0]?.extensions?.response;
+  if (error.statusCode === HTTP_STATUS.NOT_FOUND) {
+    userWithEmailNotFound.value = true
+  } else if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
+    passwordIsInvalid.value = true
+  }
+})
 
-      if (!isApiErrorResponse(error)) return;
+const v = useVuelidate({ $autoDirty: true })
+const router = useRouter()
 
-      if (error.statusCode === HTTP_STATUS.NOT_FOUND) {
-        userWithEmailNotFound.value = true;
-      } else if (error.statusCode === HTTP_STATUS.UNAUTHORIZED) {
-        passwordIsInvalid.value = true;
-      }
-    });
+const { AUTH_LOGIN } = useAuth()
 
-    const v = useVuelidate({ $autoDirty: true });
-    const router = useRouter();
+const attemptLogin = async () => {
+  const isFormValid = await v.value.$validate().catch(() => false)
 
-    const { AUTH_LOGIN } = useAuth();
+  if (!isFormValid) return
 
-    const attemptLogin = async () => {
-      const isFormValid = await v.value.$validate().catch(() => false);
+  login({ credentials: formState })
+    .then((res) => {
+      if (!res?.data) throw new Error('Invalid login response')
 
-      if (!isFormValid) return;
+      userWithEmailNotFound.value = false
+      passwordIsInvalid.value = false
 
-      login({ credentials: formState })
-        .then((res) => {
-          if (!res?.data) throw new Error('Invalid login response');
+      AUTH_LOGIN(res.data.login)
 
-          userWithEmailNotFound.value = false;
-          passwordIsInvalid.value = false;
-
-          AUTH_LOGIN(res.data.login);
-
-          router.push('/').catch(() => null);
-        })
-        .catch(() => null);
-    };
-
-    return {
-      v,
-      formState,
-      isLoggingIn,
-      attemptLogin,
-      passwordIsInvalid,
-      userWithEmailNotFound,
-    };
-  },
-});
+      router.push('/').catch(() => null)
+    })
+    .catch(() => null)
+}
 </script>
 
 <template>

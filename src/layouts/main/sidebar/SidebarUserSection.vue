@@ -1,16 +1,8 @@
-<script lang="ts">
-import { CurrentUserQueryDocument } from 'src/graphql/generated/graphql-operations';
-import { useQuery } from '@vue/apollo-composable';
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { CurrentUserQueryDocument } from 'src/graphql/generated/graphql-operations'
+import { useQuery } from '@vue/apollo-composable'
 
-export default defineComponent({
-  name: 'SidebarUserSection',
-
-  setup() {
-    const { result: user, loading } = useQuery(CurrentUserQueryDocument);
-    return { user, loading };
-  },
-});
+const { result: user, loading } = useQuery(CurrentUserQueryDocument)
 </script>
 
 <template>
