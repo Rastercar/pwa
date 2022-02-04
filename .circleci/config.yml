@@ -21,9 +21,9 @@ jobs:
 workflows:
   main-workflow:
     jobs:
-      - build
-          # Only bother deploying if were commiting to production (master) or homologation (homolog)
-          filters:
-            branches:
-              only:
-                - homolog
+      - build:
+        # Only bother deploying if were commiting to production (master) or homologation (homolog)
+        filters:
+          branches:
+            only:
+              - homolog
