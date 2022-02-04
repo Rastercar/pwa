@@ -1,0 +1,29 @@
+version: '2.1'
+
+orbs:
+  aws-s3: circleci/aws-s3@3.0
+
+jobs:
+  build:
+    docker:
+      - image: 'cimg/python:3.6'
+    steps:
+      - checkout
+      - run: mkdir bucket
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+            --delete
+          from: bucket
+          to: 's3://homolog.rastercar.com'
+
+workflows:
+  main-workflow:
+    jobs:
+      - build
+          # Only bother deploying if were commiting to production (master) or homologation (homolog)
+          filters:
+            branches:
+              only:
+                - homolog
