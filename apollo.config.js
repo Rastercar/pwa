@@ -1,4 +1,5 @@
 /* eslint-env node */
+
 // See https://www.apollographql.com/docs/devtools/apollo-config/
 module.exports = {
   client: {

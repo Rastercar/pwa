@@ -1,23 +1,23 @@
-import { createHttpLink, InMemoryCache } from '@apollo/client/core';
-import type { ApolloClientOptions } from '@apollo/client/core';
-import { errorHandlerLink } from './links/error-handler.link';
-import { authLink } from './links/auth.link';
+import { createHttpLink, InMemoryCache } from '@apollo/client/core'
+import type { ApolloClientOptions } from '@apollo/client/core'
+import { errorHandlerLink } from './links/error-handler.link'
+import { authLink } from './links/auth.link'
 
-type apolloOptions = ApolloClientOptions<unknown>;
-type partialOptions = Partial<apolloOptions>;
+type apolloOptions = ApolloClientOptions<unknown>
+type partialOptions = Partial<apolloOptions>
 
 export function getClientOptions() {
-  const httpLink = createHttpLink({ uri: process.env.GRAPHQL_ENDPOINT });
+  const httpLink = createHttpLink({ uri: process.env.GRAPHQL_ENDPOINT })
 
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache()
 
   const generalOptions: apolloOptions = {
     link: authLink.concat(errorHandlerLink).concat(httpLink),
     cache,
-  };
+  }
 
-  const ssrServerOptions: partialOptions = { ssrMode: true };
-  const ssrClientOptions: partialOptions = { ssrForceFetchDelay: 100 };
+  const ssrServerOptions: partialOptions = { ssrMode: true }
+  const ssrClientOptions: partialOptions = { ssrForceFetchDelay: 100 }
 
   return Object.assign(
     generalOptions,
@@ -35,5 +35,5 @@ export function getClientOptions() {
 
     process.env.MODE === 'ssr' && process.env.SERVER ? ssrServerOptions : {},
     process.env.MODE === 'ssr' && process.env.CLIENT ? ssrClientOptions : {}
-  ) as apolloOptions;
+  ) as apolloOptions
 }

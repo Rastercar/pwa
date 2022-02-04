@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const loginWithGoogle = () => {
-  // TODO-PROD: UNMOCK ME
-  window.location.href = 'http://localhost:3000/auth/google/login'
+  window.location.href = `${process.env.API_BASE_URL}/auth/google/login`
 }
 </script>
 
@@ -12,7 +11,7 @@ const loginWithGoogle = () => {
     color="grey-7"
     size="lg"
     class="full-width q-mt-md"
-    label="Login with Google"
+    label="Login com Google"
     @click="loginWithGoogle"
   />
 </template>
