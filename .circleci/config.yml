@@ -11,9 +11,8 @@ jobs:
       tag: '14.17'
     steps:
       - checkout
-      - run:
-          command: yarn install
-          name: Install dependencies
+      - node/install-packages:
+          pkg-manager: yarn
       - run:
           command: yarn global add @quasar/cli
           name: Install quasar cli
