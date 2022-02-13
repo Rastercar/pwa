@@ -7,7 +7,7 @@ const { client } = useApolloClient()
 
 const attemptLogout = () => {
   AUTH_LOGOUT()
-  client.clearStore().catch(() => null)
+  client.clearStore().catch(console.error)
 }
 </script>
 

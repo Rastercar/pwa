@@ -5,10 +5,18 @@ mutation loginMutation($credentials: LoginInput!) {
       type
     }
     user {
-      id
-      email
-      username
-      emailVerified
+      ... on UserModel {
+        id
+        email
+        username
+        emailVerified
+        organization {
+          id
+          name
+          billingEmail
+          billingEmailVerified
+        }
+      }
     }
   }
 }
@@ -20,10 +28,12 @@ mutation loginByTokenMutation($token: String!) {
       type
     }
     user {
-      id
-      email
-      username
-      emailVerified
+      ... on UserModel {
+        id
+        email
+        username
+        emailVerified
+      }
     }
   }
 }

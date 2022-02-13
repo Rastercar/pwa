@@ -53,7 +53,7 @@ const attemptLogin = async () => {
       userWithEmailNotFound.value = false
       passwordIsInvalid.value = false
 
-      AUTH_LOGIN(res.data.login)
+      AUTH_LOGIN(res.data.login.token)
 
       router.push('/').catch(() => null)
     })

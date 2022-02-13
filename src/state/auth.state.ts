@@ -1,6 +1,6 @@
-import { LoginResponse } from 'src/graphql/generated/graphql-operations';
-import { loadFromLS, syncWithLS } from './utils/persist-state';
-import { computed, reactive, readonly } from 'vue';
+import { JwtModel } from 'src/graphql/generated/graphql-operations'
+import { loadFromLS, syncWithLS } from './utils/persist-state'
+import { computed, reactive, readonly } from 'vue'
 
 /*
  | Auth State: 
@@ -16,26 +16,26 @@ interface AuthState {
   /**
    * A JWT bearer token used to authenticate with the graphql / rest endpoints of the rastercar api
    */
-  apiToken: string | null;
+  apiToken: string | null
 }
 
-const state: AuthState = reactive(loadFromLS('authState', { apiToken: null }));
+const state: AuthState = reactive(loadFromLS('authState', { apiToken: null }))
 
-syncWithLS({ authState: state });
+syncWithLS({ authState: state })
 
 /**
  * Sets the API token
  */
-const AUTH_LOGIN = (loginResponse: LoginResponse) => {
-  state.apiToken = loginResponse.token.value;
-};
+const AUTH_LOGIN = (token: JwtModel) => {
+  state.apiToken = token.value
+}
 
 /**
  * Unsets the API token
  */
 const AUTH_LOGOUT = () => {
-  state.apiToken = null;
-};
+  state.apiToken = null
+}
 
 export const useAuth = () => ({
   AUTH_LOGIN,
@@ -44,4 +44,4 @@ export const useAuth = () => ({
   isLoggedIn: computed(() => !!state.apiToken),
 
   state: readonly(state),
-});
+})

@@ -1,9 +1,26 @@
 query currentUserQuery {
   me {
-    id
-    email
-    username
-    emailVerified
+    ... on UserModel {
+      id
+      email
+      username
+      emailVerified
+      organization {
+        id
+        name
+      }
+    }
+    ... on MasterUserModel {
+      id
+      email
+      username
+      emailVerified
+      masterAccessLevel {
+        id
+        name
+        permissions
+      }
+    }
   }
 }
 

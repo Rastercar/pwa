@@ -2,225 +2,316 @@
 // THIS FILE IS GENERATED, DO NOT EDIT!
 //
 
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
+  [K in keyof T]: T[K]
+}
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
+  [SubKey in K]?: Maybe<T[SubKey]>
+}
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+  [SubKey in K]: Maybe<T[SubKey]>
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-};
+  ID: string
+  String: string
+  Boolean: boolean
+  Int: number
+  Float: number
+}
+
+/** The access level to the tracked dashboard */
+export type AccessLevelModel = {
+  __typename?: 'AccessLevelModel'
+  description: Scalars['String']
+  id: Scalars['Int']
+  name: Scalars['String']
+  permissions: Array<Permission>
+}
 
 /** JSON Web Token */
 export type JwtModel = {
-  __typename?: 'JwtModel';
-  type: Scalars['String'];
-  value: Scalars['String'];
-};
+  __typename?: 'JwtModel'
+  type: Scalars['String']
+  value: Scalars['String']
+}
 
 export type LoginInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
+  email: Scalars['String']
+  password: Scalars['String']
+}
 
 export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  token: JwtModel;
-  user: UserModel;
-};
+  __typename?: 'LoginResponse'
+  token: JwtModel
+  user: UserOrMasterUser
+}
+
+export enum Master_Permission {
+  EditOtherUsers = 'EDIT_OTHER_USERS',
+}
+
+/** The access level to the tracker dashboard */
+export type MasterAccessLevelModel = {
+  __typename?: 'MasterAccessLevelModel'
+  description: Scalars['String']
+  id: Scalars['Int']
+  name: Scalars['String']
+  permissions: Array<Master_Permission>
+}
+
+/** master user (a user with access to the main panel */
+export type MasterUserModel = {
+  __typename?: 'MasterUserModel'
+  accessLevel: AccessLevelModel
+  email: Scalars['String']
+  emailVerified: Scalars['Boolean']
+  id: Scalars['Int']
+  masterAccessLevel: MasterAccessLevelModel
+  username: Scalars['String']
+}
 
 export type Mutation = {
-  __typename?: 'Mutation';
-  login: LoginResponse;
-  loginWithToken: LoginResponse;
-  register: LoginResponse;
-};
+  __typename?: 'Mutation'
+  login: LoginResponse
+  loginWithToken: LoginResponse
+  register: LoginResponse
+}
 
 export type MutationLoginArgs = {
-  credentials: LoginInput;
-};
+  credentials: LoginInput
+}
 
 export type MutationLoginWithTokenArgs = {
-  token: Scalars['String'];
-};
+  token: Scalars['String']
+}
 
 export type MutationRegisterArgs = {
-  user: RegisterUserDto;
-};
+  user: RegisterUserDto
+}
+
+/** organization */
+export type OrganizationModel = {
+  __typename?: 'OrganizationModel'
+  billingEmail: Scalars['String']
+  billingEmailVerified: Scalars['Boolean']
+  blocked: Scalars['Boolean']
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
+export enum Permission {
+  EditOtherUsers = 'EDIT_OTHER_USERS',
+}
 
 export type Query = {
-  __typename?: 'Query';
-  isEmailInUse: Scalars['Boolean'];
-  me: UserModel;
-  unregisteredUser?: Maybe<UnregisteredUserModel>;
-  user?: Maybe<UserModel>;
-};
+  __typename?: 'Query'
+  isEmailInUse: Scalars['Boolean']
+  me: UserOrMasterUser
+  unregisteredUser?: Maybe<UnregisteredUserModel>
+  user?: Maybe<UserModel>
+}
 
 export type QueryIsEmailInUseArgs = {
-  email: Scalars['String'];
-};
+  email: Scalars['String']
+}
 
 export type QueryUnregisteredUserArgs = {
-  uuid: Scalars['String'];
-};
+  uuid: Scalars['String']
+}
 
 export type QueryUserArgs = {
-  id: Scalars['Int'];
-};
+  id: Scalars['Int']
+}
 
 export type RegisterUserDto = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  email: Scalars['String']
+  password: Scalars['String']
   /** UUID of the unregistered user this registration refers to, once finished the referred unregistered user will be deleted, this is also used to determine wheter the user being registered uses oauth for authentication */
-  refersToUnregisteredUser?: InputMaybe<Scalars['String']>;
-  username: Scalars['String'];
-};
+  refersToUnregisteredUser?: InputMaybe<Scalars['String']>
+  username: Scalars['String']
+}
 
 /** unregistered user */
 export type UnregisteredUserModel = {
-  __typename?: 'UnregisteredUserModel';
-  email: Scalars['String'];
-  emailVerified: Scalars['Boolean'];
-  username?: Maybe<Scalars['String']>;
-  uuid: Scalars['String'];
-};
+  __typename?: 'UnregisteredUserModel'
+  email: Scalars['String']
+  emailVerified: Scalars['Boolean']
+  username?: Maybe<Scalars['String']>
+  uuid: Scalars['String']
+}
 
 /** user */
 export type UserModel = {
-  __typename?: 'UserModel';
-  email: Scalars['String'];
-  emailVerified: Scalars['Boolean'];
-  googleProfileId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
-  username: Scalars['String'];
-};
+  __typename?: 'UserModel'
+  accessLevel: AccessLevelModel
+  email: Scalars['String']
+  emailVerified: Scalars['Boolean']
+  id: Scalars['Int']
+  oauthProfileId?: Maybe<Scalars['String']>
+  oauthProvider?: Maybe<Scalars['String']>
+  organization: OrganizationModel
+  username: Scalars['String']
+}
+
+export type UserOrMasterUser = MasterUserModel | UserModel
 
 export type LoginMutationMutationVariables = Exact<{
-  credentials: LoginInput;
-}>;
+  credentials: LoginInput
+}>
 
 export type LoginMutationMutation = {
-  __typename?: 'Mutation';
+  __typename?: 'Mutation'
   login: {
-    __typename?: 'LoginResponse';
-    token: { __typename?: 'JwtModel'; value: string; type: string };
-    user: {
-      __typename?: 'UserModel';
-      id: number;
-      email: string;
-      username: string;
-      emailVerified: boolean;
-    };
-  };
-};
+    __typename?: 'LoginResponse'
+    token: { __typename?: 'JwtModel'; value: string; type: string }
+    user:
+      | { __typename?: 'MasterUserModel' }
+      | {
+          __typename?: 'UserModel'
+          id: number
+          email: string
+          username: string
+          emailVerified: boolean
+          organization: {
+            __typename?: 'OrganizationModel'
+            id: number
+            name: string
+            billingEmail: string
+            billingEmailVerified: boolean
+          }
+        }
+  }
+}
 
 export type LoginByTokenMutationMutationVariables = Exact<{
-  token: Scalars['String'];
-}>;
+  token: Scalars['String']
+}>
 
 export type LoginByTokenMutationMutation = {
-  __typename?: 'Mutation';
+  __typename?: 'Mutation'
   loginWithToken: {
-    __typename?: 'LoginResponse';
-    token: { __typename?: 'JwtModel'; value: string; type: string };
-    user: {
-      __typename?: 'UserModel';
-      id: number;
-      email: string;
-      username: string;
-      emailVerified: boolean;
-    };
-  };
-};
+    __typename?: 'LoginResponse'
+    token: { __typename?: 'JwtModel'; value: string; type: string }
+    user:
+      | { __typename?: 'MasterUserModel' }
+      | {
+          __typename?: 'UserModel'
+          id: number
+          email: string
+          username: string
+          emailVerified: boolean
+        }
+  }
+}
 
 export type IsEmailInUseQueryQueryVariables = Exact<{
-  email: Scalars['String'];
-}>;
+  email: Scalars['String']
+}>
 
 export type IsEmailInUseQueryQuery = {
-  __typename?: 'Query';
-  isEmailInUse: boolean;
-};
+  __typename?: 'Query'
+  isEmailInUse: boolean
+}
 
 export type UnregisteredUserQueryQueryVariables = Exact<{
-  uuid: Scalars['String'];
-}>;
+  uuid: Scalars['String']
+}>
 
 export type UnregisteredUserQueryQuery = {
-  __typename?: 'Query';
+  __typename?: 'Query'
   unregisteredUser?:
     | {
-        __typename?: 'UnregisteredUserModel';
-        uuid: string;
-        email: string;
-        username?: string | null | undefined;
-        emailVerified: boolean;
+        __typename?: 'UnregisteredUserModel'
+        uuid: string
+        email: string
+        username?: string | null | undefined
+        emailVerified: boolean
       }
     | null
-    | undefined;
-};
+    | undefined
+}
 
 export type RegisterUserMutationMutationVariables = Exact<{
-  user: RegisterUserDto;
-}>;
+  user: RegisterUserDto
+}>
 
 export type RegisterUserMutationMutation = {
-  __typename?: 'Mutation';
+  __typename?: 'Mutation'
   register: {
-    __typename?: 'LoginResponse';
-    token: { __typename?: 'JwtModel'; value: string; type: string };
-    user: {
-      __typename?: 'UserModel';
-      id: number;
-      email: string;
-      username: string;
-      emailVerified: boolean;
-    };
-  };
-};
+    __typename?: 'LoginResponse'
+    token: { __typename?: 'JwtModel'; value: string; type: string }
+    user:
+      | { __typename?: 'MasterUserModel' }
+      | {
+          __typename?: 'UserModel'
+          id: number
+          email: string
+          username: string
+          emailVerified: boolean
+          organization: {
+            __typename?: 'OrganizationModel'
+            id: number
+            name: string
+            billingEmail: string
+            billingEmailVerified: boolean
+          }
+        }
+  }
+}
 
-export type CurrentUserQueryQueryVariables = Exact<{ [key: string]: never }>;
+export type CurrentUserQueryQueryVariables = Exact<{ [key: string]: never }>
 
 export type CurrentUserQueryQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'UserModel';
-    id: number;
-    email: string;
-    username: string;
-    emailVerified: boolean;
-  };
-};
+  __typename?: 'Query'
+  me:
+    | {
+        __typename?: 'MasterUserModel'
+        id: number
+        email: string
+        username: string
+        emailVerified: boolean
+        masterAccessLevel: {
+          __typename?: 'MasterAccessLevelModel'
+          id: number
+          name: string
+          permissions: Array<Master_Permission>
+        }
+      }
+    | {
+        __typename?: 'UserModel'
+        id: number
+        email: string
+        username: string
+        emailVerified: boolean
+        organization: {
+          __typename?: 'OrganizationModel'
+          id: number
+          name: string
+        }
+      }
+}
 
 export type UserByIdQueryQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
+  id: Scalars['Int']
+}>
 
 export type UserByIdQueryQuery = {
-  __typename?: 'Query';
+  __typename?: 'Query'
   user?:
     | {
-        __typename?: 'UserModel';
-        id: number;
-        email: string;
-        username: string;
-        emailVerified: boolean;
+        __typename?: 'UserModel'
+        id: number
+        email: string
+        username: string
+        emailVerified: boolean
       }
     | null
-    | undefined;
-};
+    | undefined
+}
 
 export const LoginMutationDocument = {
   kind: 'Document',
@@ -281,15 +372,64 @@ export const LoginMutationDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'username' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailVerified' },
+                        kind: 'InlineFragment',
+                        typeCondition: {
+                          kind: 'NamedType',
+                          name: { kind: 'Name', value: 'UserModel' },
+                        },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'email' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'username' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'emailVerified' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'organization' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'name' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'billingEmail',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'billingEmailVerified',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
@@ -304,7 +444,7 @@ export const LoginMutationDocument = {
 } as unknown as DocumentNode<
   LoginMutationMutation,
   LoginMutationMutationVariables
->;
+>
 export const LoginByTokenMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -364,15 +504,33 @@ export const LoginByTokenMutationDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'username' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailVerified' },
+                        kind: 'InlineFragment',
+                        typeCondition: {
+                          kind: 'NamedType',
+                          name: { kind: 'Name', value: 'UserModel' },
+                        },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'email' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'username' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'emailVerified' },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
@@ -387,7 +545,7 @@ export const LoginByTokenMutationDocument = {
 } as unknown as DocumentNode<
   LoginByTokenMutationMutation,
   LoginByTokenMutationMutationVariables
->;
+>
 export const IsEmailInUseQueryDocument = {
   kind: 'Document',
   definitions: [
@@ -435,7 +593,7 @@ export const IsEmailInUseQueryDocument = {
 } as unknown as DocumentNode<
   IsEmailInUseQueryQuery,
   IsEmailInUseQueryQueryVariables
->;
+>
 export const UnregisteredUserQueryDocument = {
   kind: 'Document',
   definitions: [
@@ -492,7 +650,7 @@ export const UnregisteredUserQueryDocument = {
 } as unknown as DocumentNode<
   UnregisteredUserQueryQuery,
   UnregisteredUserQueryQueryVariables
->;
+>
 export const RegisterUserMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -549,15 +707,64 @@ export const RegisterUserMutationDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'username' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailVerified' },
+                        kind: 'InlineFragment',
+                        typeCondition: {
+                          kind: 'NamedType',
+                          name: { kind: 'Name', value: 'UserModel' },
+                        },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'email' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'username' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'emailVerified' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'organization' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'name' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'billingEmail',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'billingEmailVerified',
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
@@ -572,7 +779,7 @@ export const RegisterUserMutationDocument = {
 } as unknown as DocumentNode<
   RegisterUserMutationMutation,
   RegisterUserMutationMutationVariables
->;
+>
 export const CurrentUserQueryDocument = {
   kind: 'Document',
   definitions: [
@@ -589,12 +796,87 @@ export const CurrentUserQueryDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
                 {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'emailVerified' },
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'UserModel' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'username' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'emailVerified' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'organization' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'MasterUserModel' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'username' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'emailVerified' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'masterAccessLevel' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'permissions' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
                 },
               ],
             },
@@ -606,7 +888,7 @@ export const CurrentUserQueryDocument = {
 } as unknown as DocumentNode<
   CurrentUserQueryQuery,
   CurrentUserQueryQueryVariables
->;
+>
 export const UserByIdQueryDocument = {
   kind: 'Document',
   definitions: [
@@ -657,4 +939,4 @@ export const UserByIdQueryDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<UserByIdQueryQuery, UserByIdQueryQueryVariables>;
+} as unknown as DocumentNode<UserByIdQueryQuery, UserByIdQueryQueryVariables>

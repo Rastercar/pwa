@@ -47,7 +47,7 @@ const attemptLogin = () => {
     .then((res) => {
       if (!res?.data) throw new Error('Invalid login response')
 
-      AUTH_LOGIN(res.data.loginWithToken)
+      AUTH_LOGIN(res.data.loginWithToken.token)
 
       router.push('/').catch(() => null)
     })

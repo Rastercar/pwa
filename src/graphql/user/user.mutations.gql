@@ -5,15 +5,17 @@ mutation registerUserMutation($user: RegisterUserDTO!) {
       type
     }
     user {
-      id
-      email
-      username
-      emailVerified
-      organization {
+      ... on UserModel {
         id
-        name
-        billingEmail
-        billingEmailVerified
+        email
+        username
+        emailVerified
+        organization {
+          id
+          name
+          billingEmail
+          billingEmailVerified
+        }
       }
     }
   }

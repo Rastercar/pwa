@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
-  RegisterUserMutationDocument,
   UnregisteredUserQueryDocument,
+  RegisterUserMutationDocument,
 } from 'src/graphql/generated/graphql-operations'
 import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
 import PasswordConfirmationInput from './PasswordConfirmationInput.vue'
@@ -59,10 +59,14 @@ const canSubmit = computed(
     !v.value.$invalid
 )
 
-const { mutate: register, onError } = useMutation(
-  RegisterUserMutationDocument,
-  { variables: { user: formState }, fetchPolicy: 'network-only' }
-)
+const {
+  mutate: register,
+  onError,
+  loading,
+} = useMutation(RegisterUserMutationDocument, {
+  variables: { user: formState },
+  fetchPolicy: 'network-only',
+})
 
 const { AUTH_LOGIN } = useAuth()
 const router = useRouter()
@@ -70,9 +74,12 @@ const router = useRouter()
 const submitForm = () => {
   register()
     .then((res) => {
-      if (!res?.data) return
+      if (!res?.data) {
+        v.value.$touch()
+        return
+      }
 
-      AUTH_LOGIN(res.data.register)
+      AUTH_LOGIN(res.data.register.token)
 
       router.push('/').catch(() => null)
     })
@@ -104,8 +111,8 @@ onError(({ graphQLErrors }) => {
         v-model:isCheckingEmail="isCheckingEmail"
         v-model:willCheckEmail="willCheckEmail"
         :loading="isFetchingUser"
-        :invalid-emails="invalidEmails"
         :disable="isFetchingUser"
+        :invalid-emails="invalidEmails"
       />
 
       <PasswordInput
@@ -123,6 +130,7 @@ onError(({ graphQLErrors }) => {
 
   <q-card-actions class="q-px-md">
     <q-btn
+      :loading="loading"
       class="q-ml-auto"
       label="Cadastrar"
       type="submit"
