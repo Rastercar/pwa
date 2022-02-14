@@ -1,11 +1,16 @@
 import { RouteRecordRaw } from 'vue-router'
 
-export const devRoutes: RouteRecordRaw[] = [
+export const trackedRoutes: RouteRecordRaw[] = [
   {
-    path: '/dev/test',
+    path: '/tracked',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/dev/TestPage.vue') },
     ],
+    meta: {
+      requiresLogin: true,
+    },
   },
 ]
+
+export default trackedRoutes

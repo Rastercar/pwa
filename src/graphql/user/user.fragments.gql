@@ -1,0 +1,34 @@
+fragment FullUser on UserModel {
+  id
+  email
+  username
+  emailVerified
+  organization {
+    id
+    name
+    billingEmail
+    billingEmailVerified
+  }
+  accessLevel {
+    id
+    name
+    permissions
+  }
+}
+
+fragment FullMasterUser on MasterUserModel {
+  id
+  email
+  username
+  emailVerified
+  accessLevel {
+    id
+    name
+    permissions
+  }
+  masterAccessLevel {
+    id
+    name
+    permissions
+  }
+}

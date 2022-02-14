@@ -1,34 +1,16 @@
 query currentUserQuery {
   me {
     ... on UserModel {
-      id
-      email
-      username
-      emailVerified
-      organization {
-        id
-        name
-      }
+      ...FullUser
     }
     ... on MasterUserModel {
-      id
-      email
-      username
-      emailVerified
-      masterAccessLevel {
-        id
-        name
-        permissions
-      }
+      ...FullMasterUser
     }
   }
 }
 
 query userByIdQuery($id: Int!) {
   user(id: $id) {
-    id
-    email
-    username
-    emailVerified
+    ...FullUser
   }
 }

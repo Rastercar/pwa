@@ -169,7 +169,25 @@ export type LoginMutationMutation = {
     __typename?: 'LoginResponse'
     token: { __typename?: 'JwtModel'; value: string; type: string }
     user:
-      | { __typename?: 'MasterUserModel' }
+      | {
+          __typename?: 'MasterUserModel'
+          id: number
+          email: string
+          username: string
+          emailVerified: boolean
+          accessLevel: {
+            __typename?: 'AccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Permission>
+          }
+          masterAccessLevel: {
+            __typename?: 'MasterAccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Master_Permission>
+          }
+        }
       | {
           __typename?: 'UserModel'
           id: number
@@ -182,6 +200,12 @@ export type LoginMutationMutation = {
             name: string
             billingEmail: string
             billingEmailVerified: boolean
+          }
+          accessLevel: {
+            __typename?: 'AccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Permission>
           }
         }
   }
@@ -235,6 +259,47 @@ export type UnregisteredUserQueryQuery = {
     | undefined
 }
 
+export type FullUserFragment = {
+  __typename?: 'UserModel'
+  id: number
+  email: string
+  username: string
+  emailVerified: boolean
+  organization: {
+    __typename?: 'OrganizationModel'
+    id: number
+    name: string
+    billingEmail: string
+    billingEmailVerified: boolean
+  }
+  accessLevel: {
+    __typename?: 'AccessLevelModel'
+    id: number
+    name: string
+    permissions: Array<Permission>
+  }
+}
+
+export type FullMasterUserFragment = {
+  __typename?: 'MasterUserModel'
+  id: number
+  email: string
+  username: string
+  emailVerified: boolean
+  accessLevel: {
+    __typename?: 'AccessLevelModel'
+    id: number
+    name: string
+    permissions: Array<Permission>
+  }
+  masterAccessLevel: {
+    __typename?: 'MasterAccessLevelModel'
+    id: number
+    name: string
+    permissions: Array<Master_Permission>
+  }
+}
+
 export type RegisterUserMutationMutationVariables = Exact<{
   user: RegisterUserDto
 }>
@@ -245,7 +310,25 @@ export type RegisterUserMutationMutation = {
     __typename?: 'LoginResponse'
     token: { __typename?: 'JwtModel'; value: string; type: string }
     user:
-      | { __typename?: 'MasterUserModel' }
+      | {
+          __typename?: 'MasterUserModel'
+          id: number
+          email: string
+          username: string
+          emailVerified: boolean
+          accessLevel: {
+            __typename?: 'AccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Permission>
+          }
+          masterAccessLevel: {
+            __typename?: 'MasterAccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Master_Permission>
+          }
+        }
       | {
           __typename?: 'UserModel'
           id: number
@@ -258,6 +341,12 @@ export type RegisterUserMutationMutation = {
             name: string
             billingEmail: string
             billingEmailVerified: boolean
+          }
+          accessLevel: {
+            __typename?: 'AccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Permission>
           }
         }
   }
@@ -274,6 +363,12 @@ export type CurrentUserQueryQuery = {
         email: string
         username: string
         emailVerified: boolean
+        accessLevel: {
+          __typename?: 'AccessLevelModel'
+          id: number
+          name: string
+          permissions: Array<Permission>
+        }
         masterAccessLevel: {
           __typename?: 'MasterAccessLevelModel'
           id: number
@@ -291,6 +386,14 @@ export type CurrentUserQueryQuery = {
           __typename?: 'OrganizationModel'
           id: number
           name: string
+          billingEmail: string
+          billingEmailVerified: boolean
+        }
+        accessLevel: {
+          __typename?: 'AccessLevelModel'
+          id: number
+          name: string
+          permissions: Array<Permission>
         }
       }
 }
@@ -308,11 +411,123 @@ export type UserByIdQueryQuery = {
         email: string
         username: string
         emailVerified: boolean
+        organization: {
+          __typename?: 'OrganizationModel'
+          id: number
+          name: string
+          billingEmail: string
+          billingEmailVerified: boolean
+        }
+        accessLevel: {
+          __typename?: 'AccessLevelModel'
+          id: number
+          name: string
+          permissions: Array<Permission>
+        }
       }
     | null
     | undefined
 }
 
+export const FullUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'FullUser' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'UserModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmail' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmailVerified' },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessLevel' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'permissions' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FullUserFragment, unknown>
+export const FullMasterUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'FullMasterUser' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'MasterUserModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessLevel' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'permissions' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'masterAccessLevel' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'permissions' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FullMasterUserFragment, unknown>
 export const LoginMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -382,51 +597,24 @@ export const LoginMutationDocument = {
                           kind: 'SelectionSet',
                           selections: [
                             {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'FullUser' },
                             },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'InlineFragment',
+                        typeCondition: {
+                          kind: 'NamedType',
+                          name: { kind: 'Name', value: 'MasterUserModel' },
+                        },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
                             {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'email' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'username' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'emailVerified' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'organization' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'id' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'name' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'billingEmail',
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'billingEmailVerified',
-                                    },
-                                  },
-                                ],
-                              },
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'FullMasterUser' },
                             },
                           ],
                         },
@@ -440,6 +628,8 @@ export const LoginMutationDocument = {
         ],
       },
     },
+    ...FullUserFragmentDoc.definitions,
+    ...FullMasterUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   LoginMutationMutation,
@@ -717,51 +907,24 @@ export const RegisterUserMutationDocument = {
                           kind: 'SelectionSet',
                           selections: [
                             {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'FullUser' },
                             },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'InlineFragment',
+                        typeCondition: {
+                          kind: 'NamedType',
+                          name: { kind: 'Name', value: 'MasterUserModel' },
+                        },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
                             {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'email' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'username' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'emailVerified' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'organization' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'id' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'name' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'billingEmail',
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'billingEmailVerified',
-                                    },
-                                  },
-                                ],
-                              },
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'FullMasterUser' },
                             },
                           ],
                         },
@@ -775,6 +938,8 @@ export const RegisterUserMutationDocument = {
         ],
       },
     },
+    ...FullUserFragmentDoc.definitions,
+    ...FullMasterUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   RegisterUserMutationMutation,
@@ -805,32 +970,9 @@ export const CurrentUserQueryDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'username' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailVerified' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'organization' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'name' },
-                            },
-                          ],
-                        },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'FullUser' },
                       },
                     ],
                   },
@@ -844,36 +986,9 @@ export const CurrentUserQueryDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'username' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'emailVerified' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'masterAccessLevel' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'name' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'permissions' },
-                            },
-                          ],
-                        },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'FullMasterUser' },
                       },
                     ],
                   },
@@ -884,6 +999,8 @@ export const CurrentUserQueryDocument = {
         ],
       },
     },
+    ...FullUserFragmentDoc.definitions,
+    ...FullMasterUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserQueryQuery,
@@ -925,12 +1042,9 @@ export const UserByIdQueryDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
                 {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'emailVerified' },
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'FullUser' },
                 },
               ],
             },
@@ -938,5 +1052,6 @@ export const UserByIdQueryDocument = {
         ],
       },
     },
+    ...FullUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserByIdQueryQuery, UserByIdQueryQueryVariables>

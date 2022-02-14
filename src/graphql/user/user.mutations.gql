@@ -6,16 +6,10 @@ mutation registerUserMutation($user: RegisterUserDTO!) {
     }
     user {
       ... on UserModel {
-        id
-        email
-        username
-        emailVerified
-        organization {
-          id
-          name
-          billingEmail
-          billingEmailVerified
-        }
+        ...FullUser
+      }
+      ... on MasterUserModel {
+        ...FullMasterUser
       }
     }
   }
