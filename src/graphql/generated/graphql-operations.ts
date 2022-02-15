@@ -150,9 +150,8 @@ export type UserModel = {
   accessLevel: AccessLevelModel
   email: Scalars['String']
   emailVerified: Scalars['Boolean']
+  googleProfileId?: Maybe<Scalars['String']>
   id: Scalars['Int']
-  oauthProfileId?: Maybe<Scalars['String']>
-  oauthProvider?: Maybe<Scalars['String']>
   organization: OrganizationModel
   username: Scalars['String']
 }
@@ -194,6 +193,7 @@ export type LoginMutationMutation = {
           email: string
           username: string
           emailVerified: boolean
+          googleProfileId?: string | null | undefined
           organization: {
             __typename?: 'OrganizationModel'
             id: number
@@ -232,20 +232,20 @@ export type LoginByTokenMutationMutation = {
   }
 }
 
-export type IsEmailInUseQueryQueryVariables = Exact<{
+export type CheckEmailInUseQueryVariables = Exact<{
   email: Scalars['String']
 }>
 
-export type IsEmailInUseQueryQuery = {
+export type CheckEmailInUseQuery = {
   __typename?: 'Query'
   isEmailInUse: boolean
 }
 
-export type UnregisteredUserQueryQueryVariables = Exact<{
+export type UnregisteredUserByUuidQueryVariables = Exact<{
   uuid: Scalars['String']
 }>
 
-export type UnregisteredUserQueryQuery = {
+export type UnregisteredUserByUuidQuery = {
   __typename?: 'Query'
   unregisteredUser?:
     | {
@@ -265,6 +265,7 @@ export type FullUserFragment = {
   email: string
   username: string
   emailVerified: boolean
+  googleProfileId?: string | null | undefined
   organization: {
     __typename?: 'OrganizationModel'
     id: number
@@ -335,6 +336,7 @@ export type RegisterUserMutationMutation = {
           email: string
           username: string
           emailVerified: boolean
+          googleProfileId?: string | null | undefined
           organization: {
             __typename?: 'OrganizationModel'
             id: number
@@ -352,9 +354,9 @@ export type RegisterUserMutationMutation = {
   }
 }
 
-export type CurrentUserQueryQueryVariables = Exact<{ [key: string]: never }>
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
 
-export type CurrentUserQueryQuery = {
+export type CurrentUserQuery = {
   __typename?: 'Query'
   me:
     | {
@@ -382,6 +384,7 @@ export type CurrentUserQueryQuery = {
         email: string
         username: string
         emailVerified: boolean
+        googleProfileId?: string | null | undefined
         organization: {
           __typename?: 'OrganizationModel'
           id: number
@@ -398,11 +401,11 @@ export type CurrentUserQueryQuery = {
       }
 }
 
-export type UserByIdQueryQueryVariables = Exact<{
+export type UserByIdQueryVariables = Exact<{
   id: Scalars['Int']
 }>
 
-export type UserByIdQueryQuery = {
+export type UserByIdQuery = {
   __typename?: 'Query'
   user?:
     | {
@@ -411,6 +414,7 @@ export type UserByIdQueryQuery = {
         email: string
         username: string
         emailVerified: boolean
+        googleProfileId?: string | null | undefined
         organization: {
           __typename?: 'OrganizationModel'
           id: number
@@ -446,6 +450,7 @@ export const FullUserFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'email' } },
           { kind: 'Field', name: { kind: 'Name', value: 'username' } },
           { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'googleProfileId' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -736,13 +741,13 @@ export const LoginByTokenMutationDocument = {
   LoginByTokenMutationMutation,
   LoginByTokenMutationMutationVariables
 >
-export const IsEmailInUseQueryDocument = {
+export const CheckEmailInUseDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'isEmailInUseQuery' },
+      name: { kind: 'Name', value: 'checkEmailInUse' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -781,16 +786,16 @@ export const IsEmailInUseQueryDocument = {
     },
   ],
 } as unknown as DocumentNode<
-  IsEmailInUseQueryQuery,
-  IsEmailInUseQueryQueryVariables
+  CheckEmailInUseQuery,
+  CheckEmailInUseQueryVariables
 >
-export const UnregisteredUserQueryDocument = {
+export const UnregisteredUserByUuidDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'unregisteredUserQuery' },
+      name: { kind: 'Name', value: 'unregisteredUserByUuid' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -838,8 +843,8 @@ export const UnregisteredUserQueryDocument = {
     },
   ],
 } as unknown as DocumentNode<
-  UnregisteredUserQueryQuery,
-  UnregisteredUserQueryQueryVariables
+  UnregisteredUserByUuidQuery,
+  UnregisteredUserByUuidQueryVariables
 >
 export const RegisterUserMutationDocument = {
   kind: 'Document',
@@ -945,13 +950,13 @@ export const RegisterUserMutationDocument = {
   RegisterUserMutationMutation,
   RegisterUserMutationMutationVariables
 >
-export const CurrentUserQueryDocument = {
+export const CurrentUserDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'currentUserQuery' },
+      name: { kind: 'Name', value: 'currentUser' },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -1002,17 +1007,14 @@ export const CurrentUserQueryDocument = {
     ...FullUserFragmentDoc.definitions,
     ...FullMasterUserFragmentDoc.definitions,
   ],
-} as unknown as DocumentNode<
-  CurrentUserQueryQuery,
-  CurrentUserQueryQueryVariables
->
-export const UserByIdQueryDocument = {
+} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>
+export const UserByIdDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'userByIdQuery' },
+      name: { kind: 'Name', value: 'userById' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -1054,4 +1056,4 @@ export const UserByIdQueryDocument = {
     },
     ...FullUserFragmentDoc.definitions,
   ],
-} as unknown as DocumentNode<UserByIdQueryQuery, UserByIdQueryQueryVariables>
+} as unknown as DocumentNode<UserByIdQuery, UserByIdQueryVariables>

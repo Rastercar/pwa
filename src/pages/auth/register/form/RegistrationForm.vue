@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
-  UnregisteredUserQueryDocument,
   RegisterUserMutationDocument,
+  UnregisteredUserByUuidDocument,
 } from 'src/graphql/generated/graphql-operations'
-import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
+import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
 import PasswordConfirmationInput from './PasswordConfirmationInput.vue'
 import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
 import { useQuery, useMutation } from '@vue/apollo-composable'
@@ -29,7 +29,7 @@ const formState = reactive({
 })
 
 const { loading: isFetchingUser, onResult } = useQuery(
-  UnregisteredUserQueryDocument,
+  UnregisteredUserByUuidDocument,
   { uuid },
   { enabled: shouldFetchUnregisteredUser, fetchPolicy: 'network-only' }
 )
@@ -44,9 +44,9 @@ onResult(({ data }) => {
 const isCheckingEmail = ref(false)
 const willCheckEmail = ref(false)
 
-const passwordConfirmation = ref('')
 const invalidEmails: Ref<string[]> = ref([])
 
+const passwordConfirmation = ref('')
 const isPasswordVisible = ref(false)
 
 const v = useVuelidate({ $autoDirty: true })
@@ -87,13 +87,12 @@ const submitForm = () => {
 }
 
 onError(({ graphQLErrors }) => {
-  const error = graphQLErrors[0]?.extensions?.response
+  const failedBecauseEmailInUse = checkGraphqlErrorsContainErrorCode(
+    graphQLErrors,
+    ERROR_CODES.EMAIL_IN_USE
+  )
 
-  if (!isApiErrorResponse(error)) return
-
-  if (error.message === ERROR_CODES.EMAIL_IN_USE) {
-    invalidEmails.value.push(formState.email)
-  }
+  if (failedBecauseEmailInUse) invalidEmails.value.push(formState.email)
 })
 </script>
 

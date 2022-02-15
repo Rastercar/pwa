@@ -1,4 +1,4 @@
-import { CurrentUserQueryDocument } from 'src/graphql/generated/graphql-operations'
+import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
 import { useApolloClient } from '@vue/apollo-composable'
 import { useAuth } from 'src/state/auth.state'
 import { RouteRecordRaw } from 'vue-router'
@@ -13,7 +13,7 @@ export const commonRoutes: RouteRecordRaw[] = [
       if (!isLoggedIn.value) return 'login'
 
       const result = await useApolloClient().resolveClient().query({
-        query: CurrentUserQueryDocument,
+        query: CurrentUserDocument,
       })
 
       if (!result) {
@@ -22,8 +22,8 @@ export const commonRoutes: RouteRecordRaw[] = [
       }
 
       return result.data.me.__typename === 'MasterUserModel'
-        ? '/tracker'
-        : '/tracked'
+        ? '/rastreadora'
+        : '/cliente'
     },
     components: {},
   },

@@ -1,40 +1,40 @@
 <script setup lang="ts">
 const menuList = [
   {
-    icon: 'fas fa-map-marker-alt',
+    icon: 'fa fa-map-marker-alt',
     label: 'Mapa',
-    route: '/tracked/mapa',
+    route: '/cliente/mapa',
   },
   {
-    icon: 'fas fa-calendar-alt',
+    icon: 'fa fa-calendar-alt',
     label: 'Histórico de posições',
   },
   {
-    icon: 'fas fa-trash-alt',
+    icon: 'fa fa-trash-alt',
     label: 'Trash',
   },
   {
-    icon: 'fas fa-exclamation-circle',
+    icon: 'fa fa-exclamation-circle',
     label: 'Eventos',
     separator: true,
   },
   {
-    icon: 'fas fa-cog',
+    icon: 'fa fa-cog',
     label: 'Configurações',
   },
   {
-    icon: 'fas fa-mail-bulk',
+    icon: 'fa fa-mail-bulk',
     label: 'Feedback',
   },
   {
-    icon: 'fas fa-question-circle',
+    icon: 'fa fa-question-circle',
     label: 'Ajuda',
   },
 ]
 </script>
 
 <template>
-  <q-scroll-area style="height: calc(100% - 100px); margin-top: 100px">
+  <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
     <q-list>
       <q-separator />
 

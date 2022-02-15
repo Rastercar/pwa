@@ -3,6 +3,7 @@ fragment FullUser on UserModel {
   email
   username
   emailVerified
+  googleProfileId
   organization {
     id
     name

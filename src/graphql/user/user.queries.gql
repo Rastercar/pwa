@@ -1,4 +1,4 @@
-query currentUserQuery {
+query currentUser {
   me {
     ... on UserModel {
       ...FullUser
@@ -9,7 +9,7 @@ query currentUserQuery {
   }
 }
 
-query userByIdQuery($id: Int!) {
+query userById($id: Int!) {
   user(id: $id) {
     ...FullUser
   }

@@ -1,8 +1,8 @@
-query isEmailInUseQuery($email: String!) {
+query checkEmailInUse($email: String!) {
   isEmailInUse(email: $email)
 }
 
-query unregisteredUserQuery($uuid: String!) {
+query unregisteredUserByUuid($uuid: String!) {
   unregisteredUser(uuid: $uuid) {
     uuid
     email

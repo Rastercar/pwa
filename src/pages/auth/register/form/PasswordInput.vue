@@ -56,7 +56,7 @@ const v = useVuelidate(rules, props, { $autoDirty: true })
   >
     <template #append>
       <q-icon
-        :name="visible ? 'visibility' : 'visibility_off'"
+        :name="visible ? 'fa fa-eye' : 'fa fa-eye-slash'"
         class="cursor-pointer"
         @click="$emit('update:visible', !visible)"
       />

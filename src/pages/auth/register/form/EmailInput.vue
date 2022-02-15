@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IsEmailInUseQueryDocument } from 'src/graphql/generated/graphql-operations'
+import { CheckEmailInUseDocument } from 'src/graphql/generated/graphql-operations'
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
 import { helpers, email, required } from '@vuelidate/validators'
 import { useApolloClient } from '@vue/apollo-composable'
@@ -32,6 +32,18 @@ const props = defineProps({
   },
 
   /**
+   * List of emails that will not trigger the emailInUse error regardless
+   * if theyre in use or not.
+   *
+   * example: The original email of the user, master user or organization
+   * being edited
+   */
+  allowedEmails: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+
+  /**
    * If were waiting for a request to check for the email on the input
    * to be valid
    */
@@ -56,12 +68,13 @@ const rules = {
   modelValue: {
     required: withMessage('Campo obrigatório', required),
     email: withMessage('Email inválido', email),
-    isNotInUse: withMessage(
-      'Endereço de email indisponível',
-      (v: string) =>
+    isNotInUse: withMessage('Endereço de email indisponível', (v: string) => {
+      if (props.allowedEmails.includes(v)) return true
+      return (
         !props.invalidEmails.includes(v) &&
         !internalInvalidEmails.value.includes(v)
-    ),
+      )
+    }),
   },
 }
 
@@ -72,15 +85,23 @@ const apollo = useApolloClient()
 const checkEmailInUse = () => {
   const { required, email, isNotInUse } = v.value.modelValue
 
-  // If the email address is already invalid dont bother checking
-  if (email.$invalid || required.$invalid || isNotInUse.$invalid) return
+  // If the email address is already invalid or allowed dont bother checking
+  if (
+    email.$invalid ||
+    required.$invalid ||
+    isNotInUse.$invalid ||
+    props.allowedEmails.includes(props.modelValue)
+  ) {
+    return
+  }
 
   emit('update:isCheckingEmail', true)
 
   apollo.client
     .query({
-      query: IsEmailInUseQueryDocument,
+      query: CheckEmailInUseDocument,
       variables: { email: props.modelValue },
+      // Must be network only, as emails can be registered all the time we cannot trust the cache
       fetchPolicy: 'network-only',
     })
     .then(({ data }) => {
