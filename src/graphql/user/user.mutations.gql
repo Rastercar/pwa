@@ -1,4 +1,4 @@
-mutation registerUserMutation($user: RegisterUserDTO!) {
+mutation registerUser($user: RegisterUserDTO!) {
   register(user: $user) {
     token {
       value
@@ -12,5 +12,11 @@ mutation registerUserMutation($user: RegisterUserDTO!) {
         ...FullMasterUser
       }
     }
+  }
+}
+
+mutation updateMyProfile($profileData: UpdateUserDTO!) {
+  updateMyProfile(profileData: $profileData) {
+    ...UserSimpleFields
   }
 }

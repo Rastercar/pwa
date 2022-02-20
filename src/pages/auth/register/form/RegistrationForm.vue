@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  RegisterUserMutationDocument,
+  RegisterUserDocument,
   UnregisteredUserByUuidDocument,
 } from 'src/graphql/generated/graphql-operations'
 import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
@@ -63,7 +63,7 @@ const {
   mutate: register,
   onError,
   loading,
-} = useMutation(RegisterUserMutationDocument, {
+} = useMutation(RegisterUserDocument, {
   variables: { user: formState },
   fetchPolicy: 'network-only',
 })
@@ -130,6 +130,7 @@ onError(({ graphQLErrors }) => {
   <q-card-actions class="q-px-md">
     <q-btn
       :loading="loading"
+      :disable="!canSubmit"
       class="q-ml-auto"
       label="Cadastrar"
       type="submit"

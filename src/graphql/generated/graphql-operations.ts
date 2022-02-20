@@ -79,6 +79,7 @@ export type Mutation = {
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
+  updateMyProfile: UserModel
 }
 
 export type MutationLoginArgs = {
@@ -91,6 +92,10 @@ export type MutationLoginWithTokenArgs = {
 
 export type MutationRegisterArgs = {
   user: RegisterUserDto
+}
+
+export type MutationUpdateMyProfileArgs = {
+  profileData: UpdateUserDto
 }
 
 /** organization */
@@ -142,6 +147,13 @@ export type UnregisteredUserModel = {
   emailVerified: Scalars['Boolean']
   username?: Maybe<Scalars['String']>
   uuid: Scalars['String']
+}
+
+export type UpdateUserDto = {
+  email?: InputMaybe<Scalars['String']>
+  password?: InputMaybe<Scalars['String']>
+  removeGoogleProfileLink?: InputMaybe<Scalars['Boolean']>
+  username?: InputMaybe<Scalars['String']>
 }
 
 /** user */
@@ -281,6 +293,15 @@ export type FullUserFragment = {
   }
 }
 
+export type UserSimpleFieldsFragment = {
+  __typename?: 'UserModel'
+  id: number
+  email: string
+  username: string
+  emailVerified: boolean
+  googleProfileId?: string | null | undefined
+}
+
 export type FullMasterUserFragment = {
   __typename?: 'MasterUserModel'
   id: number
@@ -301,11 +322,11 @@ export type FullMasterUserFragment = {
   }
 }
 
-export type RegisterUserMutationMutationVariables = Exact<{
+export type RegisterUserMutationVariables = Exact<{
   user: RegisterUserDto
 }>
 
-export type RegisterUserMutationMutation = {
+export type RegisterUserMutation = {
   __typename?: 'Mutation'
   register: {
     __typename?: 'LoginResponse'
@@ -351,6 +372,22 @@ export type RegisterUserMutationMutation = {
             permissions: Array<Permission>
           }
         }
+  }
+}
+
+export type UpdateMyProfileMutationVariables = Exact<{
+  profileData: UpdateUserDto
+}>
+
+export type UpdateMyProfileMutation = {
+  __typename?: 'Mutation'
+  updateMyProfile: {
+    __typename?: 'UserModel'
+    id: number
+    email: string
+    username: string
+    emailVerified: boolean
+    googleProfileId?: string | null | undefined
   }
 }
 
@@ -487,6 +524,29 @@ export const FullUserFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<FullUserFragment, unknown>
+export const UserSimpleFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UserSimpleFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'UserModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'googleProfileId' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserSimpleFieldsFragment, unknown>
 export const FullMasterUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -846,13 +906,13 @@ export const UnregisteredUserByUuidDocument = {
   UnregisteredUserByUuidQuery,
   UnregisteredUserByUuidQueryVariables
 >
-export const RegisterUserMutationDocument = {
+export const RegisterUserDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'registerUserMutation' },
+      name: { kind: 'Name', value: 'registerUser' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -947,8 +1007,66 @@ export const RegisterUserMutationDocument = {
     ...FullMasterUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
-  RegisterUserMutationMutation,
-  RegisterUserMutationMutationVariables
+  RegisterUserMutation,
+  RegisterUserMutationVariables
+>
+export const UpdateMyProfileDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'updateMyProfile' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'profileData' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UpdateUserDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateMyProfile' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'profileData' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'profileData' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'UserSimpleFields' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...UserSimpleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  UpdateMyProfileMutation,
+  UpdateMyProfileMutationVariables
 >
 export const CurrentUserDocument = {
   kind: 'Document',

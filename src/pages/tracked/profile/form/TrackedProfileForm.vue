@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { CurrentUserQuery } from 'src/graphql/generated/graphql-operations'
-import UsernameInput from 'src/pages/auth/register/form/UsernameInput.vue'
-import EmailInput from 'src/pages/auth/register/form/EmailInput.vue'
-import { PropType, reactive, Ref, ref } from 'vue'
-import PasswordInput from 'src/pages/auth/register/form/PasswordInput.vue'
 import PasswordConfirmationInput from 'src/pages/auth/register/form/PasswordConfirmationInput.vue'
-import OldPasswordInput from './OldPasswordInput.vue'
+import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
+import PasswordInput from 'src/pages/auth/register/form/PasswordInput.vue'
+import UsernameInput from 'src/pages/auth/register/form/UsernameInput.vue'
+import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
+import EmailInput from 'src/pages/auth/register/form/EmailInput.vue'
+import { computed, PropType, reactive, Ref, ref } from 'vue'
+import { useMutation } from '@vue/apollo-composable'
+import useVuelidate from '@vuelidate/core'
+import {
+  UpdateMyProfileDocument,
+  CurrentUserQuery,
+  UpdateUserDto,
+} from 'src/graphql/generated/graphql-operations'
 
 const props = defineProps({
   /**
@@ -21,15 +28,54 @@ const invalidEmails: Ref<string[]> = ref([])
 const isCheckingEmail = ref(false)
 const willCheckEmail = ref(false)
 
-const passwordConfirmation = ref('')
 const isPasswordVisible = ref(false)
+const passwordConfirmation = ref('')
+const oldPassword = ref('')
 
 const formState = reactive({
   email: props.user.email,
   username: props.user.username,
-  newPassword: '',
-  oldPassword: '',
+  password: '',
 })
+
+const v = useVuelidate({ $autoDirty: true })
+
+const canSubmit = computed(() => {
+  return !isCheckingEmail.value && !willCheckEmail.value && !v.value.$invalid
+})
+
+const {
+  loading: waitingServerResponse,
+  mutate: updateProfile,
+  onError,
+} = useMutation(UpdateMyProfileDocument)
+
+onError(({ graphQLErrors }) => {
+  const failedBecauseEmailInUse = checkGraphqlErrorsContainErrorCode(
+    graphQLErrors,
+    ERROR_CODES.EMAIL_IN_USE
+  )
+
+  if (failedBecauseEmailInUse && formState.email) {
+    invalidEmails.value.push(formState.email)
+  }
+})
+
+const saveProfile = () => {
+  const profileData: UpdateUserDto = { ...formState }
+  if (!profileData.password) delete profileData.password
+
+  console.log(profileData)
+
+  updateProfile({ profileData })
+    .then((res) => {
+      if (!res?.data) {
+        v.value.$touch()
+        return
+      }
+    })
+    .catch(() => null)
+}
 </script>
 
 <template>
@@ -47,34 +93,44 @@ const formState = reactive({
       <UsernameInput v-model="formState.username" />
     </q-card-section>
 
-    <q-separator />
-
     <q-card-section class="q-gutter-md">
       <div class="text-h5 q-mb-lg">
         <q-icon name="fa fa-shield-alt" class="q-mr-md" />
         <span>Acesso e credenciais</span>
       </div>
 
-      <OldPasswordInput v-model="formState.oldPassword" />
+      <q-input
+        v-model="oldPassword"
+        type="password"
+        label="Senha antiga"
+        no-error-icon
+        outlined
+      />
 
       <PasswordInput
-        v-model="formState.newPassword"
+        v-model="formState.password"
         v-model:visible="isPasswordVisible"
+        :required="false"
         label="Nova senha"
       />
 
       <PasswordConfirmationInput
         v-model="passwordConfirmation"
         :visible="isPasswordVisible"
-        :password-to-match="formState.newPassword"
+        :password-to-match="formState.password"
         label="Confirme a nova senha"
       />
     </q-card-section>
   </q-form>
 
-  <q-separator />
-
   <q-card-actions class="q-ma-xs">
-    <q-btn class="bg-green text-white q-ml-auto q-px-sm">Salvar</q-btn>
+    <q-btn
+      :disable="!canSubmit"
+      :loading="waitingServerResponse"
+      class="bg-green text-white q-ml-auto q-px-sm"
+      @click="saveProfile"
+    >
+      Salvar
+    </q-btn>
   </q-card-actions>
 </template>

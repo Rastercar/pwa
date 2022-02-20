@@ -17,6 +17,14 @@ fragment FullUser on UserModel {
   }
 }
 
+fragment UserSimpleFields on UserModel {
+  id
+  email
+  username
+  emailVerified
+  googleProfileId
+}
+
 fragment FullMasterUser on MasterUserModel {
   id
   email
