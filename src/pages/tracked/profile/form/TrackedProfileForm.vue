@@ -13,6 +13,7 @@ import {
   CurrentUserQuery,
   UpdateUserDto,
 } from 'src/graphql/generated/graphql-operations'
+import OldPasswordInput from './OldPasswordInput.vue'
 
 const props = defineProps({
   /**
@@ -28,14 +29,15 @@ const invalidEmails: Ref<string[]> = ref([])
 const isCheckingEmail = ref(false)
 const willCheckEmail = ref(false)
 
+const invalidOldPasswords: Ref<string[]> = ref([])
 const isPasswordVisible = ref(false)
 const passwordConfirmation = ref('')
-const oldPassword = ref('')
 
 const formState = reactive({
   email: props.user.email,
   username: props.user.username,
   password: '',
+  oldPassword: '',
 })
 
 const v = useVuelidate({ $autoDirty: true })
@@ -56,16 +58,23 @@ onError(({ graphQLErrors }) => {
     ERROR_CODES.EMAIL_IN_USE
   )
 
+  const oldPasswordWasInvalid = checkGraphqlErrorsContainErrorCode(
+    graphQLErrors,
+    ERROR_CODES.OLD_PASSWORD_INVALID
+  )
+
   if (failedBecauseEmailInUse && formState.email) {
     invalidEmails.value.push(formState.email)
+  }
+
+  if (oldPasswordWasInvalid) {
+    invalidOldPasswords.value.push(formState.oldPassword)
   }
 })
 
 const saveProfile = () => {
   const profileData: UpdateUserDto = { ...formState }
   if (!profileData.password) delete profileData.password
-
-  console.log(profileData)
 
   updateProfile({ profileData })
     .then((res) => {
@@ -99,12 +108,9 @@ const saveProfile = () => {
         <span>Acesso e credenciais</span>
       </div>
 
-      <q-input
-        v-model="oldPassword"
-        type="password"
-        label="Senha antiga"
-        no-error-icon
-        outlined
+      <OldPasswordInput
+        v-model="formState.oldPassword"
+        :invalid-old-passwords="invalidOldPasswords"
       />
 
       <PasswordInput

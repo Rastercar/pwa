@@ -4,4 +4,8 @@ export const ERROR_CODES = {
    * to create/update a existing user/master_user/organization email
    */
   EMAIL_IN_USE: 'EMAIL_IN_USE',
+  /**
+   * The provided old password required to change the current password is invalid
+   */
+  OLD_PASSWORD_INVALID: 'OLD_PASSWORD_INVALID',
 } as const
