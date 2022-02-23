@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 export const authRoutes: RouteRecordRaw[] = [
   {
@@ -20,13 +20,24 @@ export const authRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('src/pages/auth/auto-login/AutoLoginPage.vue'),
+        component: () => import('src/pages/auth/AutoLoginPage.vue'),
         props: (route) => ({ token: route.query.token }),
       },
     ],
     meta: {
       requiresLogoff: true,
     },
+  },
+  {
+    path: '/confirmar-email',
+    component: () => import('layouts/centralized/CentralizedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/auth/ConfirmEmailPage.vue'),
+        props: (route) => ({ token: route.query.token }),
+      },
+    ],
   },
   {
     path: '/register',
@@ -41,4 +52,4 @@ export const authRoutes: RouteRecordRaw[] = [
       requiresLogoff: true,
     },
   },
-];
+]

@@ -987,6 +987,18 @@
             "deprecationReason": null
           },
           {
+            "name": "oldPassword",
+            "description": "The user old password, required when changing the user password with the password prop",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "password",
             "description": null,
             "type": {

@@ -25,6 +25,13 @@ fragment UserSimpleFields on UserModel {
   googleProfileId
 }
 
+fragment MasterUserSimpleFields on MasterUserModel {
+  id
+  email
+  username
+  emailVerified
+}
+
 fragment FullMasterUser on MasterUserModel {
   id
   email

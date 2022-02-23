@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { apiRequestEmailAddressConfirmationEmail } from 'src/api/auth.api'
 import { CurrentUserQuery } from 'src/graphql/generated/graphql-operations'
-import { PropType } from 'vue'
+import { PropType, ref } from 'vue'
 import ProfileOauthIntegrationsList from './ProfileOauthIntegrationsList.vue'
 
 const props = defineProps({
@@ -12,6 +13,18 @@ const props = defineProps({
     required: true,
   },
 })
+
+const isLoading = ref(false)
+
+// TODO: finish me
+const reqApi = () => {
+  isLoading.value = true
+  apiRequestEmailAddressConfirmationEmail()
+    .catch(() => null)
+    .finally(() => {
+      isLoading.value = false
+    })
+}
 </script>
 
 <template>
@@ -23,6 +36,8 @@ const props = defineProps({
       round
       dense
       flat
+      :loading="isLoading"
+      @click="reqApi"
     >
       <q-tooltip
         style="font-size: 15px"

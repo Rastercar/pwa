@@ -151,6 +151,8 @@ export type UnregisteredUserModel = {
 
 export type UpdateUserDto = {
   email?: InputMaybe<Scalars['String']>
+  /** The user old password, required when changing the user password with the password prop */
+  oldPassword?: InputMaybe<Scalars['String']>
   password?: InputMaybe<Scalars['String']>
   removeGoogleProfileLink?: InputMaybe<Scalars['Boolean']>
   username?: InputMaybe<Scalars['String']>
@@ -302,6 +304,14 @@ export type UserSimpleFieldsFragment = {
   googleProfileId?: string | null | undefined
 }
 
+export type MasterUserSimpleFieldsFragment = {
+  __typename?: 'MasterUserModel'
+  id: number
+  email: string
+  username: string
+  emailVerified: boolean
+}
+
 export type FullMasterUserFragment = {
   __typename?: 'MasterUserModel'
   id: number
@@ -438,6 +448,28 @@ export type CurrentUserQuery = {
       }
 }
 
+export type CurrentUserSimpleQueryVariables = Exact<{ [key: string]: never }>
+
+export type CurrentUserSimpleQuery = {
+  __typename?: 'Query'
+  me:
+    | {
+        __typename?: 'MasterUserModel'
+        id: number
+        email: string
+        username: string
+        emailVerified: boolean
+      }
+    | {
+        __typename?: 'UserModel'
+        id: number
+        email: string
+        username: string
+        emailVerified: boolean
+        googleProfileId?: string | null | undefined
+      }
+}
+
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['Int']
 }>
@@ -547,6 +579,28 @@ export const UserSimpleFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserSimpleFieldsFragment, unknown>
+export const MasterUserSimpleFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'MasterUserSimpleFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'MasterUserModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MasterUserSimpleFieldsFragment, unknown>
 export const FullMasterUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1126,6 +1180,67 @@ export const CurrentUserDocument = {
     ...FullMasterUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>
+export const CurrentUserSimpleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'currentUserSimple' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'me' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'UserModel' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'UserSimpleFields' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'MasterUserModel' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'MasterUserSimpleFields' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...UserSimpleFieldsFragmentDoc.definitions,
+    ...MasterUserSimpleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  CurrentUserSimpleQuery,
+  CurrentUserSimpleQueryVariables
+>
 export const UserByIdDocument = {
   kind: 'Document',
   definitions: [

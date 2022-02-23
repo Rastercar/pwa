@@ -9,6 +9,17 @@ query currentUser {
   }
 }
 
+query currentUserSimple {
+  me {
+    ... on UserModel {
+      ...UserSimpleFields
+    }
+    ... on MasterUserModel {
+      ...MasterUserSimpleFields
+    }
+  }
+}
+
 query userById($id: Int!) {
   user(id: $id) {
     ...FullUser

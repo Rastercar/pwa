@@ -6,6 +6,7 @@ import UsernameInput from 'src/pages/auth/register/form/UsernameInput.vue'
 import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
 import EmailInput from 'src/pages/auth/register/form/EmailInput.vue'
 import { computed, PropType, reactive, Ref, ref } from 'vue'
+import OldPasswordInput from './OldPasswordInput.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useVuelidate from '@vuelidate/core'
 import {
@@ -13,7 +14,6 @@ import {
   CurrentUserQuery,
   UpdateUserDto,
 } from 'src/graphql/generated/graphql-operations'
-import OldPasswordInput from './OldPasswordInput.vue'
 
 const props = defineProps({
   /**
@@ -78,12 +78,11 @@ const saveProfile = () => {
 
   updateProfile({ profileData })
     .then((res) => {
-      if (!res?.data) {
-        v.value.$touch()
-        return
-      }
+      if (!res?.data) v.value.$touch()
     })
-    .catch(() => null)
+    .catch(() => {
+      v.value.$touch()
+    })
 }
 </script>
 
