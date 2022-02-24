@@ -81,9 +81,11 @@ const { isLoggedIn } = useAuth()
   <div
     class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
   >
-    <div>
+    <div style="max-width: 700px">
       <div class="text-h1">{{ message.title }}</div>
-      <div class="text-h3" style="opacity: 0.5">{{ message.description }}</div>
+      <div class="text-h3 q-my-md" style="opacity: 0.5">
+        {{ message.description }}
+      </div>
 
       <q-linear-progress
         v-show="requestStatus === 'waiting'"
@@ -94,8 +96,9 @@ const { isLoggedIn } = useAuth()
 
       <q-btn
         v-show="requestStatus !== 'waiting'"
-        color="grey-7"
         class="full-width q-mt-md"
+        color="grey-7"
+        style="max-width: 300px"
         :label="`Voltar para ${isLoggedIn ? 'pagina principal' : 'login'}`"
         @click="$router.push(isLoggedIn ? '/' : '/login')"
       />

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { apiRequestEmailAddressConfirmationEmail } from 'src/api/auth.api'
-import { CurrentUserQuery } from 'src/graphql/generated/graphql-operations'
-import { PropType, ref } from 'vue'
 import ProfileOauthIntegrationsList from './ProfileOauthIntegrationsList.vue'
+import { CurrentUserQuery } from 'src/graphql/generated/graphql-operations'
+import EmailConfirmationWarning from './EmailConfirmationWarning.vue'
+import { PropType } from 'vue'
 
-const props = defineProps({
+defineProps({
   /**
    * The user to be shown
    */
@@ -13,41 +13,22 @@ const props = defineProps({
     required: true,
   },
 })
-
-const isLoading = ref(false)
-
-// TODO: finish me
-const reqApi = () => {
-  isLoading.value = true
-  apiRequestEmailAddressConfirmationEmail()
-    .catch(() => null)
-    .finally(() => {
-      isLoading.value = false
-    })
-}
 </script>
 
 <template>
   <q-card-section class="q-gutter-md items-start">
-    <q-btn
-      v-if="!props.user.emailVerified"
-      icon="fa fa-exclamation-circle"
-      class="text-primary"
-      round
-      dense
-      flat
-      :loading="isLoading"
-      @click="reqApi"
-    >
-      <q-tooltip
-        style="font-size: 15px"
-        anchor="top middle"
-        self="center middle"
-        :offset="[0, 10]"
-      >
-        Endereco de email não foi verificado
-      </q-tooltip>
-    </q-btn>
+    <div class="text-subtitle1 text-grey-8">Email</div>
+    <div class="text-h6 q-mt-none">
+      {{ user.email }}
+    </div>
+    <EmailConfirmationWarning
+      v-if="!user.emailVerified"
+      :email="user.email"
+      class="q-mt-sm q-mb-md"
+    />
+
+    <div class="text-subtitle1 text-grey-8 q-mt-lg">Nome de usuário</div>
+    <div class="text-h6 q-mt-none">{{ user.username }}</div>
 
     <q-separator />
 

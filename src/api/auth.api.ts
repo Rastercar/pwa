@@ -38,3 +38,18 @@ export async function apiConfirmEmailAddress(token: string): Promise<string> {
 
   return confirmationMessage
 }
+
+/**
+ * Verifies the password being sent is the same as the password for the
+ * logged in user, this is usefull to act as a extra security measure
+ *
+ * @param password the logged in user password
+ */
+export async function apiCheckCurrentUserPassword(
+  password: string
+): Promise<boolean> {
+  return api()
+    .post('/auth/check-password', { password })
+    .then(() => true)
+    .catch(() => false)
+}
