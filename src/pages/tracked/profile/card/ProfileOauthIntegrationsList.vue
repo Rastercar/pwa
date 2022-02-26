@@ -26,7 +26,6 @@ const { mutate: removeGoogleIntegration, loading: isRemovingGoogleProfile } = us
 const { client } = useApolloClient()
 
 const checkUserGoogleProfileWasUpdated = () => {
-  console.log('popclosed')
   client
     .query({ query: CurrentUserSimpleDocument, fetchPolicy: 'network-only' })
     .catch(() => null)

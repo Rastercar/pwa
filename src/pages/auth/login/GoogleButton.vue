@@ -31,15 +31,11 @@ const openOauthPopup = () => {
   newWindow.focus()
 
   const checkPopupWasClosed = () => {
-    console.log('check')
     if (!newWindow.closed) return
 
     emit('popup:closed')
 
-    console.log('closed')
-
     if (timer) {
-      console.log('stoping interval')
       clearInterval(timer)
     }
   }
