@@ -1,6 +1,8 @@
 import { useAuth } from 'src/state/auth.state'
 import { route } from 'quasar/wrappers'
+import { LoadingBar } from 'quasar'
 import { routes } from './routes'
+
 import {
   createWebHashHistory,
   createMemoryHistory,
@@ -26,6 +28,8 @@ const createAppRouter = route(() => {
   })
 
   router.beforeEach((to, from, next) => {
+    LoadingBar.start()
+
     const { isLoggedIn } = useAuth()
 
     const { requiresLogin, requiresLogoff } = to.meta
@@ -34,6 +38,10 @@ const createAppRouter = route(() => {
     if (requiresLogoff && isLoggedIn.value) return false
 
     return next()
+  })
+
+  router.afterEach(() => {
+    LoadingBar.stop()
   })
 
   return router

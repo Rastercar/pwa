@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
-import { useQuery } from '@vue/apollo-composable'
-import { computed, ref } from 'vue'
 import SidebarUserSectionSkeleton from './SidebarUserSectionSkeleton.vue'
 import SidebarUserSectionMenu from './SidebarUserSectionMenu.vue'
+import { useQuery } from '@vue/apollo-composable'
+import { computed, ref } from 'vue'
 
 const { result, loading } = useQuery(CurrentUserDocument)
 

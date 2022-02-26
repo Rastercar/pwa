@@ -1,5 +1,5 @@
 <template>
-  <q-item class="absolute-top" style="height: 100px">
+  <q-item class="absolute-top" style="height: 80px">
     <q-item-section avatar>
       <q-skeleton type="QAvatar" />
     </q-item-section>
