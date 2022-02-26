@@ -14,6 +14,7 @@ import {
   CurrentUserQuery,
   UpdateUserDto,
 } from 'src/graphql/generated/graphql-operations'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
   /**
@@ -72,13 +73,19 @@ onError(({ graphQLErrors }) => {
   }
 })
 
+const quasar = useQuasar()
+
 const saveProfile = () => {
   const profileData: UpdateUserDto = { ...formState }
   if (!profileData.password) delete profileData.password
 
   updateProfile({ profileData })
     .then((res) => {
-      if (!res?.data) v.value.$touch()
+      if (!res?.data) {
+        v.value.$touch()
+      } else {
+        quasar.notify({ type: 'positive', message: 'Perfil atualizado' })
+      }
     })
     .catch(() => {
       v.value.$touch()

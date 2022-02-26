@@ -61,7 +61,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ['axios', 'apollo', 'loading-bar'],
+    boot: ['axios', 'apollo', 'loading-bar', 'notify'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['app.sass'],
@@ -150,7 +150,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LoadingBar'],
+      plugins: ['LoadingBar', 'Notify'],
     },
 
     // animations: 'all', // --- includes all animations
