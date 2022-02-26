@@ -5,7 +5,9 @@ import { RouteRecordRaw } from 'vue-router'
 
 export const commonRoutes: RouteRecordRaw[] = [
   {
-    // This route
+    // This route has no components as its a redirection route
+    // we cannot use the `redirect` prop here as we calculate the
+    // need for redirection on a async fn and `redirect` is sync
     path: '/',
     beforeEnter: async () => {
       const { isLoggedIn, AUTH_LOGOUT } = useAuth()

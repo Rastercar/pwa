@@ -21,7 +21,6 @@ export async function apiRequestEmailAddressConfirmationEmail() {
   const { data } = await api().get<EmailAddressConfirmationRes>(
     '/auth/send-email-address-confirmation-email'
   )
-
   return data.confirmation
 }
 
@@ -44,12 +43,13 @@ export async function apiConfirmEmailAddress(token: string): Promise<string> {
  * logged in user, this is usefull to act as a extra security measure
  *
  * @param password the logged in user password
+ *
+ * @returns boolean indicating the supplied password was valid
  */
 export async function apiCheckCurrentUserPassword(
   password: string
 ): Promise<boolean> {
   return api()
-    .post('/auth/check-password', { password })
-    .then(() => true)
-    .catch(() => false)
+    .post<boolean>('/auth/check-password', { password })
+    .then(({ data }) => data)
 }

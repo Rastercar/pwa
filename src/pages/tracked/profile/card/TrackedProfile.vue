@@ -5,9 +5,6 @@ import EmailConfirmationWarning from './EmailConfirmationWarning.vue'
 import { PropType } from 'vue'
 
 defineProps({
-  /**
-   * The user to be shown
-   */
   user: {
     type: Object as PropType<CurrentUserQuery['me']>,
     required: true,
@@ -21,6 +18,7 @@ defineProps({
     <div class="text-h6 q-mt-none">
       {{ user.email }}
     </div>
+
     <EmailConfirmationWarning
       v-if="!user.emailVerified"
       :email="user.email"

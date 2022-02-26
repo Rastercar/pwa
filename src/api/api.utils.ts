@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { useAuth } from 'src/state/auth.state'
 import { AxiosError } from 'axios'
-import merge from 'lodash/merge'
+import { merge } from 'lodash-es'
 
 export const isAxiosError = (error: unknown): error is AxiosError => {
   return (error as AxiosError)?.isAxiosError === true

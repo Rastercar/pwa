@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { CurrentUserQuery } from 'src/graphql/generated/graphql-operations'
+import PasswordConfirmationDialog from 'src/components/dialog/PasswordConfirmationDialog.vue'
+import GoogleButton from 'src/pages/auth/login/GoogleButton.vue'
+import { useApolloClient, useMutation } from '@vue/apollo-composable'
 import { PropType, ref } from 'vue'
+import {
+  UpdateMyProfileDocument,
+  CurrentUserQuery,
+  CurrentUserSimpleDocument,
+} from 'src/graphql/generated/graphql-operations'
 
 const showConfirmationDialog = ref(false)
-const confirmation = ref('')
 
 defineProps({
   user: {
@@ -11,87 +17,95 @@ defineProps({
     required: true,
   },
 })
+
+// prettier-ignore
+const { mutate: removeGoogleIntegration, loading: isRemovingGoogleProfile } = useMutation(UpdateMyProfileDocument, {
+  variables: { profileData: { removeGoogleProfileLink: true } },
+})
+
+const { client } = useApolloClient()
+
+const checkUserGoogleProfileWasUpdated = () => {
+  console.log('popclosed')
+  client
+    .query({ query: CurrentUserSimpleDocument, fetchPolicy: 'network-only' })
+    .catch(() => null)
+}
 </script>
 
 <template>
   <div class="text-h6">Integrações da conta com terceiros:</div>
 
-  <div
-    v-if="user.__typename === 'UserModel' && user.googleProfileId"
-    class="text-grey-7 q-mt-sm"
-  >
+  <div v-if="user.__typename === 'UserModel'" class="text-grey-7 q-mt-sm">
     <q-btn class="q-mr-sm" icon="fab fa-google" round flat>
       <q-badge floating style="background-color: transparent">
-        <q-icon name="fa fa-check" color="green" />
+        <q-icon
+          :name="user.googleProfileId ? 'fa fa-check' : 'fa fa-times'"
+          :color="user.googleProfileId ? 'green' : 'red-4'"
+        />
       </q-badge>
     </q-btn>
 
-    <span class="text-h6">associado com o google</span>
-    <q-btn
-      icon="fa fa-trash"
-      class="q-ml-md"
-      round
-      size="sm"
-      color="red"
-      @click="showConfirmationDialog = true"
-    >
-      <q-tooltip
-        :offset="[225, 0]"
-        style="font-size: 15px"
-        anchor="center right"
-        self="center middle"
+    <span v-if="user.googleProfileId" class="text-h6">
+      associado com o google
+    </span>
+    <span v-else class="text-h6">não associado com o google</span>
+
+    <template v-if="user.googleProfileId">
+      <q-btn
+        :loading="isRemovingGoogleProfile"
+        icon="fa fa-trash"
+        class="q-ml-md"
+        round
+        size="sm"
+        color="red"
+        @click="showConfirmationDialog = true"
       >
-        Dessasociar sua conta do rastercar com sua conta do google
-      </q-tooltip>
-    </q-btn>
+        <q-tooltip
+          :offset="[225, 0]"
+          style="font-size: 15px"
+          anchor="center right"
+          self="center middle"
+        >
+          Dessasociar sua conta do rastercar com sua conta do google
+        </q-tooltip>
+      </q-btn>
 
-    <q-dialog v-model="showConfirmationDialog" persistent>
-      <q-card style="width: 450px">
-        <q-card-section>
-          <div class="text-h6">
-            <q-icon
-              size="25px"
-              class="q-mr-sm"
-              color="red"
-              name="fa fa-exclamation-circle"
-            />
-            Alerta
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none text-body1">
+      <PasswordConfirmationDialog
+        v-model="showConfirmationDialog"
+        persistent
+        @confirmation:success="removeGoogleIntegration"
+      >
+        <template #message>
           Ao dessasociar sua conta da rastercar com sua conta do google não sera
           mais possível realizar login com a mesma, certifique-se que se lembra
           de seu <b>email</b> e <b>senha</b>.
-        </q-card-section>
+        </template>
+      </PasswordConfirmationDialog>
+    </template>
 
-        <q-card-section class="q-pt-none text-subtitle1">
-          Digite sua <b>senha</b> para continuar
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input
-            v-model="confirmation"
-            dense
-            autofocus
-            @keyup.enter="showConfirmationDialog = false"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn
-            v-close-popup
-            color="green"
-            label="Cancelar"
-            @click="confirmation = ''"
-          />
-          <q-btn
-            color="red"
-            :disable="confirmation.length < 4"
-            label="Remover"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <GoogleButton
+      v-else
+      icon="fa fa-plus"
+      class="q-ml-md"
+      round
+      size="sm"
+      color="green"
+      open-as-popup
+      @popup:closed="
+        () => {
+          showConfirmationDialog = false
+          checkUserGoogleProfileWasUpdated()
+        }
+      "
+    >
+      <q-tooltip
+        style="font-size: 15px"
+        anchor="top middle"
+        self="center middle"
+      >
+        Associar sua conta do rastercar com sua conta do google
+      </q-tooltip>
+    </GoogleButton>
   </div>
 </template>

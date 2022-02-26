@@ -27,7 +27,6 @@ const mini = ref(false)
           size="1.4rem"
         />
       </q-item-section>
-      <q-item-section v-show="!mini">fechar</q-item-section>
     </q-item>
   </q-drawer>
 </template>

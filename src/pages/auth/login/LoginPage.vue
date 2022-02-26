@@ -101,7 +101,14 @@ const attemptLogin = async () => {
               @click="attemptLogin"
             />
 
-            <GoogleButton :disable="isLoggingIn" />
+            <GoogleButton
+              label="Login com Google"
+              unelevated
+              color="grey-7"
+              size="lg"
+              class="full-width q-mt-md"
+              :disable="isLoggingIn"
+            />
           </q-card-actions>
 
           <LoginCardFooter />

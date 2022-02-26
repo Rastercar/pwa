@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
+import { mapQueryToProps } from './routes.utils'
 
 export const authRoutes: RouteRecordRaw[] = [
   {
@@ -21,7 +22,7 @@ export const authRoutes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/pages/auth/AutoLoginPage.vue'),
-        props: (route) => ({ token: route.query.token }),
+        props: mapQueryToProps(['token']),
       },
     ],
     meta: {
@@ -35,7 +36,7 @@ export const authRoutes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/pages/auth/ConfirmEmailPage.vue'),
-        props: (route) => ({ token: route.query.token }),
+        props: mapQueryToProps(['token']),
       },
     ],
   },
@@ -51,5 +52,15 @@ export const authRoutes: RouteRecordRaw[] = [
     meta: {
       requiresLogoff: true,
     },
+  },
+  {
+    path: '/oauth/link-sucesso',
+    component: () => import('layouts/centralized/CentralizedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/common/OauthLinkSuccesPage.vue'),
+      },
+    ],
   },
 ]
