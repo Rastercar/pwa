@@ -7,7 +7,7 @@ import SidebarUserSectionMenu from './SidebarUserSectionMenu.vue'
 
 const { result, loading } = useQuery(CurrentUserDocument)
 
-const props = defineProps({
+defineProps({
   /**
    * If the sidebar containing the user section is in the 'mini' state
    */
@@ -42,20 +42,22 @@ const userMenuVisible = ref(false)
       </q-avatar>
     </q-item-section>
 
-    <q-item-section v-show="!props.mini">
-      <q-item-label class="text-weight-bold">
-        {{ result.me.username }}
-      </q-item-label>
+    <Transition name="slide-fade">
+      <q-item-section v-show="!mini">
+        <q-item-label class="text-weight-bold">
+          {{ result.me.username }}
+        </q-item-label>
 
-      <q-item-label caption>
-        {{ orgName }}
-      </q-item-label>
-    </q-item-section>
+        <q-item-label caption>
+          {{ orgName }}
+        </q-item-label>
+      </q-item-section>
+    </Transition>
 
     <q-icon
-      v-show="!props.mini"
-      :class="[{ down: !userMenuVisible }, 'q-align-center', 'rotate']"
-      name="fa fa-angle-down"
+      v-show="!mini"
+      :class="[{ down: userMenuVisible }, 'q-align-center', 'rotate']"
+      name="fa fa-caret-down"
       size="20px"
     />
 
@@ -73,5 +75,15 @@ const userMenuVisible = ref(false)
   -moz-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
+}
+
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-enter-from {
+  margin-left: 20px;
+  transform: translateX(-25px);
+  opacity: 0;
 }
 </style>

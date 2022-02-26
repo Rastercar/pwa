@@ -9,19 +9,28 @@ const mini = ref(false)
 <template>
   <q-drawer
     model-value
+    :width="250"
     :mini="mini"
     :mini-width="80"
-    :width="250"
     behavior="desktop"
     side="left"
     bordered
   >
     <SidebarUserSection :mini="mini" />
 
-    <SidebarRoutes />
+    <SidebarRoutes :mini="mini" />
 
-    <q-item v-ripple clickable class="absolute-bottom" @click="mini = !mini">
-      <q-item-section avatar>
+    <q-item
+      v-ripple
+      clickable
+      class="absolute-bottom q-pa-none"
+      @click="mini = !mini"
+    >
+      <q-item-section
+        avatar
+        class="q-pr-none content-center"
+        style="width: 80px"
+      >
         <q-icon
           :name="mini ? 'fa fa-angle-right' : 'fa fa-angle-left'"
           size="1.4rem"

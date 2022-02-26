@@ -1,4 +1,14 @@
 <script setup lang="ts">
+defineProps({
+  /**
+   * If the sidebar containing the user section is in the 'mini' state
+   */
+  mini: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const menuList = [
   {
     icon: 'fa fa-map-marker-alt',
@@ -41,17 +51,27 @@ const menuList = [
       <template v-for="(menuItem, index) in menuList" :key="index">
         <q-item
           v-ripple
+          class="q-pa-none"
           clickable
           :to="menuItem.route"
           :disable="!menuItem.route"
         >
-          <q-item-section avatar>
-            <q-icon :name="menuItem.icon" size="1.4rem" />
+          <!--
+            Size must be the same as mini-with of the sidebard otherwise 
+            we have a discreancy on the icon position when toggling mini
+          -->
+          <q-item-section
+            avatar
+            style="width: 80px"
+            class="q-pr-none content-center"
+          >
+            <q-icon :name="menuItem.icon" size="22px" />
           </q-item-section>
+
           <q-item-section v-text="menuItem.label" />
         </q-item>
 
-        <q-separator v-if="menuItem.separator" :key="'sep' + index" />
+        <q-separator v-if="menuItem.separator" />
       </template>
     </q-list>
   </q-scroll-area>

@@ -28,6 +28,7 @@ const confirmPassword = () => {
 
   apiCheckCurrentUserPassword(passwordConfirmation.value)
     .then((isValid) => {
+      if (!isValid) invalidPasswords.value.push(passwordConfirmation.value)
       emit(isValid ? 'confirmation:success' : 'confirmation:failure')
     })
     .finally(() => {
@@ -82,7 +83,7 @@ const confirmPassword = () => {
           @click="passwordConfirmation = ''"
         />
         <q-btn
-          :disable="passwordConfirmation.length < 4"
+          :disable="passwordConfirmation.length <= 5"
           :loading="loading"
           color="red"
           label="Remover"
