@@ -15,6 +15,7 @@ import {
   UpdateUserDto,
 } from 'src/graphql/generated/graphql-operations'
 import { useQuasar } from 'quasar'
+import ForgotPasswordButton from './ForgotPasswordButton.vue'
 
 const props = defineProps({
   /**
@@ -109,16 +110,19 @@ const saveProfile = () => {
     </q-card-section>
 
     <q-card-section class="q-gutter-md">
-      <div class="text-h5 q-mb-lg">
-        <q-icon name="fa fa-shield-alt" class="q-mr-md" />
-        <span>Acesso e credenciais</span>
+      <div class="q-mb-lg text-h5 flex justify-between items-center no-wrap">
+        <div class="col-10 q-pr-lg">
+          <q-icon name="fa fa-shield-alt" class="q-mr-md" />
+          <span>Acesso e credenciais</span>
+        </div>
+
+        <ForgotPasswordButton class="text-subtitle1 text-blue-7" />
       </div>
 
       <OldPasswordInput
         v-model="formState.oldPassword"
         :invalid-old-passwords="invalidOldPasswords"
       />
-
       <PasswordInput
         v-model="formState.password"
         v-model:visible="isPasswordVisible"

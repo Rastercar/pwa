@@ -9,7 +9,7 @@ defineProps({
   },
 })
 
-const menuList = [
+let menuList = [
   {
     icon: 'fa fa-map-marker-alt',
     label: 'Mapa',
@@ -41,6 +41,13 @@ const menuList = [
     label: 'Ajuda',
   },
 ]
+
+if (process.env.NODE_ENV === 'development') {
+  menuList = [
+    { icon: 'fa fa-microchip', label: 'dev', route: '/dev/test' },
+    ...menuList,
+  ]
+}
 </script>
 
 <template>

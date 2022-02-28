@@ -82,6 +82,7 @@ const v = useVuelidate(rules, props, { $autoDirty: true })
       <q-icon
         :name="visible ? 'fa fa-eye' : 'fa fa-eye-slash'"
         class="cursor-pointer"
+        size="sm"
         @click="$emit('update:visible', !visible)"
       />
     </template>

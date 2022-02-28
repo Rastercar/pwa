@@ -1,7 +1,7 @@
 import { api } from './api.utils'
 
-interface EmailAddressConfirmationRes {
-  confirmation: {
+interface RequestForEmailSendingResponse {
+  meta: {
     /**
      * The link to the PWA email confirmationPage
      */
@@ -13,15 +13,27 @@ interface EmailAddressConfirmationRes {
   }
 }
 
+interface ResetPasswordDTO {
+  /**
+   * The new password
+   */
+  password: string
+  /**
+   * A token to validate the password reset, this token is obtained
+   * by requesting reset password email to the user email address
+   */
+  passwordResetToken: string
+}
+
 /**
  * Requests for the api to send a email address confirmation
  * email to the currently logged user email address
  */
 export async function apiRequestEmailAddressConfirmationEmail() {
-  const { data } = await api().get<EmailAddressConfirmationRes>(
+  const { data } = await api().get<RequestForEmailSendingResponse>(
     '/auth/send-email-address-confirmation-email'
   )
-  return data.confirmation
+  return data.meta
 }
 
 /**
@@ -30,12 +42,32 @@ export async function apiRequestEmailAddressConfirmationEmail() {
  * @param token A JWT sent by the api to validate the email address,
  * this token should contain the email itself as the subject
  */
-export async function apiConfirmEmailAddress(token: string): Promise<string> {
+export async function apiConfirmEmailAddress(token: string) {
   const { data: confirmationMessage } = await api({
     headers: { Authorization: `Bearer ${token}` },
   }).get<string>('/auth/confirm-email-address')
 
   return confirmationMessage
+}
+
+/**
+ * Resets the password of a user with a password reset token
+ */
+export async function apiResetPasswordByToken(dto: ResetPasswordDTO) {
+  const { data } = await api().post<string>('/auth/reset-password', dto)
+  return data
+}
+
+/**
+ * Requests for the api to send a forgot password email to the provided
+ * email address, failing with 404 if a user is not found with said address
+ */
+export async function apiRequestForgotPasswordEmail(emailAddress: string) {
+  const { data } = await api().post<RequestForEmailSendingResponse>(
+    '/auth/send-forgot-password-email',
+    { email: emailAddress }
+  )
+  return data.meta
 }
 
 /**
@@ -46,9 +78,7 @@ export async function apiConfirmEmailAddress(token: string): Promise<string> {
  *
  * @returns boolean indicating the supplied password was valid
  */
-export async function apiCheckCurrentUserPassword(
-  password: string
-): Promise<boolean> {
+export async function apiCheckCurrentUserPassword(password: string) {
   return api()
     .post<boolean>('/auth/check-password', { password })
     .then(({ data }) => data)

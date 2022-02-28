@@ -39,5 +39,14 @@ const v = useVuelidate(rules, props, { $autoDirty: true })
     label="Senha antiga"
     no-error-icon
     outlined
-  />
+  >
+    <template #append>
+      <q-icon name="fa fa-info-circle">
+        <q-tooltip style="font-size: 15px; max-width: 300px">
+          Por razões de segurança é necessário informar sua senha atual para
+          redefini-la
+        </q-tooltip>
+      </q-icon>
+    </template>
+  </q-input>
 </template>
