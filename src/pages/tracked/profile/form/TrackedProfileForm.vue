@@ -4,7 +4,7 @@ import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
 import PasswordInput from 'src/pages/auth/register/form/PasswordInput.vue'
 import UsernameInput from 'src/pages/auth/register/form/UsernameInput.vue'
 import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
-import EmailInput from 'src/pages/auth/register/form/EmailInput.vue'
+import EmailInput from 'src/components/input/EmailInput.vue'
 import { computed, PropType, reactive, Ref, ref } from 'vue'
 import OldPasswordInput from './OldPasswordInput.vue'
 import { useMutation } from '@vue/apollo-composable'
@@ -15,7 +15,7 @@ import {
   UpdateUserDto,
 } from 'src/graphql/generated/graphql-operations'
 import { useQuasar } from 'quasar'
-import ForgotPasswordButton from './ForgotPasswordButton.vue'
+import ForgotPasswordButton from '../../../../components/button/ForgotPasswordButton.vue'
 
 const props = defineProps({
   /**
@@ -101,7 +101,7 @@ const saveProfile = () => {
         v-model="formState.email"
         v-model:isCheckingEmail="isCheckingEmail"
         v-model:willCheckEmail="willCheckEmail"
-        :invalid-emails="invalidEmails"
+        :emails-in-use="invalidEmails"
         :allowed-emails="[props.user.email]"
         class="q-mb-md"
       />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ForgotPasswordButton from 'src/pages/tracked/profile/form/ForgotPasswordButton.vue'
+import ForgotPasswordButton from 'src/components/button/ForgotPasswordButton.vue'
 import { useAuth } from 'src/state/auth.state'
 
 const { isLoggedIn } = useAuth()

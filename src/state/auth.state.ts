@@ -1,6 +1,7 @@
 import { JwtModel } from 'src/graphql/generated/graphql-operations'
 import { loadFromLS, syncWithLS } from './utils/persist-state'
 import { computed, reactive, readonly } from 'vue'
+import { useApolloClient } from '@vue/apollo-composable'
 
 /*
  | Auth State: 
@@ -31,10 +32,19 @@ const AUTH_LOGIN = (token: JwtModel) => {
 }
 
 /**
- * Unsets the API token
+ * Unsets the API token and clears the apollo cache
  */
-const AUTH_LOGOUT = () => {
+const AUTH_LOGOUT = (options = { clearApolloCache: true }) => {
   state.apiToken = null
+
+  if (options.clearApolloCache) {
+    // The apollo client cant be defined in this file root as the application
+    // has not bootstraped so we need to call useApolloClient() here
+    useApolloClient()
+      .resolveClient()
+      .clearStore()
+      .catch(() => null)
+  }
 }
 
 export const useAuth = () => ({

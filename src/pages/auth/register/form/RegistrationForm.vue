@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import {
-  RegisterUserDocument,
-  UnregisteredUserByUuidDocument,
-} from 'src/graphql/generated/graphql-operations'
 import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
 import PasswordConfirmationInput from './PasswordConfirmationInput.vue'
 import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
+import EmailInput from '../../../../components/input/EmailInput.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive, ref, computed, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -13,7 +10,10 @@ import UsernameInput from './UsernameInput.vue'
 import PasswordInput from './PasswordInput.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { useAuth } from 'src/state/auth.state'
-import EmailInput from './EmailInput.vue'
+import {
+  UnregisteredUserByUuidDocument,
+  RegisterUserDocument,
+} from 'src/graphql/generated/graphql-operations'
 
 const route = useRoute()
 
@@ -107,11 +107,11 @@ onError(({ graphQLErrors }) => {
 
       <EmailInput
         v-model="formState.email"
-        v-model:isCheckingEmail="isCheckingEmail"
         v-model:willCheckEmail="willCheckEmail"
+        v-model:isCheckingEmail="isCheckingEmail"
         :loading="isFetchingUser"
         :disable="isFetchingUser"
-        :invalid-emails="invalidEmails"
+        :emails-in-use="invalidEmails"
       />
 
       <PasswordInput

@@ -28,8 +28,6 @@ const createAppRouter = route(() => {
   })
 
   router.beforeEach((to, from, next) => {
-    LoadingBar.start()
-
     const { isLoggedIn } = useAuth()
 
     const { requiresLogin, requiresLogoff } = to.meta
@@ -38,6 +36,10 @@ const createAppRouter = route(() => {
     if (requiresLogoff && isLoggedIn.value) return false
 
     return next()
+  })
+
+  router.beforeResolve(() => {
+    LoadingBar.start()
   })
 
   router.afterEach(() => {

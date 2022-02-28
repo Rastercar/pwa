@@ -4,12 +4,12 @@ import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
 import { HTTP_STATUS } from 'src/constants/http-status'
 import { useMutation } from '@vue/apollo-composable'
 import LoginCardFooter from './LoginCardFooter.vue'
+import LoginEmailInput from './LoginEmailInput.vue'
 import PasswordInput from './PasswordInput.vue'
 import { useAuth } from 'src/state/auth.state'
 import { useVuelidate } from '@vuelidate/core'
 import GoogleButton from './GoogleButton.vue'
 import MainButton from './MainButton.vue'
-import EmailInput from './EmailInput.vue'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 
@@ -78,7 +78,7 @@ const attemptLogin = async () => {
 
           <q-card-section>
             <q-form class="q-gutter-md" greedy>
-              <EmailInput
+              <LoginEmailInput
                 v-model="formState.email"
                 :disable="isLoggingIn"
                 :user-with-email-not-found="userWithEmailNotFound"

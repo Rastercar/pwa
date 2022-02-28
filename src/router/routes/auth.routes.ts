@@ -41,13 +41,24 @@ export const authRoutes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/esqueceu-senha',
+    path: '/redefinir-senha',
     component: () => import('layouts/centralized/CentralizedLayout.vue'),
     children: [
       {
         path: '',
         component: () =>
-          import('src/pages/auth/forgot-password/ForgotPasswordPage.vue'),
+          import('src/pages/auth/redefine-password/RedefinePasswordPage.vue'),
+        props: mapQueryToProps(['token']),
+      },
+    ],
+  },
+  {
+    path: '/esqueceu-senha',
+    component: () => import('layouts/centralized/CentralizedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/auth/ForgotPasswordPage.vue'),
         props: mapQueryToProps(['token']),
       },
     ],
