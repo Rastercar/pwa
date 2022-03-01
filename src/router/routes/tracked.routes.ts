@@ -12,6 +12,19 @@ export const trackedRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/cliente/mapa-principal',
+    component: () => import('layouts/tracked/TrackedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/tracked/main-map/MainMapPage.vue'),
+      },
+    ],
+    meta: {
+      requiresLogin: true,
+    },
+  },
+  {
     path: '/cliente/meu-perfil',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [

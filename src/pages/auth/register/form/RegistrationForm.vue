@@ -129,9 +129,15 @@ onError(({ graphQLErrors }) => {
 
   <q-card-actions class="q-px-md">
     <q-btn
+      label="Voltar"
+      class="q-mr-auto"
+      color="green"
+      icon="fa fa-angle-left"
+      @click="$router.push('/')"
+    />
+    <q-btn
       :loading="loading"
       :disable="!canSubmit"
-      class="q-ml-auto"
       label="Cadastrar"
       type="submit"
       color="primary"

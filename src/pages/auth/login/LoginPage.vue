@@ -9,7 +9,6 @@ import PasswordInput from './PasswordInput.vue'
 import { useAuth } from 'src/state/auth.state'
 import { useVuelidate } from '@vuelidate/core'
 import GoogleButton from './GoogleButton.vue'
-import MainButton from './MainButton.vue'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 
@@ -95,9 +94,14 @@ const attemptLogin = async () => {
           </q-card-section>
 
           <q-card-actions class="q-px-md">
-            <MainButton
+            <q-btn
               :loading="isLoggingIn"
               :disable="v.$invalid"
+              unelevated
+              color="light-green-7"
+              size="lg"
+              class="full-width"
+              label="Login"
               @click="attemptLogin"
             />
 

@@ -11,19 +11,23 @@
 const { configure } = require('quasar/wrappers')
 const path = require('path')
 
+// TODO: CHANGE KEY
 const DEV_ENV = {
   API_BASE_URL: 'http://localhost:3000',
   GRAPHQL_ENDPOINT: 'http://localhost:3000/graphql',
+  GMAPS_API_KEY: 'AIzaSyCXQB6RzLQ183XRsPJxcAMPEGJEhBHzBLk',
 }
 
 const HOMOLOG_ENV = {
   API_BASE_URL: 'https://homolog.rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://homolog.rastercar.com:3000/graphql',
+  GMAPS_API_KEY: 'AIzaSyCXQB6RzLQ183XRsPJxcAMPEGJEhBHzBLk',
 }
 
 const PRODUCTION_ENV = {
   API_BASE_URL: 'https://rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://rastercar.com:3000/graphql',
+  GMAPS_API_KEY: 'AIzaSyCXQB6RzLQ183XRsPJxcAMPEGJEhBHzBLk',
 }
 
 module.exports = configure(function (ctx) {

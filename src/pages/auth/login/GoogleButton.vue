@@ -7,6 +7,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['popup:closed'])
@@ -79,8 +83,7 @@ onBeforeUnmount(() => {
 
 <template>
   <q-btn
-    v-bind="({ ...$props, ...$attrs } as any)"
-    :loading="redirectingOrOpeningPopup"
+    :loading="loading || redirectingOrOpeningPopup"
     @click="openGoogleAccountAuthWindow"
   >
     <slot></slot>

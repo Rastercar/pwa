@@ -38,7 +38,7 @@ const confirmPassword = () => {
 </script>
 
 <template>
-  <q-dialog v-bind="({ ...$props, ...$attrs } as any)">
+  <q-dialog>
     <q-card style="width: 450px">
       <q-card-section>
         <slot name="header">

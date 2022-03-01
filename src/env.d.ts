@@ -15,5 +15,9 @@ declare namespace NodeJS {
      * (Does not include the ending '/')
      */
     API_BASE_URL: string
+    /**
+     * Google maps api key
+     */
+    GMAPS_API_KEY: string
   }
 }
