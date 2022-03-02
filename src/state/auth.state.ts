@@ -28,6 +28,8 @@ syncWithLS({ authState: state })
  * Sets the API token
  */
 const AUTH_LOGIN = (token: JwtModel) => {
+  // Dont worry too much about about storing the JWT in the local storage
+  // https://pragmaticwebsecurity.com/articles/oauthoidc/localstorage-xss.html
   state.apiToken = token.value
 }
 

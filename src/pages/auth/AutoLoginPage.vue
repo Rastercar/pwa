@@ -8,9 +8,6 @@ import { useRouter } from 'vue-router'
 import { Ref, ref } from 'vue'
 
 const props = defineProps({
-  /**
-   * The JWT token used to login
-   */
   token: {
     type: String,
     default: '',
@@ -25,9 +22,9 @@ const autoLoginErrorType: Ref<null | 'unauthorized' | 'other'> = ref(null)
 const willLoginSoon = ref(true)
 
 const {
+  loading: isLoggingIn,
   mutate: login,
   onError,
-  loading: isLoggingIn,
 } = useMutation(LoginByTokenMutationDocument, {
   variables: { token: props.token },
   fetchPolicy: 'network-only',
