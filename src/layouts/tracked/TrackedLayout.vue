@@ -3,7 +3,7 @@ import Sidebar from './sidebar/Sidebar.vue'
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh LpR fFf">
     <Sidebar />
 
     <q-page-container>

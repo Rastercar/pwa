@@ -9,12 +9,18 @@ const attemptLogout = () => {
 </script>
 
 <template>
-  <div class="q-pa-lg">
+  <q-page padding>
     <button v-if="!isLoggedIn" class="q-mr-lg" @click="$router.push('/login')">
       LOGIN
     </button>
 
     <button v-else class="q-mr-lg" @click="attemptLogout">LOGOUT</button>
-    <button class="q-mr-lg" @click="$router.push('/register')">REGISTER</button>
-  </div>
+    <button
+      v-if="!isLoggedIn"
+      class="q-mr-lg"
+      @click="$router.push('/register')"
+    >
+      REGISTER
+    </button>
+  </q-page>
 </template>

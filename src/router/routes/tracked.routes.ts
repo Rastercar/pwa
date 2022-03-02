@@ -12,6 +12,20 @@ export const trackedRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/cliente/meu-perfil',
+    component: () => import('layouts/tracked/TrackedLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () =>
+          import('src/pages/tracked/profile/TrackedProfilePage.vue'),
+      },
+    ],
+    meta: {
+      requiresLogin: true,
+    },
+  },
+  {
     path: '/cliente/mapa-principal',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
@@ -25,13 +39,12 @@ export const trackedRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/cliente/meu-perfil',
+    path: '/cliente/veiculos',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
       {
         path: '',
-        component: () =>
-          import('src/pages/tracked/profile/TrackedProfilePage.vue'),
+        component: () => import('src/pages/tracked/vehicles/VehiclesPage.vue'),
       },
     ],
     meta: {

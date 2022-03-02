@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import GoogleMap from 'src/components/google-maps/GoogleMap.vue'
 import { useGeolocation } from 'src/composables/use-geolocation'
+import Marker from 'src/components/google-maps/Marker.vue'
+import MapTopMenu from './MapTopMenu.vue'
 import { toRaw } from 'vue'
 
 const { coords: userCoordinates } = useGeolocation({
@@ -13,6 +15,10 @@ const center = toRaw(userCoordinates)
 
 <template>
   <q-page class="bg-grey">
-    <GoogleMap :center="center" />
+    <GoogleMap :center="center">
+      <Marker :options="{ position: { lat: -20, lng: -54 } }" />
+
+      <MapTopMenu />
+    </GoogleMap>
   </q-page>
 </template>

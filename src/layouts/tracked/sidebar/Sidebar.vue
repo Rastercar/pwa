@@ -7,15 +7,7 @@ const mini = ref(false)
 </script>
 
 <template>
-  <q-drawer
-    model-value
-    :width="250"
-    :mini="mini"
-    :mini-width="80"
-    behavior="desktop"
-    side="left"
-    bordered
-  >
+  <q-drawer :width="250" :mini="mini" :mini-width="80" elevated show-if-above>
     <SidebarUserSection :mini="mini" />
 
     <SidebarRoutes :mini="mini" />

@@ -16,6 +16,11 @@ const menuList = [
     route: '/cliente/mapa-principal',
   },
   {
+    icon: 'fa fa-car',
+    label: 'Meus veículos',
+    route: '/cliente/veiculos',
+  },
+  {
     icon: 'fa fa-calendar-alt',
     label: 'Histórico de posições',
   },
