@@ -63,7 +63,7 @@ export type MasterAccessLevelModel = {
   permissions: Array<Master_Permission>
 }
 
-/** master user (a user with access to the main panel */
+/** master user (a user with access to the main panel) */
 export type MasterUserModel = {
   __typename?: 'MasterUserModel'
   accessLevel: AccessLevelModel
@@ -98,6 +98,22 @@ export type MutationUpdateMyProfileArgs = {
   profileData: UpdateUserDto
 }
 
+export type OffsetPageInfo = {
+  __typename?: 'OffsetPageInfo'
+  /** If you can increase the offset to fetch next records */
+  hasMore: Scalars['Boolean']
+  /** If you can decrease the offset to fetch previous records */
+  hasPrevious: Scalars['Boolean']
+  /** Quantity of all avaliable records */
+  total: Scalars['Int']
+}
+
+export type OffsetPaginatedVehicle = {
+  __typename?: 'OffsetPaginatedVehicle'
+  nodes?: Maybe<Array<VehicleModel>>
+  pageInfo: OffsetPageInfo
+}
+
 /** organization */
 export type OrganizationModel = {
   __typename?: 'OrganizationModel'
@@ -106,22 +122,65 @@ export type OrganizationModel = {
   blocked: Scalars['Boolean']
   id: Scalars['Int']
   name: Scalars['String']
+  trackers: Array<TrackerModel>
+  users: PaginatedUser
+  vehicles: OffsetPaginatedVehicle
+}
+
+/** organization */
+export type OrganizationModelUsersArgs = {
+  after?: InputMaybe<Scalars['Int']>
+  before: Scalars['Int']
+  first?: InputMaybe<Scalars['Int']>
+  last?: InputMaybe<Scalars['Int']>
+}
+
+/** organization */
+export type OrganizationModelVehiclesArgs = {
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
 }
 
 export enum Permission {
   EditOtherUsers = 'EDIT_OTHER_USERS',
 }
 
+export type PageInfo = {
+  __typename?: 'PageInfo'
+  /** When paginating forwards, the cursor to continue */
+  endCursor: Scalars['String']
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean']
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean']
+  /** When paginating backwards, the cursor to continue */
+  startCursor: Scalars['String']
+}
+
+export type PaginatedUser = {
+  __typename?: 'PaginatedUser'
+  edges?: Maybe<Array<UserModelConnection>>
+  nodes?: Maybe<Array<UserModel>>
+  pageInfo: PageInfo
+}
+
 export type Query = {
   __typename?: 'Query'
   isEmailInUse: Scalars['Boolean']
   me: UserOrMasterUser
+  organization?: Maybe<OrganizationModel>
   unregisteredUser?: Maybe<UnregisteredUserModel>
   user?: Maybe<UserModel>
+  /** The vehicles that belong to the request user organization */
+  vehicles: OffsetPaginatedVehicle
 }
 
 export type QueryIsEmailInUseArgs = {
   email: Scalars['String']
+}
+
+export type QueryOrganizationArgs = {
+  id: Scalars['Int']
 }
 
 export type QueryUnregisteredUserArgs = {
@@ -132,12 +191,53 @@ export type QueryUserArgs = {
   id: Scalars['Int']
 }
 
+export type QueryVehiclesArgs = {
+  descending?: InputMaybe<Scalars['Boolean']>
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  search?: InputMaybe<Scalars['String']>
+}
+
 export type RegisterUserDto = {
   email: Scalars['String']
   password: Scalars['String']
   /** UUID of the unregistered user this registration refers to, once finished the referred unregistered user will be deleted, this is also used to determine wheter the user being registered uses oauth for authentication */
   refersToUnregisteredUser?: InputMaybe<Scalars['String']>
   username: Scalars['String']
+}
+
+/** sim card */
+export type SimCardModel = {
+  __typename?: 'SimCardModel'
+  apnAddress: Scalars['String']
+  apnPassword: Scalars['String']
+  apnUser: Scalars['String']
+  id: Scalars['Int']
+  organization: SimpleOrganizationModel
+  phoneNumber: Scalars['String']
+  ssn: Scalars['String']
+  tracker?: Maybe<TrackerModel>
+}
+
+/** organization but without nested fields */
+export type SimpleOrganizationModel = {
+  __typename?: 'SimpleOrganizationModel'
+  billingEmail: Scalars['String']
+  billingEmailVerified: Scalars['Boolean']
+  blocked: Scalars['Boolean']
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
+/** tracker */
+export type TrackerModel = {
+  __typename?: 'TrackerModel'
+  id: Scalars['Int']
+  model: Scalars['String']
+  organization: SimpleOrganizationModel
+  simCards: Array<SimCardModel>
+  vehicle: VehicleModel
 }
 
 /** unregistered user */
@@ -166,11 +266,33 @@ export type UserModel = {
   emailVerified: Scalars['Boolean']
   googleProfileId?: Maybe<Scalars['String']>
   id: Scalars['Int']
-  organization: OrganizationModel
+  organization: SimpleOrganizationModel
   username: Scalars['String']
 }
 
+export type UserModelConnection = {
+  __typename?: 'UserModelConnection'
+  cursor: Scalars['String']
+  node: UserModel
+}
+
 export type UserOrMasterUser = MasterUserModel | UserModel
+
+/** vehicle */
+export type VehicleModel = {
+  __typename?: 'VehicleModel'
+  brand?: Maybe<Scalars['String']>
+  chassisNumber?: Maybe<Scalars['String']>
+  color?: Maybe<Scalars['String']>
+  fabricationYear?: Maybe<Scalars['Float']>
+  id: Scalars['Int']
+  model?: Maybe<Scalars['String']>
+  modelYear?: Maybe<Scalars['Float']>
+  organization: SimpleOrganizationModel
+  plate: Scalars['String']
+  renavam?: Maybe<Scalars['String']>
+  trackers: Array<TrackerModel>
+}
 
 export type LoginMutationMutationVariables = Exact<{
   credentials: LoginInput
@@ -209,7 +331,7 @@ export type LoginMutationMutation = {
           emailVerified: boolean
           googleProfileId?: string | null | undefined
           organization: {
-            __typename?: 'OrganizationModel'
+            __typename?: 'SimpleOrganizationModel'
             id: number
             name: string
             billingEmail: string
@@ -281,7 +403,7 @@ export type FullUserFragment = {
   emailVerified: boolean
   googleProfileId?: string | null | undefined
   organization: {
-    __typename?: 'OrganizationModel'
+    __typename?: 'SimpleOrganizationModel'
     id: number
     name: string
     billingEmail: string
@@ -369,7 +491,7 @@ export type RegisterUserMutation = {
           emailVerified: boolean
           googleProfileId?: string | null | undefined
           organization: {
-            __typename?: 'OrganizationModel'
+            __typename?: 'SimpleOrganizationModel'
             id: number
             name: string
             billingEmail: string
@@ -433,7 +555,7 @@ export type CurrentUserQuery = {
         emailVerified: boolean
         googleProfileId?: string | null | undefined
         organization: {
-          __typename?: 'OrganizationModel'
+          __typename?: 'SimpleOrganizationModel'
           id: number
           name: string
           billingEmail: string
@@ -485,7 +607,7 @@ export type UserByIdQuery = {
         emailVerified: boolean
         googleProfileId?: string | null | undefined
         organization: {
-          __typename?: 'OrganizationModel'
+          __typename?: 'SimpleOrganizationModel'
           id: number
           name: string
           billingEmail: string
@@ -500,6 +622,46 @@ export type UserByIdQuery = {
       }
     | null
     | undefined
+}
+
+export type ListVehiclesQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  descending?: InputMaybe<Scalars['Boolean']>
+  search?: InputMaybe<Scalars['String']>
+}>
+
+export type ListVehiclesQuery = {
+  __typename?: 'Query'
+  vehicles: {
+    __typename?: 'OffsetPaginatedVehicle'
+    nodes?:
+      | Array<{
+          __typename?: 'VehicleModel'
+          id: number
+          plate: string
+          model?: string | null | undefined
+          modelYear?: number | null | undefined
+          color?: string | null | undefined
+          renavam?: string | null | undefined
+          chassisNumber?: string | null | undefined
+          fabricationYear?: number | null | undefined
+          trackers: Array<{
+            __typename?: 'TrackerModel'
+            id: number
+            model: string
+          }>
+        }>
+      | null
+      | undefined
+    pageInfo: {
+      __typename?: 'OffsetPageInfo'
+      total: number
+      hasMore: boolean
+      hasPrevious: boolean
+    }
+  }
 }
 
 export const FullUserFragmentDoc = {
@@ -1290,3 +1452,175 @@ export const UserByIdDocument = {
     ...FullUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserByIdQuery, UserByIdQueryVariables>
+export const ListVehiclesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listVehicles' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderBy' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'descending' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'vehicles' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderBy' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'descending' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'descending' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'search' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'search' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'modelYear' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'renavam' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'chassisNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'fabricationYear' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'trackers' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'model' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasMore' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasPrevious' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ListVehiclesQuery, ListVehiclesQueryVariables>

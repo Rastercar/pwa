@@ -1,41 +1,14 @@
 <script setup lang="ts">
-defineProps({
-  vehicle: {
-    type: Object,
-    required: true,
-  },
-})
+import { vehicleColumns } from './vehicle-datatable.common'
 
-const vehicleColumns = [
-  {
-    field: 'model',
-    label: 'Modelo',
-  },
-  {
-    field: 'color',
-    label: 'Cor',
-  },
-  {
-    field: 'renavam',
-    label: 'Renavam',
-  },
-  {
-    field: 'chassisNumber',
-    label: 'Chassi',
-  },
-  {
-    field: 'modelYear',
-    label: 'Ano (modelo)',
-  },
-  {
-    field: 'fabricationYear',
-    label: 'Ano (fabricação)',
-  },
-]
+defineProps({
+  vehicle: { type: Object, required: true },
+})
 </script>
 
 <template>
-  <q-card>
+  <!-- Do not change this id -->
+  <q-card :id="`vehicle-row-${vehicle.id}`">
     <img
       src="https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202202/20220207/HONDA-CIVIC-2.0-16V-FLEXONE-EX-4P-CVT-wmimagem12353504220.jpg"
     />
@@ -51,9 +24,9 @@ const vehicleColumns = [
       <q-list dense>
         <q-item
           v-for="column in vehicleColumns"
+          v-show="column.field !== 'plate'"
           :key="column.field"
-          v-ripple
-          clickable
+          :clickable="!!vehicle[column.field]"
         >
           <q-item-section>
             <div class="flex">

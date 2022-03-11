@@ -38,7 +38,7 @@ type MasterAccessLevelModel {
   permissions: [MASTER_PERMISSION!]!
 }
 
-"""master user (a user with access to the main panel"""
+"""master user (a user with access to the main panel)"""
 type MasterUserModel {
   accessLevel: AccessLevelModel!
   email: String!
@@ -55,6 +55,22 @@ type Mutation {
   updateMyProfile(profileData: UpdateUserDTO!): UserModel!
 }
 
+type OffsetPageInfo {
+  """If you can increase the offset to fetch next records"""
+  hasMore: Boolean!
+
+  """If you can decrease the offset to fetch previous records"""
+  hasPrevious: Boolean!
+
+  """Quantity of all avaliable records"""
+  total: Int!
+}
+
+type OffsetPaginatedVehicle {
+  nodes: [VehicleModel!]
+  pageInfo: OffsetPageInfo!
+}
+
 """organization"""
 type OrganizationModel {
   billingEmail: String!
@@ -62,17 +78,67 @@ type OrganizationModel {
   blocked: Boolean!
   id: Int!
   name: String!
+  trackers: [TrackerModel!]!
+  users(
+    """Return the elements in the list after this cursor"""
+    after: Int = 0
+
+    """Return the elements in the list before this cursor"""
+    before: Int!
+
+    """Return the first N elements from the list"""
+    first: Int = 10
+
+    """Return the last N elements from the list"""
+    last: Int = 10
+  ): PaginatedUser!
+  vehicles(limit: Int = 10, offset: Int = 0): OffsetPaginatedVehicle!
 }
 
 enum PERMISSION {
   EDIT_OTHER_USERS
 }
 
+type PageInfo {
+  """When paginating forwards, the cursor to continue"""
+  endCursor: String!
+
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue"""
+  startCursor: String!
+}
+
+type PaginatedUser {
+  edges: [UserModelConnection!]
+  nodes: [UserModel!]
+  pageInfo: PageInfo!
+}
+
 type Query {
   isEmailInUse(email: String!): Boolean!
   me: UserOrMasterUser!
+  organization(id: Int!): OrganizationModel
   unregisteredUser(uuid: String!): UnregisteredUserModel
   user(id: Int!): UserModel
+
+  """The vehicles that belong to the request user organization"""
+  vehicles(
+    """
+    It the records should be sorted in descending order by the field on "orderBy"
+    """
+    descending: Boolean = false
+    limit: Int = 10
+    offset: Int = 0
+
+    """The field to order results by. example: name, id"""
+    orderBy: String
+    search: String
+  ): OffsetPaginatedVehicle!
 }
 
 input RegisterUserDTO {
@@ -84,6 +150,36 @@ input RegisterUserDTO {
   """
   refersToUnregisteredUser: String
   username: String!
+}
+
+"""sim card"""
+type SimCardModel {
+  apnAddress: String!
+  apnPassword: String!
+  apnUser: String!
+  id: Int!
+  organization: SimpleOrganizationModel!
+  phoneNumber: String!
+  ssn: String!
+  tracker: TrackerModel
+}
+
+"""organization but without nested fields"""
+type SimpleOrganizationModel {
+  billingEmail: String!
+  billingEmailVerified: Boolean!
+  blocked: Boolean!
+  id: Int!
+  name: String!
+}
+
+"""tracker"""
+type TrackerModel {
+  id: Int!
+  model: String!
+  organization: SimpleOrganizationModel!
+  simCards: [SimCardModel!]!
+  vehicle: VehicleModel!
 }
 
 """unregistered user"""
@@ -113,8 +209,28 @@ type UserModel {
   emailVerified: Boolean!
   googleProfileId: String
   id: Int!
-  organization: OrganizationModel!
+  organization: SimpleOrganizationModel!
   username: String!
 }
 
+type UserModelConnection {
+  cursor: String!
+  node: UserModel!
+}
+
 union UserOrMasterUser = MasterUserModel | UserModel
+
+"""vehicle"""
+type VehicleModel {
+  brand: String
+  chassisNumber: String
+  color: String
+  fabricationYear: Float
+  id: Int!
+  model: String
+  modelYear: Float
+  organization: SimpleOrganizationModel!
+  plate: String!
+  renavam: String
+  trackers: [TrackerModel!]!
+}

@@ -1,0 +1,35 @@
+query listVehicles(
+  $offset: Int
+  $limit: Int
+  $orderBy: String
+  $descending: Boolean
+  $search: String
+) {
+  vehicles(
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    descending: $descending
+    search: $search
+  ) {
+    nodes {
+      id
+      plate
+      model
+      modelYear
+      color
+      renavam
+      chassisNumber
+      fabricationYear
+      trackers {
+        id
+        model
+      }
+    }
+    pageInfo {
+      total
+      hasMore
+      hasPrevious
+    }
+  }
+}
