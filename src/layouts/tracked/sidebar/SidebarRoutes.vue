@@ -14,36 +14,12 @@ const menuList = [
     icon: 'fa fa-map-marker-alt',
     label: 'Mapa',
     route: '/cliente/mapa-principal',
+    separator: false,
   },
   {
     icon: 'fa fa-car',
     label: 'Meus veículos',
     route: '/cliente/veiculos',
-  },
-  {
-    icon: 'fa fa-calendar-alt',
-    label: 'Histórico de posições',
-  },
-  {
-    icon: 'fa fa-trash-alt',
-    label: 'Trash',
-  },
-  {
-    icon: 'fa fa-exclamation-circle',
-    label: 'Eventos',
-    separator: true,
-  },
-  {
-    icon: 'fa fa-cog',
-    label: 'Configurações',
-  },
-  {
-    icon: 'fa fa-mail-bulk',
-    label: 'Feedback',
-  },
-  {
-    icon: 'fa fa-question-circle',
-    label: 'Ajuda',
   },
 ]
 
@@ -52,6 +28,7 @@ if (process.env.NODE_ENV === 'development') {
     icon: 'fa fa-microchip',
     label: 'dev',
     route: '/dev/test',
+    separator: true,
   })
 }
 </script>

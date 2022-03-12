@@ -1,6 +1,4 @@
-import { QTableProps } from 'quasar'
-
-export const vehicleColumns: QTableProps['columns'] = [
+export const vehicleColumns = [
   {
     name: 'id',
     label: 'ID',

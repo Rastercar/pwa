@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <!-- Do not change this id -->
-  <q-card :id="`vehicle-row-${vehicle.id}`">
+  <q-card :id="`vehicle-row-${vehicle.id}`" flat bordered>
     <img
       src="https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202202/20220207/HONDA-CIVIC-2.0-16V-FLEXONE-EX-4P-CVT-wmimagem12353504220.jpg"
     />

@@ -1,0 +1,8 @@
+mutation createVehicle($photo: Upload, $data: CreateVehicleDTO!) {
+  createVehicle(photo: $photo, data: $data) {
+    uri
+    filename
+    mimetype
+    encoding
+  }
+}

@@ -3,10 +3,12 @@ import {
   ListVehiclesDocument,
   ListVehiclesQuery,
 } from 'src/graphql/generated/graphql-operations'
+import VehicleDataTableHeader from './vehicle-data-table/VehicleDataTableHeader.vue'
 import { vehicleColumns } from './vehicle-data-table/vehicle-datatable.common'
 import VehicleCardMenu from './vehicle-data-table/VehicleCardMenu.vue'
 import { getOffsetPaginationArgs } from 'src/utils/pagination.utils'
 import VehicleCard from './vehicle-data-table/VehicleCard.vue'
+import CreateVehicleOverlay from './create-vehicle-overlay/CreateVehicleOverlay.vue'
 import VehicleRow from './vehicle-data-table/VehicleRow.vue'
 import { useApolloClient } from '@vue/apollo-composable'
 import { onMounted, Ref, ref } from 'vue'
@@ -70,6 +72,8 @@ const setMenuTarget = (vehicleId: number) => {
 onMounted(() => {
   onRequest({ pagination: pagination.value }).catch(() => null)
 })
+
+const showCreateVehicleOverlay = ref(false)
 </script>
 
 <template>
@@ -77,6 +81,7 @@ onMounted(() => {
     <q-table
       v-model:pagination="pagination"
       title="Meus Veículos"
+      :class="{ 'bg-white': grid, 'shadow-2': grid }"
       :rows="rows"
       :grid="grid"
       :columns="vehicleColumns"
@@ -87,38 +92,18 @@ onMounted(() => {
       @request="onRequest"
     >
       <template #top>
-        <q-icon
-          :class="{ 'q-mb-sm': grid }"
-          class="q-mr-md"
-          name="fa fa-car"
-          size="lg"
-          color="grey-8"
+        <VehicleDataTableHeader
+          v-model:grid="grid"
+          v-model:filter="filter"
+          :create-btn-props="{ disable: showCreateVehicleOverlay }"
+          @click:new-record="showCreateVehicleOverlay = true"
         />
-        <div class="text-h6" :class="{ 'q-mb-sm': grid }">Meus veículos</div>
-        <q-space />
-        <q-toggle
-          v-model="grid"
-          :class="{ 'q-mb-sm': grid }"
-          label="VISUALIZAÇÃO DETALHADA"
-          left-label
-        />
-
-        <q-input
-          v-model="filter"
-          class="q-ml-md"
-          dense
-          filled
-          debounce="300"
-          placeholder="Busca por placa"
-        >
-          <template #append>
-            <q-icon name="fa fa-search" />
-          </template>
-        </q-input>
       </template>
 
       <template #item="props">
-        <div class="q-pa-sm col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div
+          class="q-py-sm q-px-md col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"
+        >
           <VehicleCard
             :vehicle="props.row"
             @click="() => setMenuTarget(props.row.id)"
@@ -135,5 +120,7 @@ onMounted(() => {
     </q-table>
 
     <VehicleCardMenu :target="menuTarget" touch-position />
+
+    <CreateVehicleOverlay v-model="showCreateVehicleOverlay" />
   </q-page>
 </template>

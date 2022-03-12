@@ -21,6 +21,8 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any
 }
 
 /** The access level to the tracked dashboard */
@@ -30,6 +32,25 @@ export type AccessLevelModel = {
   id: Scalars['Int']
   name: Scalars['String']
   permissions: Array<Permission>
+}
+
+export type CreateVehicleDto = {
+  brand?: InputMaybe<Scalars['String']>
+  chassisNumber?: InputMaybe<Scalars['String']>
+  color?: InputMaybe<Scalars['String']>
+  fabricationYear?: InputMaybe<Scalars['Float']>
+  model?: InputMaybe<Scalars['String']>
+  modelYear?: InputMaybe<Scalars['Float']>
+  plate: Scalars['String']
+  renavam?: InputMaybe<Scalars['String']>
+}
+
+export type File = {
+  __typename?: 'File'
+  encoding: Scalars['String']
+  filename: Scalars['String']
+  mimetype: Scalars['String']
+  uri: Scalars['String']
 }
 
 /** JSON Web Token */
@@ -76,10 +97,16 @@ export type MasterUserModel = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createVehicle: File
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
   updateMyProfile: UserModel
+}
+
+export type MutationCreateVehicleArgs = {
+  data: CreateVehicleDto
+  photo?: InputMaybe<Scalars['Upload']>
 }
 
 export type MutationLoginArgs = {
@@ -108,6 +135,24 @@ export type OffsetPageInfo = {
   total: Scalars['Int']
 }
 
+export type OffsetPaginatedSimCard = {
+  __typename?: 'OffsetPaginatedSimCard'
+  nodes?: Maybe<Array<SimCardModel>>
+  pageInfo: OffsetPageInfo
+}
+
+export type OffsetPaginatedTracker = {
+  __typename?: 'OffsetPaginatedTracker'
+  nodes?: Maybe<Array<TrackerModel>>
+  pageInfo: OffsetPageInfo
+}
+
+export type OffsetPaginatedUser = {
+  __typename?: 'OffsetPaginatedUser'
+  nodes?: Maybe<Array<UserModel>>
+  pageInfo: OffsetPageInfo
+}
+
 export type OffsetPaginatedVehicle = {
   __typename?: 'OffsetPaginatedVehicle'
   nodes?: Maybe<Array<VehicleModel>>
@@ -122,46 +167,41 @@ export type OrganizationModel = {
   blocked: Scalars['Boolean']
   id: Scalars['Int']
   name: Scalars['String']
-  trackers: Array<TrackerModel>
-  users: PaginatedUser
+  simCards: OffsetPaginatedSimCard
+  trackers: OffsetPaginatedTracker
+  users: OffsetPaginatedUser
   vehicles: OffsetPaginatedVehicle
 }
 
 /** organization */
-export type OrganizationModelUsersArgs = {
-  after?: InputMaybe<Scalars['Int']>
-  before: Scalars['Int']
-  first?: InputMaybe<Scalars['Int']>
-  last?: InputMaybe<Scalars['Int']>
-}
-
-/** organization */
-export type OrganizationModelVehiclesArgs = {
+export type OrganizationModelSimCardsArgs = {
   limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
 }
 
+/** organization */
+export type OrganizationModelTrackersArgs = {
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+/** organization */
+export type OrganizationModelUsersArgs = {
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+}
+
+/** organization */
+export type OrganizationModelVehiclesArgs = {
+  descending?: InputMaybe<Scalars['Boolean']>
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  search?: InputMaybe<Scalars['String']>
+}
+
 export enum Permission {
   EditOtherUsers = 'EDIT_OTHER_USERS',
-}
-
-export type PageInfo = {
-  __typename?: 'PageInfo'
-  /** When paginating forwards, the cursor to continue */
-  endCursor: Scalars['String']
-  /** When paginating forwards, are there more items? */
-  hasNextPage: Scalars['Boolean']
-  /** When paginating backwards, are there more items? */
-  hasPreviousPage: Scalars['Boolean']
-  /** When paginating backwards, the cursor to continue */
-  startCursor: Scalars['String']
-}
-
-export type PaginatedUser = {
-  __typename?: 'PaginatedUser'
-  edges?: Maybe<Array<UserModelConnection>>
-  nodes?: Maybe<Array<UserModel>>
-  pageInfo: PageInfo
 }
 
 export type Query = {
@@ -268,12 +308,6 @@ export type UserModel = {
   id: Scalars['Int']
   organization: SimpleOrganizationModel
   username: Scalars['String']
-}
-
-export type UserModelConnection = {
-  __typename?: 'UserModelConnection'
-  cursor: Scalars['String']
-  node: UserModel
 }
 
 export type UserOrMasterUser = MasterUserModel | UserModel
@@ -622,6 +656,22 @@ export type UserByIdQuery = {
       }
     | null
     | undefined
+}
+
+export type CreateVehicleMutationVariables = Exact<{
+  photo?: InputMaybe<Scalars['Upload']>
+  data: CreateVehicleDto
+}>
+
+export type CreateVehicleMutation = {
+  __typename?: 'Mutation'
+  createVehicle: {
+    __typename?: 'File'
+    uri: string
+    filename: string
+    mimetype: string
+    encoding: string
+  }
 }
 
 export type ListVehiclesQueryVariables = Exact<{
@@ -1452,6 +1502,76 @@ export const UserByIdDocument = {
     ...FullUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserByIdQuery, UserByIdQueryVariables>
+export const CreateVehicleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'createVehicle' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'photo' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Upload' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'CreateVehicleDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createVehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'photo' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'photo' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'uri' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'filename' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'mimetype' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'encoding' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CreateVehicleMutation,
+  CreateVehicleMutationVariables
+>
 export const ListVehiclesDocument = {
   kind: 'Document',
   definitions: [

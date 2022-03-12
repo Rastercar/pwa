@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import SingleImageFilePicker from 'src/components/input/SingleImageFilePicker.vue'
+import {
+  CreateVehicleDocument,
+  CreateVehicleDto,
+} from 'src/graphql/generated/graphql-operations'
+import YearTextInput from 'src/components/input/YearTextInput.vue'
+import VehiclePlateInput from './VehiclePlateInput.vue'
+import VehicleBrandInput from './VehicleBrandInput.vue'
+import { ApolloProvidersKey } from 'src/boot/apollo'
+import RenavamInput from './RenavamInput.vue'
+import useVuelidate from '@vuelidate/core'
+import { inject, Ref, ref } from 'vue'
+import { useQuasar } from 'quasar'
+
+const emit = defineEmits(['update:model-value'])
+
+const quasar = useQuasar()
+const v = useVuelidate()
+
+const createFormDefault = () => ({
+  plate: '',
+  brand: '',
+  model: '',
+  color: '',
+  renavam: '',
+  chassisNumber: '',
+  modelYear: '',
+  fabricationYear: '',
+})
+
+const formState = ref(createFormDefault())
+
+const apolloUploaderClient = inject(ApolloProvidersKey)?.uploader
+if (!apolloUploaderClient) throw new Error()
+
+const photo: Ref<null | File> = ref(null)
+
+const loading = ref(false)
+
+const toIntWithNullFallback = (v?: string) => {
+  if (!v) return null
+  const int = parseInt(v)
+  return isNaN(int) ? null : int
+}
+
+const submit = () => {
+  const data: CreateVehicleDto = {
+    ...formState.value,
+    modelYear: toIntWithNullFallback(formState.value.modelYear),
+    fabricationYear: toIntWithNullFallback(formState.value.fabricationYear),
+  }
+
+  loading.value = true
+
+  apolloUploaderClient
+    .mutate({
+      mutation: CreateVehicleDocument,
+      variables: { photo: photo.value, data },
+    })
+    .then(() => {
+      quasar.notify({ type: 'positive', message: 'Veículo criado' })
+    })
+    .catch(() => {
+      quasar.notify({ type: 'negative', message: 'Erro ao criar veículo' })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const closeAndReset = () => {
+  formState.value = createFormDefault()
+  v.value.$reset()
+
+  emit('update:model-value', false)
+}
+</script>
+
+<template>
+  <q-drawer
+    :width="350"
+    side="right"
+    bordered
+    overlay
+    class="bg-grey-2 q-pa-lg"
+    elevated
+  >
+    <div class="row q-mb-lg">
+      <div class="text-h5">novo veículo</div>
+
+      <q-space />
+
+      <q-btn
+        label="Cancelar"
+        icon-right="fa fa-arrow-right"
+        type="reset"
+        color="red"
+        class="q-ml-sm"
+        size="sm"
+        style="font-size: 12px"
+        @click="closeAndReset"
+      />
+    </div>
+
+    <VehiclePlateInput v-model="formState.plate" label="Placa" filled />
+
+    <SingleImageFilePicker
+      v-model="photo"
+      class="q-mt-sm"
+      color="teal"
+      filled
+      clearable
+    />
+
+    <div class="text-subtitle1 q-mt-lg q-mb-sm">Informações opcionais</div>
+
+    <VehicleBrandInput v-model="formState.brand" class="q-mb-md" dense filled />
+
+    <q-input
+      v-model="formState.model"
+      label="Modelo"
+      class="q-mb-lg"
+      dense
+      filled
+      maxlength="40"
+    />
+
+    <q-input
+      v-model="formState.color"
+      label="Cor"
+      class="q-mb-lg"
+      dense
+      filled
+      maxlength="20"
+    />
+
+    <RenavamInput v-model="formState.renavam" dense filled />
+
+    <YearTextInput
+      v-model="formState.modelYear"
+      label="Ano Modelo"
+      dense
+      filled
+    />
+
+    <YearTextInput
+      v-model="formState.fabricationYear"
+      label="Ano Fabricação"
+      dense
+      filled
+    />
+
+    <q-input v-model="formState.chassisNumber" label="N Chassi" dense filled />
+
+    <q-space />
+
+    <div class="bottom row q-mt-xl justify-end">
+      <q-btn label="Enviar" type="submit" color="green" @click="submit" />
+    </div>
+  </q-drawer>
+</template>
