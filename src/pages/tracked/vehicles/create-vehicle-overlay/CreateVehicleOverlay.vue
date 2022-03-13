@@ -4,11 +4,13 @@ import {
   CreateVehicleDocument,
   CreateVehicleDto,
 } from 'src/graphql/generated/graphql-operations'
+import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
 import YearTextInput from 'src/components/input/YearTextInput.vue'
 import VehiclePlateInput from './VehiclePlateInput.vue'
 import VehicleBrandInput from './VehicleBrandInput.vue'
 import { ApolloProvidersKey } from 'src/boot/apollo'
 import RenavamInput from './RenavamInput.vue'
+import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
 import { inject, Ref, ref } from 'vue'
 import { useQuasar } from 'quasar'
@@ -61,7 +63,10 @@ const submit = () => {
     .then(() => {
       quasar.notify({ type: 'positive', message: 'Veículo criado' })
     })
-    .catch(() => {
+    .catch(({ graphQLErrors }: ApolloError) => {
+      const unique = getUniqueViolationsFromGraphqlErrors(graphQLErrors)
+      // TODO: finish me
+      console.log({ unique })
       quasar.notify({ type: 'negative', message: 'Erro ao criar veículo' })
     })
     .finally(() => {
