@@ -1,17 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { vehicleColumns } from './vehicle-datatable.common'
 
-defineProps({
+const props = defineProps({
   vehicle: { type: Object, required: true },
+})
+
+const photoSrc = computed(() => {
+  return props.vehicle.photo && typeof props.vehicle.photo === 'string'
+    ? `${process.env.RASTERCAR_UPLOADS_URL}/${props.vehicle.photo}`
+    : 'https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202202/20220207/HONDA-CIVIC-2.0-16V-FLEXONE-EX-4P-CVT-wmimagem12353504220.jpg'
 })
 </script>
 
 <template>
   <!-- Do not change this id -->
   <q-card :id="`vehicle-row-${vehicle.id}`" flat bordered>
-    <img
-      src="https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202202/20220207/HONDA-CIVIC-2.0-16V-FLEXONE-EX-4P-CVT-wmimagem12353504220.jpg"
-    />
+    <img :src="photoSrc" />
 
     <q-card-section class="text-center q-pa-sm">
       <span class="text-grey-8">placa: </span>

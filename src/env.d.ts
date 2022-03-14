@@ -19,5 +19,9 @@ declare namespace NodeJS {
      * Google maps api key
      */
     GMAPS_API_KEY: string
+    /**
+     * URL for fetching rastercar files, pictures, etc
+     */
+    RASTERCAR_UPLOADS_URL: string
   }
 }

@@ -15,6 +15,7 @@ query listVehicles(
     nodes {
       id
       plate
+      photo
       model
       modelYear
       color

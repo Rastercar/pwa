@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { PropType, Ref, ref } from 'vue'
+import { computed, PropType } from 'vue'
 
-defineProps({
+const props = defineProps({
   modelValue: { type: Object as PropType<File | null>, default: null },
 })
 
-const photoSrc: Ref<null | string> = ref(null)
-
-const onPhotoChange = (file: File | null) => {
-  photoSrc.value = file ? URL.createObjectURL(file) : null
-}
+const photoSrc = computed(() =>
+  props.modelValue ? URL.createObjectURL(props.modelValue) : null
+)
 </script>
 
 <template>
@@ -17,7 +15,6 @@ const onPhotoChange = (file: File | null) => {
     v-bind="({ ...$props, ...$attrs } as any)"
     label="Foto"
     accept=".jpg, image/*"
-    @update:model-value="onPhotoChange"
   >
     <template #prepend>
       <q-icon name="fa fa-upload" />

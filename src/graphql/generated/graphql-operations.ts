@@ -45,14 +45,6 @@ export type CreateVehicleDto = {
   renavam?: InputMaybe<Scalars['String']>
 }
 
-export type File = {
-  __typename?: 'File'
-  encoding: Scalars['String']
-  filename: Scalars['String']
-  mimetype: Scalars['String']
-  uri: Scalars['String']
-}
-
 /** JSON Web Token */
 export type JwtModel = {
   __typename?: 'JwtModel'
@@ -97,7 +89,7 @@ export type MasterUserModel = {
 
 export type Mutation = {
   __typename?: 'Mutation'
-  createVehicle: File
+  createVehicle: VehicleModel
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
@@ -323,6 +315,7 @@ export type VehicleModel = {
   model?: Maybe<Scalars['String']>
   modelYear?: Maybe<Scalars['Float']>
   organization: SimpleOrganizationModel
+  photo?: Maybe<Scalars['String']>
   plate: Scalars['String']
   renavam?: Maybe<Scalars['String']>
   trackers: Array<TrackerModel>
@@ -666,11 +659,16 @@ export type CreateVehicleMutationVariables = Exact<{
 export type CreateVehicleMutation = {
   __typename?: 'Mutation'
   createVehicle: {
-    __typename?: 'File'
-    uri: string
-    filename: string
-    mimetype: string
-    encoding: string
+    __typename?: 'VehicleModel'
+    id: number
+    plate: string
+    photo?: string | null | undefined
+    model?: string | null | undefined
+    modelYear?: number | null | undefined
+    color?: string | null | undefined
+    renavam?: string | null | undefined
+    chassisNumber?: string | null | undefined
+    fabricationYear?: number | null | undefined
   }
 }
 
@@ -691,6 +689,7 @@ export type ListVehiclesQuery = {
           __typename?: 'VehicleModel'
           id: number
           plate: string
+          photo?: string | null | undefined
           model?: string | null | undefined
           modelYear?: number | null | undefined
           color?: string | null | undefined
@@ -1557,10 +1556,21 @@ export const CreateVehicleDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'uri' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'filename' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'mimetype' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'encoding' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'photo' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'modelYear' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'renavam' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'chassisNumber' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'fabricationYear' },
+                },
               ],
             },
           },
@@ -1680,6 +1690,7 @@ export const ListVehiclesDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'photo' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'model' } },
                       {
                         kind: 'Field',

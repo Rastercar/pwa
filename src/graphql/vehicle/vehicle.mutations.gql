@@ -1,8 +1,13 @@
 mutation createVehicle($photo: Upload, $data: CreateVehicleDTO!) {
   createVehicle(photo: $photo, data: $data) {
-    uri
-    filename
-    mimetype
-    encoding
+    id
+    plate
+    photo
+    model
+    modelYear
+    color
+    renavam
+    chassisNumber
+    fabricationYear
   }
 }

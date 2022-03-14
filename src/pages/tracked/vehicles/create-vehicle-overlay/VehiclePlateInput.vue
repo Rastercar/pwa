@@ -2,9 +2,21 @@
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
 import { helpers, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import { PropType } from 'vue'
 
 const props = defineProps({
-  modelValue: { type: String, required: true },
+  modelValue: {
+    type: String,
+    required: true,
+  },
+  /**
+   * Vehicles plates that are already in use
+   * and cannot be accepted
+   */
+  platesInUse: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
 })
 
 const oldRgx = /[A-Za-z]{3}[0-9]{4}/
@@ -21,6 +33,13 @@ const rules = {
     isOldOrMercosulPattern: helpers.withMessage(
       'Deve seguir o padrao aaa-nnnn ou aaa-n-a-nn',
       isOldOrMercosulPattern
+    ),
+    isNotInUse: helpers.withMessage(
+      'Já existe um veículo com essa placa',
+      (v?: string) => {
+        if (!v) return true
+        return !props.platesInUse.includes(v)
+      }
     ),
   },
 }

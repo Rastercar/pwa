@@ -15,18 +15,21 @@ const DEV_ENV = {
   API_BASE_URL: 'http://localhost:3000',
   GRAPHQL_ENDPOINT: 'http://localhost:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
+  RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
 
 const HOMOLOG_ENV = {
   API_BASE_URL: 'https://homolog.rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://homolog.rastercar.com:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
+  RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
 
 const PRODUCTION_ENV = {
   API_BASE_URL: 'https://rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://rastercar.com:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
+  RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
 
 module.exports = configure(function (ctx) {

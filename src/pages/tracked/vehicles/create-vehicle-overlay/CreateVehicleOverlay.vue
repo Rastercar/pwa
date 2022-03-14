@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import SingleImageFilePicker from 'src/components/input/SingleImageFilePicker.vue'
-import {
-  CreateVehicleDocument,
-  CreateVehicleDto,
-} from 'src/graphql/generated/graphql-operations'
 import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
 import YearTextInput from 'src/components/input/YearTextInput.vue'
 import VehiclePlateInput from './VehiclePlateInput.vue'
@@ -14,8 +10,12 @@ import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
 import { inject, Ref, ref } from 'vue'
 import { useQuasar } from 'quasar'
+import {
+  CreateVehicleDocument,
+  CreateVehicleDto,
+} from 'src/graphql/generated/graphql-operations'
 
-const emit = defineEmits(['update:model-value'])
+const emit = defineEmits(['update:model-value', 'vehicle:created'])
 
 const quasar = useQuasar()
 const v = useVuelidate()
@@ -36,17 +36,24 @@ const formState = ref(createFormDefault())
 const apolloUploaderClient = inject(ApolloProvidersKey)?.uploader
 if (!apolloUploaderClient) throw new Error()
 
+const platesInUse: Ref<string[]> = ref([])
 const photo: Ref<null | File> = ref(null)
 
 const loading = ref(false)
 
-const toIntWithNullFallback = (v?: string) => {
-  if (!v) return null
-  const int = parseInt(v)
-  return isNaN(int) ? null : int
+const resetForm = () => {
+  formState.value = createFormDefault()
+  photo.value = null
+  platesInUse.value = []
 }
 
 const submit = () => {
+  const toIntWithNullFallback = (v?: string) => {
+    if (!v) return null
+    const int = parseInt(v)
+    return isNaN(int) ? null : int
+  }
+
   const data: CreateVehicleDto = {
     ...formState.value,
     modelYear: toIntWithNullFallback(formState.value.modelYear),
@@ -60,13 +67,18 @@ const submit = () => {
       mutation: CreateVehicleDocument,
       variables: { photo: photo.value, data },
     })
-    .then(() => {
+    .then(({ data }) => {
+      resetForm()
+
+      emit('vehicle:created', data?.createVehicle)
+
       quasar.notify({ type: 'positive', message: 'Veículo criado' })
     })
     .catch(({ graphQLErrors }: ApolloError) => {
-      const unique = getUniqueViolationsFromGraphqlErrors(graphQLErrors)
-      // TODO: finish me
-      console.log({ unique })
+      const unqViolations = getUniqueViolationsFromGraphqlErrors(graphQLErrors)
+
+      if (unqViolations.includes('plate')) platesInUse.value.push(data.plate)
+
       quasar.notify({ type: 'negative', message: 'Erro ao criar veículo' })
     })
     .finally(() => {
@@ -75,7 +87,7 @@ const submit = () => {
 }
 
 const closeAndReset = () => {
-  formState.value = createFormDefault()
+  resetForm()
   v.value.$reset()
 
   emit('update:model-value', false)
@@ -104,11 +116,17 @@ const closeAndReset = () => {
         class="q-ml-sm"
         size="sm"
         style="font-size: 12px"
+        :disable="loading"
         @click="closeAndReset"
       />
     </div>
 
-    <VehiclePlateInput v-model="formState.plate" label="Placa" filled />
+    <VehiclePlateInput
+      v-model="formState.plate"
+      :plates-in-use="platesInUse"
+      label="Placa"
+      filled
+    />
 
     <SingleImageFilePicker
       v-model="photo"
@@ -116,6 +134,7 @@ const closeAndReset = () => {
       color="teal"
       filled
       clearable
+      :disable="loading"
     />
 
     <div class="text-subtitle1 q-mt-lg q-mb-sm">Informações opcionais</div>
@@ -161,7 +180,13 @@ const closeAndReset = () => {
     <q-space />
 
     <div class="bottom row q-mt-xl justify-end">
-      <q-btn label="Enviar" type="submit" color="green" @click="submit" />
+      <q-btn
+        label="Enviar"
+        type="submit"
+        color="green"
+        :loading="loading"
+        @click="submit"
+      />
     </div>
   </q-drawer>
 </template>

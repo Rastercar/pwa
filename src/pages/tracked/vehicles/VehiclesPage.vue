@@ -69,9 +69,11 @@ const setMenuTarget = (vehicleId: number) => {
   }
 }
 
-onMounted(() => {
+const refreshTable = () => {
   onRequest({ pagination: pagination.value }).catch(() => null)
-})
+}
+
+onMounted(refreshTable)
 
 const showCreateVehicleOverlay = ref(false)
 </script>
@@ -121,6 +123,9 @@ const showCreateVehicleOverlay = ref(false)
 
     <VehicleCardMenu :target="menuTarget" touch-position />
 
-    <CreateVehicleOverlay v-model="showCreateVehicleOverlay" />
+    <CreateVehicleOverlay
+      v-model="showCreateVehicleOverlay"
+      @vehicle:created="refreshTable"
+    />
   </q-page>
 </template>
