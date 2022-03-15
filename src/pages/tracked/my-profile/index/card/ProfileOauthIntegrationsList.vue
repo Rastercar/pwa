@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import PasswordConfirmationDialog from 'src/components/dialog/PasswordConfirmationDialog.vue'
-import GoogleButton from 'src/pages/auth/login/GoogleButton.vue'
 import { useApolloClient, useMutation } from '@vue/apollo-composable'
+import GoogleButton from 'src/pages/auth/login/index/GoogleButton.vue'
 import { PropType, ref } from 'vue'
 import {
+  CurrentUserSimpleDocument,
   UpdateMyProfileDocument,
   CurrentUserQuery,
-  CurrentUserSimpleDocument,
 } from 'src/graphql/generated/graphql-operations'
 
 const showConfirmationDialog = ref(false)

@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import PasswordConfirmationInput from '../../../../components/input/PasswordConfirmationInput.vue'
 import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
-import PasswordConfirmationInput from './PasswordConfirmationInput.vue'
+import PasswordInput from '../../../../components/input/PasswordInput.vue'
 import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
 import EmailInput from '../../../../components/input/EmailInput.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive, ref, computed, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UsernameInput from './UsernameInput.vue'
-import PasswordInput from './PasswordInput.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { useAuth } from 'src/state/auth.state'
 import {

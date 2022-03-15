@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import PasswordConfirmationInput from '../register/form/PasswordConfirmationInput.vue'
-import PasswordInput from '../register/form/PasswordInput.vue'
-import PasswordResetSuccess from './PasswordResetSuccess.vue'
+import PasswordResetSuccess from './index/PasswordResetSuccess.vue'
+import PasswordResetError from './index/PasswordResetError.vue'
 import { apiResetPasswordByToken } from 'src/api/auth.api'
-import PasswordResetError from './PasswordResetError.vue'
 import { HTTP_STATUS } from 'src/constants/http-status'
 import useVuelidate from '@vuelidate/core'
 import { AxiosError } from 'axios'
 import { Ref, ref } from 'vue'
+import PasswordInput from 'src/components/input/PasswordInput.vue'
+import PasswordConfirmationInput from 'src/components/input/PasswordConfirmationInput.vue'
 
 type requestStatus =
   | 'loading'

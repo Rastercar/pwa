@@ -16,8 +16,15 @@ yarn run lint
 quasar build
 ```
 
-# Recomended extensions
+## Page structure
 
-### Customize the configuration
+https://nuxtjs.org/docs/features/file-system-routing/
 
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+## Recomended extensions
+
+- Apollo Graphql
+- DotENV
+- Prettier
+- ESLint
+- gql formatter
+- Vue Language Features (Volar)

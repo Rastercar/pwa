@@ -18,7 +18,7 @@ const photoSrc = computed(() => {
   <q-card :id="`vehicle-row-${vehicle.id}`" flat bordered>
     <q-img
       :src="photoSrc || require('../../../../../assets/placeholders/car.png')"
-      style="max-width: 300px; height: 150px"
+      style="height: 150px"
       fit="cover"
     />
 

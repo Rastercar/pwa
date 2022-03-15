@@ -2,7 +2,7 @@
 import GoogleMap from 'src/components/google-maps/GoogleMap.vue'
 import { useGeolocation } from 'src/composables/use-geolocation'
 import Marker from 'src/components/google-maps/Marker.vue'
-import MapTopMenu from './MapTopMenu.vue'
+import MapTopMenu from './index/MapTopMenu.vue'
 import { toRaw } from 'vue'
 
 const { coords: userCoordinates } = useGeolocation({

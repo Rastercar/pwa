@@ -6,76 +6,30 @@ export const trackedRoutes: RouteRecordRaw[] = [
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
       {
-        path: '',
-        component: () => import('src/pages/dev/TestPage.vue'),
-      },
-    ],
-    meta: {
-      requiresLogin: true,
-    },
-  },
-  {
-    path: '/cliente/meu-perfil',
-    component: () => import('layouts/tracked/TrackedLayout.vue'),
-    children: [
-      {
-        path: '',
+        path: 'meu-perfil',
         name: 'meu-perfil',
-        component: () =>
-          import('src/pages/tracked/profile/TrackedProfilePage.vue'),
+        component: () => import('src/pages/tracked/my-profile/Index.vue'),
+        meta: { requiresLogin: true },
       },
-    ],
-    meta: {
-      requiresLogin: true,
-    },
-  },
-  {
-    path: '/cliente/mapa-principal',
-    component: () => import('layouts/tracked/TrackedLayout.vue'),
-    children: [
       {
-        path: '',
-        name: 'mapa-principal',
-        component: () => import('src/pages/tracked/main-map/MainMapPage.vue'),
+        path: 'mapa',
+        name: 'mapa',
+        component: () => import('src/pages/tracked/map/Index.vue'),
+        meta: { requiresLogin: true },
       },
-    ],
-    meta: {
-      requiresLogin: true,
-    },
-  },
-  {
-    path: '/cliente/meus-veiculos',
-    component: () => import('layouts/tracked/TrackedLayout.vue'),
-    children: [
       {
-        path: '',
-        name: 'meus-veiculos',
-        component: () =>
-          import(
-            'src/pages/tracked/vehicles/vehicles-list/VehiclesListPage.vue'
-          ),
+        path: 'veiculos',
+        name: 'veiculos',
+        component: () => import('src/pages/tracked/vehicles/Index.vue'),
+        meta: { requiresLogin: true },
       },
-    ],
-    meta: {
-      requiresLogin: true,
-    },
-  },
-  {
-    path: '/cliente/veiculos/:id',
-    component: () => import('layouts/tracked/TrackedLayout.vue'),
-    children: [
       {
-        path: '',
+        path: 'veiculos/:id',
         name: 'veiculo',
-        component: () =>
-          import(
-            'src/pages/tracked/vehicles/individual-vehicle/VehiclePage.vue'
-          ),
+        component: () => import('src/pages/tracked/vehicles/_id/Index.vue'),
+        meta: { requiresLogin: true },
       },
     ],
-    meta: {
-      requiresLogin: true,
-    },
   },
 ]
 

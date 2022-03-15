@@ -26,9 +26,5 @@ const attemptLogout = () => {
     >
       REGISTER
     </button>
-
-    <!-- <div class="row q-mt-xl">
-      <input type="file" :onchange="handleFileChange" />
-    </div> -->
   </q-page>
 </template>

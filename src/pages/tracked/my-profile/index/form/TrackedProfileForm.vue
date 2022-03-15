@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import PasswordConfirmationInput from 'src/pages/auth/register/form/PasswordConfirmationInput.vue'
-import { checkGraphqlErrorsContainErrorCode } from 'src/graphql/graphql.utils'
-import PasswordInput from 'src/pages/auth/register/form/PasswordInput.vue'
-import UsernameInput from 'src/pages/auth/register/form/UsernameInput.vue'
-import { ERROR_CODES } from 'src/constants/rastercar-api-error-codes'
+import ForgotPasswordButton from '../../../../../components/button/ForgotPasswordButton.vue'
+import PasswordConfirmationInput1 from 'src/components/input/PasswordConfirmationInput.vue'
+import { checkGraphqlErrorsContainErrorCode } from '../../../../../graphql/graphql.utils'
+import { ERROR_CODES } from '../../../../../constants/rastercar-api-error-codes'
+import PasswordInput from 'src/components/input/PasswordInput.vue'
 import EmailInput from 'src/components/input/EmailInput.vue'
 import { computed, PropType, reactive, Ref, ref } from 'vue'
 import OldPasswordInput from './OldPasswordInput.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useVuelidate from '@vuelidate/core'
-import {
-  UpdateMyProfileDocument,
-  CurrentUserQuery,
-  UpdateUserDto,
-} from 'src/graphql/generated/graphql-operations'
 import { useQuasar } from 'quasar'
-import ForgotPasswordButton from '../../../../components/button/ForgotPasswordButton.vue'
+import {
+  CurrentUserQuery,
+  UpdateMyProfileDocument,
+  UpdateUserDto,
+} from '../../../../../graphql/generated/graphql-operations'
 
 const props = defineProps({
   /**
@@ -130,7 +129,7 @@ const saveProfile = () => {
         label="Nova senha"
       />
 
-      <PasswordConfirmationInput
+      <PasswordConfirmationInput1
         v-model="passwordConfirmation"
         :visible="isPasswordVisible"
         :password-to-match="formState.password"

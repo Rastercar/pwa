@@ -13,13 +13,13 @@ const menuList = [
   {
     icon: 'fa fa-map-marker-alt',
     label: 'Mapa',
-    route: { name: 'mapa-principal' },
+    route: { name: 'mapa' },
     separator: false,
   },
   {
     icon: 'fa fa-car',
     label: 'Meus veículos',
-    route: { name: 'meus-veiculos' },
+    route: { name: 'veiculos' },
   },
 ]
 

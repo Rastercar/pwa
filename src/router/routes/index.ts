@@ -6,9 +6,9 @@ import commonRoutes from './common.routes'
 import { devRoutes } from './dev.routes'
 
 export const routes: RouteRecordRaw[] = [
+  ...(process.env.NODE_ENV === 'production' ? [] : devRoutes),
   ...trackedRoutes,
   ...authRoutes,
   ...errorRoutes,
   ...commonRoutes,
-  ...(process.env.NODE_ENV === 'production' ? [] : devRoutes),
 ]

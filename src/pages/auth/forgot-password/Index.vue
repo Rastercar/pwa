@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import EmailInput from '../../components/input/EmailInput.vue'
-import { ref } from 'vue'
-import ForgotPasswordButton from '../../components/button/ForgotPasswordButton.vue'
+import ForgotPasswordButton from '../../../components/button/ForgotPasswordButton.vue'
+import EmailInput from '../../../components/input/EmailInput.vue'
 import useVuelidate from '@vuelidate/core'
+import { ref } from 'vue'
 
 const isCheckingEmail = ref(false)
 const willCheckEmail = ref(false)

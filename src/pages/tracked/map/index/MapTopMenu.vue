@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MapControl from '../../../components/google-maps/MapControl.vue'
+import MapControl from '../../../../components/google-maps/MapControl.vue'
 </script>
 
 <template>

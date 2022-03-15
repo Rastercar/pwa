@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
-import TrackedProfileForm from './form/TrackedProfileForm.vue'
-import TrackedProfileHeader from './TrackedProfileHeader.vue'
+import TrackedProfileForm from './index/form/TrackedProfileForm.vue'
+import TrackedProfileHeader from './index/TrackedProfileHeader.vue'
+import TrackedProfile from './index/card/TrackedProfile.vue'
 import { useQuery } from '@vue/apollo-composable'
-import TrackedProfile from './card/TrackedProfile.vue'
 import { ref } from 'vue'
 
 const { result } = useQuery(CurrentUserDocument)
