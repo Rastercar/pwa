@@ -5,7 +5,10 @@ export const trackedRoutes: RouteRecordRaw[] = [
     path: '/cliente',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/dev/TestPage.vue') },
+      {
+        path: '',
+        component: () => import('src/pages/dev/TestPage.vue'),
+      },
     ],
     meta: {
       requiresLogin: true,
@@ -17,6 +20,7 @@ export const trackedRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'meu-perfil',
         component: () =>
           import('src/pages/tracked/profile/TrackedProfilePage.vue'),
       },
@@ -31,6 +35,7 @@ export const trackedRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'mapa-principal',
         component: () => import('src/pages/tracked/main-map/MainMapPage.vue'),
       },
     ],
@@ -39,12 +44,33 @@ export const trackedRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/cliente/veiculos',
+    path: '/cliente/meus-veiculos',
     component: () => import('layouts/tracked/TrackedLayout.vue'),
     children: [
       {
         path: '',
-        component: () => import('src/pages/tracked/vehicles/VehiclesPage.vue'),
+        name: 'meus-veiculos',
+        component: () =>
+          import(
+            'src/pages/tracked/vehicles/vehicles-list/VehiclesListPage.vue'
+          ),
+      },
+    ],
+    meta: {
+      requiresLogin: true,
+    },
+  },
+  {
+    path: '/cliente/veiculos/:id',
+    component: () => import('layouts/tracked/TrackedLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'veiculo',
+        component: () =>
+          import(
+            'src/pages/tracked/vehicles/individual-vehicle/VehiclePage.vue'
+          ),
       },
     ],
     meta: {

@@ -5,7 +5,7 @@
       <a
         class="text-blue-6"
         :style="{ cursor: 'pointer' }"
-        @click="$router.push('/register')"
+        @click="$router.push({ name: 'registrar' })"
       >
         crie uma conta
       </a>
@@ -13,7 +13,7 @@
 
     <div class="q-mb-sm">
       <router-link
-        to="/esqueceu-senha"
+        :to="{ name: 'esqueceu-senha' }"
         class="text-blue"
         style="text-decoration: none"
       >

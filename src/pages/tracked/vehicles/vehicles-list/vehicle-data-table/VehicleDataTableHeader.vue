@@ -42,7 +42,7 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
     <div class="bg-grey-2 q-px-sm" style="border-radius: 3px">
       <q-toggle
         :model-value="grid"
-        label="Ver Detalhes"
+        label="visualização detalhada"
         left-label
         @update:model-value="(e) => $emit('update:grid', e)"
       />

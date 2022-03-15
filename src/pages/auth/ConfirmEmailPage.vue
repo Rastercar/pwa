@@ -100,7 +100,7 @@ const { isLoggedIn } = useAuth()
         color="grey-7"
         style="max-width: 300px"
         :label="`Voltar para ${isLoggedIn ? 'pagina principal' : 'login'}`"
-        @click="$router.push(isLoggedIn ? '/' : '/login')"
+        @click="$router.push(isLoggedIn ? '/' : { name: 'login' })"
       />
     </div>
   </div>

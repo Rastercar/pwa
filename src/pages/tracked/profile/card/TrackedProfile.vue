@@ -14,11 +14,11 @@ defineProps({
 
 <template>
   <q-card-section class="q-gutter-md items-start">
-    <div class="text-subtitle1 text-grey-8 q-mt-none">Nome de usuário</div>
-    <div class="text-h6 q-mt-none">{{ user.username }}</div>
+    <div class="text-subtitle2 text-grey-8 q-mt-none">Nome de usuário</div>
+    <div class="text-subtitle1 q-mt-none">{{ user.username }}</div>
 
-    <div class="text-subtitle1 text-grey-8 q-mt-lg">Email</div>
-    <div class="text-h6 q-mt-none">
+    <div class="text-subtitle2 text-grey-8 q-mt-lg">Email</div>
+    <div class="text-subtitle1 q-mt-none">
       {{ user.email }}
     </div>
 

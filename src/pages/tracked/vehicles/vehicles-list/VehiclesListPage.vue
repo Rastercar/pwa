@@ -3,12 +3,13 @@ import {
   ListVehiclesDocument,
   ListVehiclesQuery,
 } from 'src/graphql/generated/graphql-operations'
+import type { VehicleModel } from 'src/graphql/generated/graphql-operations'
+import CreateVehicleOverlay from './create-vehicle-overlay/CreateVehicleOverlay.vue'
 import VehicleDataTableHeader from './vehicle-data-table/VehicleDataTableHeader.vue'
 import { vehicleColumns } from './vehicle-data-table/vehicle-datatable.common'
 import VehicleCardMenu from './vehicle-data-table/VehicleCardMenu.vue'
 import { getOffsetPaginationArgs } from 'src/utils/pagination.utils'
 import VehicleCard from './vehicle-data-table/VehicleCard.vue'
-import CreateVehicleOverlay from './create-vehicle-overlay/CreateVehicleOverlay.vue'
 import VehicleRow from './vehicle-data-table/VehicleRow.vue'
 import { useApolloClient } from '@vue/apollo-composable'
 import { onMounted, Ref, ref } from 'vue'
@@ -45,6 +46,7 @@ const onRequest = async ({ pagination: pag }: OnRequestArgs) => {
     .query({
       query: ListVehiclesDocument,
       variables: { offset, limit, orderBy, descending, search },
+      fetchPolicy: 'network-only',
     })
     .then(({ data: { vehicles } }) => {
       if (vehicles.nodes) rows.value = vehicles.nodes
@@ -63,9 +65,13 @@ const onRequest = async ({ pagination: pag }: OnRequestArgs) => {
 const menuTarget: Ref<string | false> = ref(false)
 const grid = ref(false)
 
-const setMenuTarget = (vehicleId: number) => {
-  if (menuTarget.value !== `#vehicle-row-${vehicleId}`) {
-    menuTarget.value = `#vehicle-row-${vehicleId}`
+const selectedVehicle: Ref<VehicleModel | null> = ref(null)
+
+const setMenuTarget = (vehicle: VehicleModel) => {
+  selectedVehicle.value = vehicle
+
+  if (menuTarget.value !== `#vehicle-row-${vehicle.id}`) {
+    menuTarget.value = `#vehicle-row-${vehicle.id}`
   }
 }
 
@@ -108,7 +114,7 @@ const showCreateVehicleOverlay = ref(false)
         >
           <VehicleCard
             :vehicle="props.row"
-            @click="() => setMenuTarget(props.row.id)"
+            @click="() => setMenuTarget(props.row as VehicleModel)"
           />
         </div>
       </template>
@@ -116,13 +122,18 @@ const showCreateVehicleOverlay = ref(false)
       <template #body="props">
         <VehicleRow
           :vehicle="props.row"
-          @click="() => setMenuTarget(props.row.id)"
+          @click="() => setMenuTarget(props.row as VehicleModel)"
         />
       </template>
     </q-table>
 
-    <VehicleCardMenu :target="menuTarget" touch-position />
+    <VehicleCardMenu
+      :vehicle="selectedVehicle ?? undefined"
+      :target="menuTarget"
+      touch-position
+    />
 
+    {{ selectedVehicle }}
     <CreateVehicleOverlay
       v-model="showCreateVehicleOverlay"
       @vehicle:created="refreshTable"

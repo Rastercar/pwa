@@ -9,14 +9,20 @@ const props = defineProps({
 const photoSrc = computed(() => {
   return props.vehicle.photo && typeof props.vehicle.photo === 'string'
     ? `${process.env.RASTERCAR_UPLOADS_URL}/${props.vehicle.photo}`
-    : 'https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202202/20220207/HONDA-CIVIC-2.0-16V-FLEXONE-EX-4P-CVT-wmimagem12353504220.jpg'
+    : null
 })
 </script>
 
 <template>
   <!-- Do not change this id -->
   <q-card :id="`vehicle-row-${vehicle.id}`" flat bordered>
-    <img :src="photoSrc" />
+    <q-img
+      :src="photoSrc || require('../../../../../assets/placeholders/car.png')"
+      style="max-width: 300px; height: 150px"
+      fit="cover"
+    />
+
+    <q-separator />
 
     <q-card-section class="text-center q-pa-sm">
       <span class="text-grey-8">placa: </span>

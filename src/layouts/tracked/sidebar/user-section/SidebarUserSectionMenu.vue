@@ -8,7 +8,7 @@ const { AUTH_LOGOUT } = useAuth()
 
 const logout = () => {
   AUTH_LOGOUT()
-  router.push('/login').catch(() => null)
+  router.push({ name: 'login' }).catch(() => null)
 }
 </script>
 

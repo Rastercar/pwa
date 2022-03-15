@@ -13,13 +13,13 @@ const menuList = [
   {
     icon: 'fa fa-map-marker-alt',
     label: 'Mapa',
-    route: '/cliente/mapa-principal',
+    route: { name: 'mapa-principal' },
     separator: false,
   },
   {
     icon: 'fa fa-car',
     label: 'Meus veículos',
-    route: '/cliente/veiculos',
+    route: { name: 'meus-veiculos' },
   },
 ]
 
@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
   menuList.unshift({
     icon: 'fa fa-microchip',
     label: 'dev',
-    route: '/dev/test',
+    route: { name: 'test' },
     separator: true,
   })
 }

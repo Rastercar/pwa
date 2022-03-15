@@ -12,7 +12,7 @@ const isEditing = ref(false)
 </script>
 
 <template>
-  <q-page padding class="row justify-center">
+  <q-page padding class="row justify-center" style="background-color: #fafafa">
     <div class="column">
       <div class="row">
         <q-card

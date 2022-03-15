@@ -68,7 +68,7 @@ if (props.token) setTimeout(attemptLogin, 500)
         color="grey-7"
         class="full-width q-mt-md"
         label="Voltar para login"
-        @click="$router.push('/login')"
+        @click="$router.push({ name: 'login' })"
       />
     </div>
 
@@ -79,7 +79,7 @@ if (props.token) setTimeout(attemptLogin, 500)
         color="grey-7"
         class="full-width q-mt-md"
         label="Voltar para login"
-        @click="$router.push('/login')"
+        @click="$router.push({ name: 'login' })"
       />
     </div>
 

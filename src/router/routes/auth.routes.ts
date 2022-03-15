@@ -8,6 +8,7 @@ export const authRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'login',
         component: () => import('src/pages/auth/login/LoginPage.vue'),
       },
     ],
@@ -58,17 +59,19 @@ export const authRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'esqueceu-senha',
         component: () => import('src/pages/auth/ForgotPasswordPage.vue'),
         props: mapQueryToProps(['token']),
       },
     ],
   },
   {
-    path: '/register',
+    path: '/registrar',
     component: () => import('layouts/centralized/CentralizedLayout.vue'),
     children: [
       {
         path: '',
+        name: 'registrar',
         component: () => import('src/pages/auth/register/RegistrationPage.vue'),
       },
     ],

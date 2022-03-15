@@ -38,7 +38,7 @@ const userMenuVisible = ref(false)
   >
     <q-item-section side>
       <q-avatar rounded size="48px">
-        <img :src="require('../../../../assets/user.png')" />
+        <img :src="require('../../../../assets/placeholders/user.png')" />
       </q-avatar>
     </q-item-section>
 

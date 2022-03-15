@@ -15,7 +15,7 @@ export const ApolloProvidersKey: InjectionKey<ApolloProviders> =
 
 export default boot(({ app, router }) => {
   const defaultClient = new ApolloClient(getDefaultClientOptions())
-  defaultClient.onClearStore(() => router.push('/login'))
+  defaultClient.onClearStore(() => router.push({ name: 'login' }))
 
   const clients = {
     default: defaultClient,
