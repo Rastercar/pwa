@@ -58,12 +58,13 @@ if (props.token) setTimeout(attemptLogin, 500)
 </script>
 
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+  <q-page
+    class="fullscreen bg-blue text-white text-center flex flex-center"
+    padding
   >
     <div v-if="!token || autoLoginErrorType === 'unauthorized'">
-      <div class="text-h1">401</div>
-      <div class="text-h3" style="opacity: 0.5">não autorizado</div>
+      <div class="text-h2">401</div>
+      <div class="text-h4" style="opacity: 0.5">não autorizado</div>
       <q-btn
         color="grey-7"
         class="full-width q-mt-md"
@@ -73,8 +74,8 @@ if (props.token) setTimeout(attemptLogin, 500)
     </div>
 
     <div v-else-if="autoLoginErrorType === 'other'">
-      <div class="text-h1">Oops</div>
-      <div class="text-h3" style="opacity: 0.5">algo deu errado</div>
+      <div class="text-h2">Oops</div>
+      <div class="text-h4" style="opacity: 0.5">algo deu errado</div>
       <q-btn
         color="grey-7"
         class="full-width q-mt-md"
@@ -84,8 +85,8 @@ if (props.token) setTimeout(attemptLogin, 500)
     </div>
 
     <div v-else>
-      <div class="text-h1">acessando</div>
-      <div class="text-h3" style="opacity: 0.5">aguarde um minuto...</div>
+      <div class="text-h2">acessando</div>
+      <div class="text-h4" style="opacity: 0.5">aguarde um minuto...</div>
       <q-linear-progress
         v-show="isLoggingIn || willLoginSoon"
         indeterminate
@@ -93,5 +94,5 @@ if (props.token) setTimeout(attemptLogin, 500)
         class="q-mt-md"
       />
     </div>
-  </div>
+  </q-page>
 </template>

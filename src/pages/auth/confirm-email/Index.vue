@@ -51,11 +51,11 @@ if (props.token) setTimeout(confirmEmail, 500)
 
 const messageDict: Record<reqStatus, { title: string; description: string }> = {
   success: {
-    title: 'Sucesso !',
+    title: 'sucesso !',
     description: 'seu email foi confirmado, esta guia pode ser fechada',
   },
   waiting: {
-    title: 'Acessando',
+    title: 'acessando',
     description: 'Aguarde um minuto...',
   },
   unauthorized: {
@@ -63,11 +63,11 @@ const messageDict: Record<reqStatus, { title: string; description: string }> = {
     description: 'Token expirado ou inválido',
   },
   wontSend: {
-    title: 'Error',
+    title: 'erro',
     description: 'token de confirmação não encontrado',
   },
   unknowError: {
-    title: 'Oops',
+    title: 'oops',
     description: 'Algo deu errado',
   },
 }
@@ -79,11 +79,12 @@ const { isLoggedIn } = useAuth()
 
 <template>
   <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+    class="fullscreen bg-blue text-white text-center flex flex-center"
+    padding
   >
     <div style="max-width: 700px">
-      <div class="text-h1">{{ message.title }}</div>
-      <div class="text-h3 q-my-md" style="opacity: 0.5">
+      <div class="text-h2">{{ message.title }}</div>
+      <div class="text-h4 q-my-md" style="opacity: 0.5">
         {{ message.description }}
       </div>
 

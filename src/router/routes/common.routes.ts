@@ -14,18 +14,18 @@ export const commonRoutes: RouteRecordRaw[] = [
 
       if (!isLoggedIn.value) return 'login'
 
-      const { data } = await useApolloClient()
+      const { data: currentUser } = await useApolloClient()
         .resolveClient()
         .query({ query: CurrentUserDocument })
 
       // If we are logged in (we have a JWT in the local storage) but we failed to fetch
       // the current user then something is very wrong, so we just reset the application
-      if (!data) {
+      if (!currentUser) {
         AUTH_LOGOUT()
         return '/login'
       }
 
-      return data.me.__typename === 'MasterUserModel'
+      return currentUser.me.__typename === 'MasterUserModel'
         ? '/rastreadora'
         : '/cliente'
     },

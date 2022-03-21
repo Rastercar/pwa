@@ -3,8 +3,8 @@ import { mapQueryToProps } from './routes.utils'
 
 export const authRoutes: RouteRecordRaw[] = [
   // Unfortunately since the root path '/' is a componentless
-  // and redirectionless path we cant use it as the auth routes parent
-  // to apply the centralized layout
+  // and redirectionless path we cant use it as the auth routes
+  // parent to apply the centralized layout
   {
     path: '/login',
     component: () => import('layouts/centralized/CentralizedLayout.vue'),
@@ -15,9 +15,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: () => import('src/pages/auth/login/Index.vue'),
       },
     ],
-    meta: {
-      requiresLogoff: true,
-    },
+    meta: { auth: { requiresLogoff: true } },
   },
   {
     path: '/auto-login',
@@ -29,9 +27,7 @@ export const authRoutes: RouteRecordRaw[] = [
         props: mapQueryToProps(['token']),
       },
     ],
-    meta: {
-      requiresLogoff: true,
-    },
+    meta: { auth: { requiresLogoff: true } },
   },
   {
     path: '/confirmar-email',
@@ -77,9 +73,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: () => import('src/pages/auth/register/Index.vue'),
       },
     ],
-    meta: {
-      requiresLogoff: true,
-    },
+    meta: { auth: { requiresLogoff: true } },
   },
   {
     path: '/oauth',

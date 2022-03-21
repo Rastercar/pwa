@@ -22,15 +22,14 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
 
 <template>
   <div class="row full-width" :class="{ 'q-mb-sm': grid }">
-    <q-icon class="q-mr-md" name="fa fa-car" size="lg" color="grey-8" />
+    <q-icon name="fa fa-car" size="lg" color="grey-8" />
 
-    <div class="text-h6">Meus veículos</div>
+    <div class="text-h6 q-ml-md">Meus veículos</div>
 
     <q-space />
 
     <q-btn
       v-bind="createBtnProps"
-      class="q-mr-md"
       color="green"
       icon="fa fa-plus"
       flat
@@ -50,7 +49,6 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
 
     <q-input
       :model-value="filter"
-      class="q-ml-md"
       dense
       filled
       debounce="300"

@@ -1,11 +1,33 @@
 <script setup lang="ts">
 import MapControl from '../../../../components/google-maps/MapControl.vue'
+import { useLayout } from 'src/state/layout.state'
+import { onBeforeUnmount, ref } from 'vue'
+
+const { TOGGLE_SIDEBAR } = useLayout()
+
+const mapIsFullScreen = ref(false)
+
+const onFullScreenChange = () => {
+  mapIsFullScreen.value = !!document.fullscreenElement
+}
+
+document.addEventListener('fullscreenchange', onFullScreenChange)
+
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', onFullScreenChange)
+})
 </script>
 
 <template>
+  <MapControl position="TOP_LEFT" :style="{ margin: '10px' }">
+    <q-card v-show="!mapIsFullScreen" class="shadow-1" square>
+      <q-btn icon="fa fa-bars" class="q-px-sm" flat @click="TOGGLE_SIDEBAR" />
+    </q-card>
+  </MapControl>
+
   <MapControl position="TOP_CENTER" :style="{ margin: '10px' }">
-    <q-card>
-      <q-btn icon="fa fa-car" label="Teste"></q-btn>
+    <q-card v-show="!mapIsFullScreen" class="shadow-1" square>
+      <q-btn icon="fa fa-car" label="Teste" flat />
     </q-card>
   </MapControl>
 </template>

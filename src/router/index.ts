@@ -30,7 +30,7 @@ const createAppRouter = route(() => {
   router.beforeEach((to, from, next) => {
     const { isLoggedIn } = useAuth()
 
-    const { requiresLogin, requiresLogoff } = to.meta
+    const { requiresLogin, requiresLogoff } = to.meta?.auth || {}
 
     if (requiresLogin && !isLoggedIn.value) return next({ name: 'login' })
     if (requiresLogoff && isLoggedIn.value) return false

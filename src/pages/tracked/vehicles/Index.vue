@@ -21,9 +21,9 @@ const loading = ref(false)
 const filter = ref('')
 
 const pagination = ref({
+  page: 1,
   sortBy: 'desc',
   descending: false,
-  page: 1,
   rowsPerPage: 5,
   rowsNumber: 10,
 })
@@ -89,6 +89,7 @@ const showCreateVehicleOverlay = ref(false)
     <q-table
       v-model:pagination="pagination"
       title="Meus Veículos"
+      class="vehicle-table"
       :class="{ 'bg-white': grid, 'shadow-2': grid }"
       :rows="rows"
       :grid="grid"
@@ -133,10 +134,24 @@ const showCreateVehicleOverlay = ref(false)
       touch-position
     />
 
-    {{ selectedVehicle }}
     <CreateVehicleOverlay
       v-model="showCreateVehicleOverlay"
       @vehicle:created="refreshTable"
     />
   </q-page>
 </template>
+
+<style lang="sass">
+.vehicle-table
+  thead tr:first-child th:first-child
+    background-color: #ededed
+
+  td:first-child
+    background-color: #ededed
+
+  th:first-child,
+  td:first-child
+    position: sticky
+    left: 0
+    z-index: 1
+</style>

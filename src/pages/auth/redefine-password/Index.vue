@@ -53,8 +53,9 @@ const resetPassword = () => {
 </script>
 
 <template>
-  <div
-    class="fullscreen bg-green-1 text-grey-9 text-center q-pa-md flex flex-center"
+  <q-page
+    class="fullscreen bg-green-1 text-grey-9 text-center flex flex-center"
+    padding
   >
     <q-card style="width: 500px">
       <q-card-section
@@ -67,7 +68,7 @@ const resetPassword = () => {
 
       <q-card-section
         v-if="reqStatus === 'loading' || reqStatus === 'not-sent'"
-        class="q-mx-lg q-mb-lg"
+        class="q-mx-md q-mb-lg"
       >
         <PasswordInput
           v-model="newPassword"
@@ -113,5 +114,5 @@ const resetPassword = () => {
         "
       />
     </q-card>
-  </div>
+  </q-page>
 </template>

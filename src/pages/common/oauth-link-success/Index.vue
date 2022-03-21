@@ -1,6 +1,7 @@
 <template>
-  <div
-    class="fullscreen bg-green text-white text-center q-pa-md flex flex-center"
+  <q-page
+    class="fullscreen bg-green text-white text-center flex flex-center"
+    padding
   >
     <div>
       <div style="font-size: 70px">Sucesso !</div>
@@ -10,5 +11,5 @@
         janela
       </div>
     </div>
-  </div>
+  </q-page>
 </template>

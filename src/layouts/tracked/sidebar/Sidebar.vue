@@ -7,7 +7,7 @@ const mini = ref(false)
 </script>
 
 <template>
-  <q-drawer :width="250" :mini="mini" :mini-width="80" elevated model-value>
+  <q-drawer :width="250" :mini="mini" :mini-width="80" elevated>
     <SidebarUserSection :mini="mini" />
 
     <SidebarRoutes :mini="mini" />
@@ -15,7 +15,7 @@ const mini = ref(false)
     <q-item
       v-ripple
       clickable
-      class="absolute-bottom q-pa-none"
+      class="absolute-bottom q-pa-none desktop-only"
       @click="mini = !mini"
     >
       <q-item-section

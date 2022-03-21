@@ -262,6 +262,11 @@ export type SimpleOrganizationModel = {
   name: Scalars['String']
 }
 
+export type Subscription = {
+  __typename?: 'Subscription'
+  testSub: VehicleModel
+}
+
 /** tracker */
 export type TrackerModel = {
   __typename?: 'TrackerModel'

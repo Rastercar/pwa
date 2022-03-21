@@ -45,7 +45,7 @@ const photoSrc = computed(() => {
                 {{ column.label }}
               </div>
               <div :class="{ 'text-grey-5': !vehicle[column.field] }">
-                {{ vehicle[column.field] ?? 'não informado' }}
+                {{ vehicle[column.field] || 'não informado' }}
               </div>
             </div>
           </q-item-section>

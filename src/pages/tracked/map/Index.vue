@@ -15,10 +15,32 @@ const center = toRaw(userCoordinates)
 
 <template>
   <q-page class="bg-grey">
-    <GoogleMap :center="center">
+    <GoogleMap
+      :center="center"
+      :street-view-control="false"
+      :map-type-control-options="{
+        style: 1,
+        position: 6,
+        mapTypeIds: ['roadmap', 'satellite'],
+      }"
+    >
       <Marker :options="{ position: { lat: -20, lng: -54 } }" />
 
       <MapTopMenu />
     </GoogleMap>
   </q-page>
 </template>
+
+<style lang="sass">
+a[href^="http://maps.google.com/maps"]
+  display: none !important
+
+
+a[href^="https://maps.google.com/maps"]
+  display: none !important
+
+.gmnoprint a,
+.gmnoprint span,
+.gm-style-cc
+  display: none
+</style>

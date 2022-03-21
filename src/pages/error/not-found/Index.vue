@@ -1,7 +1,6 @@
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
-  >
+  <!-- This cant be a QPage for some reason -->
+  <div class="fullscreen bg-blue text-white text-center flex flex-center">
     <div>
       <div style="font-size: 25vh">404</div>
 
@@ -12,7 +11,7 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/"
+        to="/login"
         label="Voltar"
         no-caps
       />
