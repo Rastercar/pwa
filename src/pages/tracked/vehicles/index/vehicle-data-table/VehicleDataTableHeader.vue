@@ -21,7 +21,7 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
 </script>
 
 <template>
-  <div class="row full-width" :class="{ 'q-mb-sm': grid }">
+  <div class="row full-width items-center" :class="{ 'q-mb-sm': grid }">
     <q-icon name="fa fa-car" size="lg" color="grey-8" />
 
     <div class="text-h6 q-ml-md">Meus veículos</div>
@@ -38,7 +38,10 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
       @click="$emit('click:new-record')"
     />
 
-    <div class="bg-grey-2 q-px-sm" style="border-radius: 3px">
+    <div
+      class="bg-grey-2 q-px-sm col-xs-12 col-sm-auto q-ml-sm-sm q-mt-xs-sm q-mt-sm-none"
+      style="border-radius: 3px"
+    >
       <q-toggle
         :model-value="grid"
         label="visualização detalhada"
@@ -53,6 +56,7 @@ defineEmits(['update:grid', 'update:filter', 'click:new-record'])
       filled
       debounce="300"
       placeholder="Busca por placa"
+      class="col-xs-12 col-sm-auto q-ml-sm-sm q-mt-xs-sm q-mt-sm-none"
       @update:model-value="(e) => $emit('update:filter', e)"
     >
       <template #append>

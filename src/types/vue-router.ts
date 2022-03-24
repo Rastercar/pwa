@@ -14,9 +14,10 @@ declare module 'vue-router' {
     }
     layout?: {
       /**
-       * If this page should not show its layout header (**NOTE:** This means the route page should implement a way to trigger sidebad navigation and so on)
+       * The condition to show the layout header
+       * (**NOTE:** This means the route page should implement a way to trigger sidebad navigation and so on)
        */
-      hideHeader: boolean
+      showHeader: 'never' | 'always' | 'mobile-only' | 'desktop-only'
     }
   }
 }

@@ -1,0 +1,12 @@
+query listActiveTrackers {
+  allActiveTrackers {
+    id
+    model
+    vehicle {
+      id
+      plate
+      model
+      brand
+    }
+  }
+}

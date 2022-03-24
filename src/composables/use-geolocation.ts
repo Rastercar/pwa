@@ -44,9 +44,11 @@ export function useGeolocation(opts?: UseGeolocationOpts) {
 
     watcherId = navigator.geolocation.watchPosition(({ coords: c }) => {
       const latLng = { lat: c.latitude, lng: c.longitude }
+
       if (options.saveCoordsOnLocalStorage) {
         localStorage.setItem('userLastCoords', JSON.stringify(latLng))
       }
+
       coords.value = latLng
     })
   })

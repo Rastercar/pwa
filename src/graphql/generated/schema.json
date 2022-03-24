@@ -278,6 +278,49 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "LatLng",
+        "description": "tracker position mock",
+        "fields": [
+          {
+            "name": "lat",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lng",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "INPUT_OBJECT",
         "name": "LoginInput",
         "description": null,
@@ -1319,6 +1362,30 @@
         "description": null,
         "fields": [
           {
+            "name": "allActiveTrackers",
+            "description": "All trackers that can recieve positions (trackers that have one or more sim cards)",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "TrackerModel",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "isEmailInUse",
             "description": null,
             "args": [
@@ -1850,7 +1917,7 @@
         "description": null,
         "fields": [
           {
-            "name": "testSub",
+            "name": "onPositionRecieved",
             "description": null,
             "args": [],
             "type": {
@@ -1858,7 +1925,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "VehicleModel",
+                "name": "LatLng",
                 "ofType": null
               }
             },

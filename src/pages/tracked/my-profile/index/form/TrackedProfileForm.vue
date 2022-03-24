@@ -3,6 +3,7 @@ import ForgotPasswordButton from '../../../../../components/button/ForgotPasswor
 import PasswordConfirmationInput1 from 'src/components/input/PasswordConfirmationInput.vue'
 import { checkGraphqlErrorsContainErrorCode } from '../../../../../graphql/graphql.utils'
 import { ERROR_CODES } from '../../../../../constants/rastercar-api-error-codes'
+import UsernameInput from 'src/pages/auth/register/index/UsernameInput.vue'
 import PasswordInput from 'src/components/input/PasswordInput.vue'
 import EmailInput from 'src/components/input/EmailInput.vue'
 import { computed, PropType, reactive, Ref, ref } from 'vue'
@@ -81,11 +82,8 @@ const saveProfile = () => {
 
   updateProfile({ profileData })
     .then((res) => {
-      if (!res?.data) {
-        v.value.$touch()
-      } else {
-        quasar.notify({ type: 'positive', message: 'Perfil atualizado' })
-      }
+      if (!res?.data) v.value.$touch()
+      else quasar.notify({ type: 'positive', message: 'Perfil atualizado' })
     })
     .catch(() => {
       v.value.$touch()
@@ -109,14 +107,13 @@ const saveProfile = () => {
     </q-card-section>
 
     <q-card-section class="q-gutter-md">
-      <div class="q-mb-lg text-h5 flex justify-between items-center no-wrap">
+      <div class="text-h5 flex justify-between items-center no-wrap">
         <div class="col-10 q-pr-lg">
           <q-icon name="fa fa-shield-alt" class="q-mr-md" />
           <span>Acesso e credenciais</span>
         </div>
-
-        <ForgotPasswordButton class="text-subtitle1 text-blue-7" />
       </div>
+      <ForgotPasswordButton class="text-subtitle1 text-blue-7 q-mb-lg" />
 
       <OldPasswordInput
         v-model="formState.oldPassword"

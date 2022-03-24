@@ -17,7 +17,7 @@ const isEditing = ref(false)
       <div class="row">
         <q-card
           v-if="result && result.me && result.me.__typename === 'UserModel'"
-          style="width: 600px; margin-top: 80px"
+          style="max-width: 600px"
           class="q-pa-sm"
         >
           <TrackedProfileHeader v-model:isEditing="isEditing" />

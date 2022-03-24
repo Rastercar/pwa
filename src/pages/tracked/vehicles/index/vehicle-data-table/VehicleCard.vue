@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { vehicleColumns } from './vehicle-datatable.common'
+import { computed } from 'vue'
 
 const props = defineProps({
-  vehicle: { type: Object, required: true },
+  vehicle: {
+    type: Object,
+    required: true,
+  },
 })
 
 const photoSrc = computed(() => {

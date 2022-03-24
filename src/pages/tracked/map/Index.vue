@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { MapOverlayComponents } from './index/overlays/map-overlay-commons'
+import { TrackerModel } from 'src/graphql/generated/graphql-operations'
+import TrackerMarkers from './index/map-items/TrackerMarkers.vue'
 import GoogleMap from 'src/components/google-maps/GoogleMap.vue'
 import { useGeolocation } from 'src/composables/use-geolocation'
-import Marker from 'src/components/google-maps/Marker.vue'
+import MapRightOverlay from './index/MapRightOverlay.vue'
 import MapTopMenu from './index/MapTopMenu.vue'
-import { toRaw } from 'vue'
+import { Ref, ref, toRaw } from 'vue'
 
 const { coords: userCoordinates } = useGeolocation({
   initialCoordinates: { lat: 20.4643395, lng: -54.579342 },
@@ -11,12 +14,23 @@ const { coords: userCoordinates } = useGeolocation({
 
 // If we do not remove the reactivity the map center will change if the user is moving IRL
 const center = toRaw(userCoordinates)
+
+const showMapRightOverlay = ref(false)
+const overlayProps: Ref<{ tracker: TrackerModel } | undefined> = ref(undefined)
+const overlayToDisplay: Ref<MapOverlayComponents> = ref('none')
+
+const showTrackerOverlay = (tracker: TrackerModel) => {
+  overlayProps.value = { tracker }
+  overlayToDisplay.value = 'tracker'
+  showMapRightOverlay.value = !showMapRightOverlay.value
+}
 </script>
 
 <template>
   <q-page class="bg-grey">
     <GoogleMap
       :center="center"
+      :fullscreen-control="false"
       :street-view-control="false"
       :map-type-control-options="{
         style: 1,
@@ -24,14 +38,21 @@ const center = toRaw(userCoordinates)
         mapTypeIds: ['roadmap', 'satellite'],
       }"
     >
-      <Marker :options="{ position: { lat: -20, lng: -54 } }" />
+      <TrackerMarkers @tracker:selected="showTrackerOverlay" />
 
       <MapTopMenu />
+
+      <MapRightOverlay
+        v-model="showMapRightOverlay"
+        :overlay-to-display="overlayToDisplay"
+        :overlay-props="overlayProps"
+      />
     </GoogleMap>
   </q-page>
 </template>
 
 <style lang="sass">
+/* Disable google logo on map bottom [start] */
 a[href^="http://maps.google.com/maps"]
   display: none !important
 

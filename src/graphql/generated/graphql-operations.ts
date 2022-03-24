@@ -52,6 +52,13 @@ export type JwtModel = {
   value: Scalars['String']
 }
 
+/** tracker position mock */
+export type LatLng = {
+  __typename?: 'LatLng'
+  lat: Scalars['Float']
+  lng: Scalars['Float']
+}
+
 export type LoginInput = {
   email: Scalars['String']
   password: Scalars['String']
@@ -198,6 +205,8 @@ export enum Permission {
 
 export type Query = {
   __typename?: 'Query'
+  /** All trackers that can recieve positions (trackers that have one or more sim cards) */
+  allActiveTrackers: Array<TrackerModel>
   isEmailInUse: Scalars['Boolean']
   me: UserOrMasterUser
   organization?: Maybe<OrganizationModel>
@@ -264,7 +273,7 @@ export type SimpleOrganizationModel = {
 
 export type Subscription = {
   __typename?: 'Subscription'
-  testSub: VehicleModel
+  onPositionRecieved: LatLng
 }
 
 /** tracker */
@@ -425,6 +434,33 @@ export type UnregisteredUserByUuidQuery = {
       }
     | null
     | undefined
+}
+
+export type ListActiveTrackersQueryVariables = Exact<{ [key: string]: never }>
+
+export type ListActiveTrackersQuery = {
+  __typename?: 'Query'
+  allActiveTrackers: Array<{
+    __typename?: 'TrackerModel'
+    id: number
+    model: string
+    vehicle: {
+      __typename?: 'VehicleModel'
+      id: number
+      plate: string
+      model?: string | null | undefined
+      brand?: string | null | undefined
+    }
+  }>
+}
+
+export type OnTrackerPositionRecievedSubscriptionVariables = Exact<{
+  [key: string]: never
+}>
+
+export type OnTrackerPositionRecievedSubscription = {
+  __typename?: 'Subscription'
+  onPositionRecieved: { __typename?: 'LatLng'; lat: number; lng: number }
 }
 
 export type FullUserFragment = {
@@ -1175,6 +1211,77 @@ export const UnregisteredUserByUuidDocument = {
 } as unknown as DocumentNode<
   UnregisteredUserByUuidQuery,
   UnregisteredUserByUuidQueryVariables
+>
+export const ListActiveTrackersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listActiveTrackers' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allActiveTrackers' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'vehicle' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'brand' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ListActiveTrackersQuery,
+  ListActiveTrackersQueryVariables
+>
+export const OnTrackerPositionRecievedDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'subscription',
+      name: { kind: 'Name', value: 'onTrackerPositionRecieved' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'onPositionRecieved' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'lat' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'lng' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  OnTrackerPositionRecievedSubscription,
+  OnTrackerPositionRecievedSubscriptionVariables
 >
 export const RegisterUserDocument = {
   kind: 'Document',

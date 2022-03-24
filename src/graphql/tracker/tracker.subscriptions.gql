@@ -1,0 +1,6 @@
+subscription onTrackerPositionRecieved {
+  onPositionRecieved {
+    lat
+    lng
+  }
+}

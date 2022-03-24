@@ -16,7 +16,7 @@ export const trackedRoutes: RouteRecordRaw[] = [
         name: 'mapa',
         component: () => import('src/pages/tracked/map/Index.vue'),
         meta: {
-          layout: { hideHeader: true },
+          layout: { showHeader: 'never' },
           auth: { requiresLogin: true },
         },
       },

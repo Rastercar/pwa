@@ -85,7 +85,7 @@ const showCreateVehicleOverlay = ref(false)
 </script>
 
 <template>
-  <q-page padding class="justify-center" style="background-color: #f9f9f9">
+  <q-page class="justify-center" style="background-color: #f9f9f9" padding>
     <q-table
       v-model:pagination="pagination"
       title="Meus Veículos"

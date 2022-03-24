@@ -260,7 +260,7 @@ export default defineComponent({
       if (map.value) api.value?.event.clearInstanceListeners(map.value)
     })
 
-    return { mapRef, map, api }
+    return { mapRef, map, api, mapWasLoaded }
   },
 })
 </script>
@@ -269,6 +269,6 @@ export default defineComponent({
   <div style="min-height: inherit">
     <!-- The div the map will be injected onto -->
     <div v-bind="$attrs" ref="mapRef" style="min-height: inherit"></div>
-    <slot></slot>
+    <slot v-if="mapWasLoaded"></slot>
   </div>
 </template>

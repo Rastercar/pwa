@@ -14,6 +14,7 @@ const path = require('path')
 const DEV_ENV = {
   API_BASE_URL: 'http://localhost:3000',
   GRAPHQL_ENDPOINT: 'http://localhost:3000/graphql',
+  GRAPHQL_WS_ENDPOINT: 'ws://localhost:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
   RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
@@ -21,6 +22,7 @@ const DEV_ENV = {
 const HOMOLOG_ENV = {
   API_BASE_URL: 'https://homolog.rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://homolog.rastercar.com:3000/graphql',
+  GRAPHQL_WS_ENDPOINT: 'ws://localhost:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
   RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
@@ -28,6 +30,7 @@ const HOMOLOG_ENV = {
 const PRODUCTION_ENV = {
   API_BASE_URL: 'https://rastercar.com:3000',
   GRAPHQL_ENDPOINT: 'https://rastercar.com:3000/graphql',
+  GRAPHQL_WS_ENDPOINT: 'ws://localhost:3000/graphql',
   GMAPS_API_KEY: 'AIzaSyCtgbVV4RuoHnqwYYGxvq3QLHlBlske--I',
   RASTERCAR_UPLOADS_URL: 'https://rastercar-uploads.s3.amazonaws.com',
 }
@@ -139,11 +142,8 @@ module.exports = configure(function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      config: {
-        loadingBar: {
-          /* look at QuasarConfOptions from the API card */
-        },
-      },
+      cssAddon: true,
+      config: {},
 
       iconSet: 'fontawesome-v5', // Quasar icon set
       lang: 'pt-BR', // Quasar language pack
