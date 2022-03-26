@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import SelectTrackerDialog from './dialogs/select-tracker-dialog/SelectTrackerDialog.vue'
 import MapControl from '../../../../components/google-maps/MapControl.vue'
-import SelectTrackerDialog from './dialogs/SelectTrackerDialog.vue'
 import { useLayout } from 'src/state/layout.state'
 import { onBeforeUnmount, ref } from 'vue'
 

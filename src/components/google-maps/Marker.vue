@@ -1,6 +1,16 @@
 <script lang="ts">
-import { useMapComponent } from 'src/composables/use-map-component'
-import { defineComponent, PropType, toRef } from 'vue'
+import { ApiSymbol, MapSymbol } from 'src/composables/use-map-component'
+import {
+  defineComponent,
+  onBeforeUnmount,
+  PropType,
+  inject,
+  watch,
+  toRef,
+  ref,
+  Ref,
+  WatchCallback,
+} from 'vue'
 
 const markerEvents = [
   'animation_changed',
@@ -40,17 +50,51 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const options = toRef(props, 'options')
-    const marker = useMapComponent({
-      componentName: 'Marker',
-      events: markerEvents,
-      options,
-      emit,
-    })
 
-    return { marker }
+    let marker: google.maps.Marker | null = null
+    const markerRef: Ref<google.maps.Marker | null> = ref(null)
+
+    const map = inject(MapSymbol, ref(null))
+    const api = inject(ApiSymbol, ref(null))
+
+    const removeMarkerIfSet = () => {
+      if (!marker) return
+
+      api.value?.event.clearInstanceListeners(marker)
+      marker.setMap(null)
+    }
+
+    const addListenerToMarkerEvents = () => {
+      markerEvents.forEach((event) => {
+        marker?.addListener(event, (e: unknown) => emit(event, e))
+      })
+    }
+
+    const createMarker = (options: google.maps.ReadonlyMarkerOptions) => {
+      marker = new google.maps.Marker(options)
+      addListenerToMarkerEvents()
+    }
+
+    const onMarkerOptionsChange: WatchCallback<
+      google.maps.MarkerOptions,
+      google.maps.MarkerOptions | undefined
+    > = () => {
+      if (!map.value || !api.value) return
+
+      marker
+        ? marker.setOptions(options.value)
+        : createMarker({ ...options.value, map: map.value })
+
+      markerRef.value = marker
+    }
+
+    watch(options, onMarkerOptionsChange, { immediate: true })
+
+    onBeforeUnmount(removeMarkerIfSet)
+
+    return { component: markerRef.value }
   },
 
-  // This component cannot use the <script setup> syntax because it doesnt suppor renderless components
   render: () => null,
 })
 </script>

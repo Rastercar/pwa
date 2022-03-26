@@ -26,5 +26,10 @@ export function getDefaultClientOptions(): ApolloClientOptions<unknown> {
     .concat(errorHandlerLink)
     .concat(wsForSubscriptionsHttpForQueryAndMutationsLink)
 
-  return { link, cache }
+  return {
+    link,
+    cache,
+    // https://github.com/apollographql/apollo-client/pull/4499
+    resolvers: {},
+  }
 }

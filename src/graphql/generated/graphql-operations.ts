@@ -52,7 +52,6 @@ export type JwtModel = {
   value: Scalars['String']
 }
 
-/** tracker position mock */
 export type LatLng = {
   __typename?: 'LatLng'
   lat: Scalars['Float']
@@ -273,13 +272,18 @@ export type SimpleOrganizationModel = {
 
 export type Subscription = {
   __typename?: 'Subscription'
-  onPositionRecieved: LatLng
+  listenToTracker: TrackerModel
+}
+
+export type SubscriptionListenToTrackerArgs = {
+  ids?: InputMaybe<Array<Scalars['Int']>>
 }
 
 /** tracker */
 export type TrackerModel = {
   __typename?: 'TrackerModel'
   id: Scalars['Int']
+  lastPosition?: Maybe<LatLng>
   model: Scalars['String']
   organization: SimpleOrganizationModel
   simCards: Array<SimCardModel>
@@ -444,6 +448,10 @@ export type ListActiveTrackersQuery = {
     __typename?: 'TrackerModel'
     id: number
     model: string
+    lastPosition?:
+      | { __typename?: 'LatLng'; lat: number; lng: number }
+      | null
+      | undefined
     vehicle: {
       __typename?: 'VehicleModel'
       id: number
@@ -454,13 +462,20 @@ export type ListActiveTrackersQuery = {
   }>
 }
 
-export type OnTrackerPositionRecievedSubscriptionVariables = Exact<{
-  [key: string]: never
+export type ListenToTrackerByIdSubscriptionVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int']
 }>
 
-export type OnTrackerPositionRecievedSubscription = {
+export type ListenToTrackerByIdSubscription = {
   __typename?: 'Subscription'
-  onPositionRecieved: { __typename?: 'LatLng'; lat: number; lng: number }
+  listenToTracker: {
+    __typename?: 'TrackerModel'
+    id: number
+    lastPosition?:
+      | { __typename?: 'LatLng'; lat: number; lng: number }
+      | null
+      | undefined
+  }
 }
 
 export type FullUserFragment = {
@@ -1232,6 +1247,17 @@ export const ListActiveTrackersDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'model' } },
                 {
                   kind: 'Field',
+                  name: { kind: 'Name', value: 'lastPosition' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'lat' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'lng' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
                   name: { kind: 'Name', value: 'vehicle' },
                   selectionSet: {
                     kind: 'SelectionSet',
@@ -1254,24 +1280,63 @@ export const ListActiveTrackersDocument = {
   ListActiveTrackersQuery,
   ListActiveTrackersQueryVariables
 >
-export const OnTrackerPositionRecievedDocument = {
+export const ListenToTrackerByIdDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'subscription',
-      name: { kind: 'Name', value: 'onTrackerPositionRecieved' },
+      name: { kind: 'Name', value: 'listenToTrackerById' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'ids' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'Int' },
+                },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'onPositionRecieved' },
+            name: { kind: 'Name', value: 'listenToTracker' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'ids' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'ids' },
+                },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'lat' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'lng' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'lastPosition' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'lat' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'lng' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -1280,8 +1345,8 @@ export const OnTrackerPositionRecievedDocument = {
     },
   ],
 } as unknown as DocumentNode<
-  OnTrackerPositionRecievedSubscription,
-  OnTrackerPositionRecievedSubscriptionVariables
+  ListenToTrackerByIdSubscription,
+  ListenToTrackerByIdSubscriptionVariables
 >
 export const RegisterUserDocument = {
   kind: 'Document',

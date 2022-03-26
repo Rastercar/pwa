@@ -280,7 +280,7 @@
       {
         "kind": "OBJECT",
         "name": "LatLng",
-        "description": "tracker position mock",
+        "description": null,
         "fields": [
           {
             "name": "lat",
@@ -1917,15 +1917,36 @@
         "description": null,
         "fields": [
           {
-            "name": "onPositionRecieved",
+            "name": "listenToTracker",
             "description": null,
-            "args": [],
+            "args": [
+              {
+                "name": "ids",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": "[]",
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "LatLng",
+                "name": "TrackerModel",
                 "ofType": null
               }
             },
@@ -1955,6 +1976,18 @@
                 "name": "Int",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lastPosition",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "LatLng",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

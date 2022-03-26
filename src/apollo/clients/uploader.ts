@@ -12,5 +12,10 @@ export function getUploaderClientOptions(): ApolloClientOptions<unknown> {
 
   const link = authLink.concat(uploadLink)
 
-  return { link, cache }
+  return {
+    link,
+    cache,
+    // https://github.com/apollographql/apollo-client/pull/4499
+    resolvers: {},
+  }
 }

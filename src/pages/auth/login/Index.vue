@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { LoginMutationDocument } from 'src/graphql/generated/graphql-operations'
 import { isApiErrorResponse } from 'src/apollo/links/error-handler.link'
-import { HTTP_STATUS } from 'src/constants/http-status'
-import { useMutation } from '@vue/apollo-composable'
 import LoginCardFooter from './index/LoginCardFooter.vue'
 import LoginEmailInput from './index/LoginEmailInput.vue'
+import { HTTP_STATUS } from 'src/constants/http-status'
 import PasswordInput from './index/PasswordInput.vue'
+import { useMutation } from '@vue/apollo-composable'
+import GoogleButton from './index/GoogleButton.vue'
 import { useAuth } from 'src/state/auth.state'
 import { useVuelidate } from '@vuelidate/core'
-import GoogleButton from './index/GoogleButton.vue'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 

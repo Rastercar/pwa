@@ -34,6 +34,8 @@ const logErrorMessage = (msg: string | unknown[] | Record<string, unknown>) => {
 const getApiErrorsResponsesFromGraphqlErrors = (
   graphQLErrors: GraphQLErrors = []
 ): ApiErrorResponse[] => {
+  console.log(graphQLErrors)
+
   return graphQLErrors
     .map((error) => error.extensions.response)
     .filter((response) => isApiErrorResponse(response)) as ApiErrorResponse[]

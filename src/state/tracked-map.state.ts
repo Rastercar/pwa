@@ -1,23 +1,27 @@
-import { TrackerModel } from 'src/graphql/generated/graphql-operations'
+import { reactive, readonly } from 'vue'
 import { loadFromLS, syncWithLS } from './utils/persist-state'
-import { reactive } from 'vue'
 
+/*
+ | Tracked Map State: 
+ | 
+ | Here should lie all state related to the tracked map page,
+ | such as the trackers to listen for, preferences, themes, etc.
+ */
 interface TrackedMapState {
-  selectedTrackers: TrackerModel[]
+  selectedTrackerIds: number[]
 }
 
 const state: TrackedMapState = reactive(
-  loadFromLS('trackedMapState', { selectedTrackers: [] })
+  loadFromLS('trackedMapState', { selectedTrackerIds: [] })
 )
 
 syncWithLS({ trackedMapState: state })
 
-const SET_SELECTED_TRACKERS = (trackers: TrackerModel[]) => {
-  state.selectedTrackers = trackers
+const SET_SELECTED_TRACKERS = (trackerIds: number[]) => {
+  state.selectedTrackerIds = trackerIds
 }
 
 export const useTrackedMap = () => ({
   SET_SELECTED_TRACKERS,
-
-  state,
+  state: readonly(state),
 })

@@ -1,6 +1,9 @@
-subscription onTrackerPositionRecieved {
-  onPositionRecieved {
-    lat
-    lng
+subscription listenToTrackerById($ids: [Int!]!) {
+  listenToTracker(ids: $ids) {
+    id
+    lastPosition {
+      lat
+      lng
+    }
   }
 }

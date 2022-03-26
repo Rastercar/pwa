@@ -1,5 +1,5 @@
-import { provideApolloClient } from '@vue/apollo-composable'
 import { getUploaderClientOptions } from 'src/apollo/clients/uploader'
+import { provideApolloClient } from '@vue/apollo-composable'
 import { getDefaultClientOptions } from 'src/apollo/clients/default'
 import { ApolloClient } from '@apollo/client/core'
 import { boot } from 'quasar/wrappers'
@@ -17,10 +17,9 @@ export default boot(({ app, router }) => {
   const defaultClient = new ApolloClient(getDefaultClientOptions())
   defaultClient.onClearStore(() => router.push({ name: 'login' }))
 
-  const clients = {
-    default: defaultClient,
-    uploader: new ApolloClient(getUploaderClientOptions()),
-  }
+  const uploaderClient = new ApolloClient(getUploaderClientOptions())
+
+  const clients = { default: defaultClient, uploader: uploaderClient }
 
   provideApolloClient(clients.default)
 

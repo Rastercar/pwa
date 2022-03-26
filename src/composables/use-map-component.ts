@@ -50,6 +50,11 @@ interface UseMapComponentRet {
 /**
  * Creates a component for use inside the `GoogleMap` component
  *
+ * **NOTE:** What this does is basically create a new instance of google.maps.<Component> for the given map
+ * and recreate the component if the map or the component options change, if you want more fine grained reactivity
+ * without reinstantiating the marker than do not use this. Make your own implementation and observe/react to the
+ * <Component> options changes properly
+ *
  * @param args.componentName
  * @param args.events same name as in google maps docs
  * @param args.options options to pass on the component creation
@@ -75,6 +80,7 @@ export const useMapComponent = (
 
         // Create a new component instance passing the map ref and the init options
         _component = new api.value[componentName](opts)
+
         component.value = _component
 
         events.forEach((eventName) => {
@@ -92,5 +98,7 @@ export const useMapComponent = (
     { immediate: true }
   )
 
+  // Return the instantiated google maps component (Marker, Line, etc) for debbuging,
+  // this return should not be used and the components should appear on the map automatically
   return { component }
 }

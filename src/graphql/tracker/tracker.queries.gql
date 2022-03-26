@@ -2,6 +2,10 @@ query listActiveTrackers {
   allActiveTrackers {
     id
     model
+    lastPosition {
+      lat
+      lng
+    }
     vehicle {
       id
       plate
