@@ -1,6 +1,15 @@
-import { WebSocketLink } from '@apollo/client/link/ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { createClient } from 'graphql-ws'
+import { useAuth } from 'src/state/auth.state'
 
-const uri = process.env.GRAPHQL_WS_ENDPOINT
-if (!uri) throw new Error('[GRAPHQL_WS_ENDPOINT] not defined for current env')
+const url = process.env.GRAPHQL_WS_ENDPOINT
+if (!url) throw new Error('[GRAPHQL_WS_ENDPOINT] not defined for current env')
 
-export const wsLink = new WebSocketLink({ uri })
+const { state } = useAuth()
+
+export const wsLink = new GraphQLWsLink(
+  createClient({
+    url,
+    connectionParams: () => ({ authToken: state.apiToken }),
+  })
+)

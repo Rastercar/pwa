@@ -6,9 +6,10 @@ import {
   TrackerModel,
 } from '../../../../../../graphql/generated/graphql-operations'
 import { useSubscription, useQuery } from '@vue/apollo-composable'
+import { MapSymbol } from 'src/composables/use-map-component'
 import { useTrackedMap } from 'src/state/tracked-map.state'
 import SelectTrackerTable from './SelectTrackerTable.vue'
-import { reactive, Ref, ref } from 'vue'
+import { inject, reactive, Ref, ref } from 'vue'
 import { QTableProps } from 'quasar'
 
 const {
@@ -19,12 +20,12 @@ const {
 
 const filter = ref('')
 
+const map = inject(MapSymbol, ref(null))
+
 const trackerToListenIds: number[] = reactive([])
 
-const { start: listenToTrackers } = useSubscription(
-  ListenToTrackerByIdDocument,
-  { ids: trackerToListenIds }
-)
+const { start: listenToTrackers, onResult: onTrackerPosition } =
+  useSubscription(ListenToTrackerByIdDocument, { ids: trackerToListenIds })
 
 const { SET_SELECTED_TRACKERS, state } = useTrackedMap()
 
@@ -53,6 +54,15 @@ const syncPreviousSelectedTrackersWithDataTable = (
 
 onTrackersFetched(({ data }) => {
   syncPreviousSelectedTrackersWithDataTable(data.allActiveTrackers)
+})
+
+onTrackerPosition(({ data }) => {
+  const position = data?.listenToTracker.lastPosition
+
+  if (state.options.fitMapOnTrackerPosition && position && map.value) {
+    const originalMapBouds = map.value.getBounds()
+    if (originalMapBouds) originalMapBouds.extend(position)
+  }
 })
 </script>
 

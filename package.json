@@ -12,7 +12,7 @@
     "gen-gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@apollo/client": "^3.5.6",
+    "@apollo/client": "^3.5.10",
     "@googlemaps/js-api-loader": "^1.13.7",
     "@graphql-codegen/add": "^3.1.0",
     "@graphql-codegen/typed-document-node": "^2.2.1",

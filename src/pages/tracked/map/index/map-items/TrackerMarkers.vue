@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {
   ListActiveTrackersDocument,
+  ListActiveTrackersQuery,
   TrackerModel,
 } from '../../../../../graphql/generated/graphql-operations'
-import Marker from 'src/components/google-maps/Marker.vue'
+import { MapSymbol } from 'src/composables/use-map-component'
 import { useTrackedMap } from 'src/state/tracked-map.state'
+import Marker from 'src/components/google-maps/Marker.vue'
+import { computed, inject, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { computed } from 'vue'
 
 defineEmits<{
   (event: 'tracker:selected', tracker: TrackerModel): void
@@ -20,14 +22,35 @@ const markerIcon = {
   fillOpacity: 1,
 }
 
-const { result } = useQuery(ListActiveTrackersDocument)
+const map = inject(MapSymbol, ref(null))
 
+const { result } = useQuery(ListActiveTrackersDocument)
 const { state: trackedMapState } = useTrackedMap()
 
 const trackersToShow = computed(() => {
   const all = result.value?.allActiveTrackers ?? []
 
   return all.filter((t) => trackedMapState.selectedTrackerIds.includes(t.id))
+})
+
+const fitMapToTrackersBounds = (
+  trackers: ListActiveTrackersQuery['allActiveTrackers']
+) => {
+  if (!map.value) return
+
+  const bounds = new google.maps.LatLngBounds()
+
+  trackers.forEach((tracker) => {
+    if (tracker.lastPosition) bounds.extend(tracker.lastPosition)
+  })
+
+  map.value.fitBounds(bounds)
+}
+
+watch(trackersToShow, (trackers) => {
+  if (trackers.length > 0 && trackedMapState.options.fitMapOnTrackerSelection) {
+    fitMapToTrackersBounds(trackers)
+  }
 })
 </script>
 
