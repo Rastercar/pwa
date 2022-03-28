@@ -9,7 +9,7 @@ import { useSubscription, useQuery } from '@vue/apollo-composable'
 import { MapSymbol } from 'src/composables/use-map-component'
 import { useTrackedMap } from 'src/state/tracked-map.state'
 import SelectTrackerTable from './SelectTrackerTable.vue'
-import { inject, reactive, Ref, ref } from 'vue'
+import { inject, Ref, ref } from 'vue'
 import { QTableProps } from 'quasar'
 
 const {
@@ -22,22 +22,19 @@ const filter = ref('')
 
 const map = inject(MapSymbol, ref(null))
 
-const trackerToListenIds: number[] = reactive([])
+const { SET_SELECTED_TRACKERS, state } = useTrackedMap()
 
 const { start: listenToTrackers, onResult: onTrackerPosition } =
-  useSubscription(ListenToTrackerByIdDocument, { ids: trackerToListenIds })
-
-const { SET_SELECTED_TRACKERS, state } = useTrackedMap()
+  useSubscription(ListenToTrackerByIdDocument, {
+    ids: [...state.selectedTrackerIds],
+  })
 
 const listenToPositionsForSelectedTrackers: QTableProps['onUpdate:selected'] = (
   selected: TrackerModel[]
 ) => {
   const selectedTrackerIds = selected.map((tracker) => tracker.id)
 
-  // Must replace all array elements but not the array ref itself
-  trackerToListenIds.splice(0, trackerToListenIds.length, ...selectedTrackerIds)
-
-  SET_SELECTED_TRACKERS([...trackerToListenIds])
+  SET_SELECTED_TRACKERS(selectedTrackerIds)
 
   listenToTrackers()
 }
@@ -58,6 +55,12 @@ onTrackersFetched(({ data }) => {
 
 onTrackerPosition(({ data }) => {
   const position = data?.listenToTracker.lastPosition
+
+  const lat = position?.lat ? position.lat.toFixed(3) : ''
+  const lng = position?.lng ? position.lng.toFixed(3) : ''
+
+  console.log(`[POSITION] Tracker:${data?.listenToTracker.id ?? ''}`)
+  console.log(`${lat}, ${lng}`)
 
   if (state.options.fitMapOnTrackerPosition && position && map.value) {
     const originalMapBouds = map.value.getBounds()
