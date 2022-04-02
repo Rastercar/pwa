@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import SingleImageFilePicker from 'src/components/input/SingleImageFilePicker.vue'
 import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
+import VehicleBrandInput from 'src/components/input/VehicleBrandInput.vue'
+import VehiclePlateInput from 'src/components/input/VehiclePlateInput.vue'
 import YearTextInput from 'src/components/input/YearTextInput.vue'
-import VehiclePlateInput from './VehiclePlateInput.vue'
-import VehicleBrandInput from './VehicleBrandInput.vue'
-import { ApolloProvidersKey } from 'src/boot/apollo'
-import RenavamInput from './RenavamInput.vue'
+import RenavamInput from 'src/components/input/RenavamInput.vue'
+import { useMutation } from '@vue/apollo-composable'
 import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
-import { inject, Ref, ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { Ref, ref } from 'vue'
 import {
   CreateVehicleDocument,
   CreateVehicleDto,
@@ -33,8 +33,7 @@ const createFormDefault = () => ({
 
 const formState = ref(createFormDefault())
 
-const apolloUploaderClient = inject(ApolloProvidersKey)?.uploader
-if (!apolloUploaderClient) throw new Error()
+const { mutate } = useMutation(CreateVehicleDocument)
 
 const platesInUse: Ref<string[]> = ref([])
 const photo: Ref<null | File> = ref(null)
@@ -50,27 +49,29 @@ const resetForm = () => {
 const submit = () => {
   const toIntWithNullFallback = (v?: string) => {
     if (!v) return null
+
     const int = parseInt(v)
     return isNaN(int) ? null : int
   }
 
   const data: CreateVehicleDto = {
-    ...formState.value,
+    plate: formState.value.plate,
+    brand: formState.value.brand || null,
+    model: formState.value.model || null,
+    color: formState.value.color || null,
+    renavam: formState.value.renavam || null,
+    chassisNumber: formState.value.chassisNumber || null,
     modelYear: toIntWithNullFallback(formState.value.modelYear),
     fabricationYear: toIntWithNullFallback(formState.value.fabricationYear),
   }
 
   loading.value = true
 
-  apolloUploaderClient
-    .mutate({
-      mutation: CreateVehicleDocument,
-      variables: { photo: photo.value, data },
-    })
-    .then(({ data }) => {
+  mutate({ photo: photo.value, data })
+    .then((res) => {
       resetForm()
 
-      emit('vehicle:created', data?.createVehicle)
+      emit('vehicle:created', res?.data?.createVehicle)
 
       quasar.notify({ type: 'positive', message: 'Veículo criado' })
     })
@@ -185,6 +186,7 @@ const closeAndReset = () => {
         type="submit"
         color="green"
         :loading="loading"
+        :disable="v.$invalid"
         @click="submit"
       />
     </div>

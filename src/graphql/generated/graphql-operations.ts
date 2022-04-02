@@ -100,6 +100,7 @@ export type Mutation = {
   loginWithToken: LoginResponse
   register: LoginResponse
   updateMyProfile: UserModel
+  updateVehicle: VehicleModel
 }
 
 export type MutationCreateVehicleArgs = {
@@ -121,6 +122,12 @@ export type MutationRegisterArgs = {
 
 export type MutationUpdateMyProfileArgs = {
   profileData: UpdateUserDto
+}
+
+export type MutationUpdateVehicleArgs = {
+  data: UpdateVehicleDto
+  id: Scalars['Int']
+  photo?: InputMaybe<Scalars['Upload']>
 }
 
 export type OffsetPageInfo = {
@@ -211,6 +218,7 @@ export type Query = {
   organization?: Maybe<OrganizationModel>
   unregisteredUser?: Maybe<UnregisteredUserModel>
   user?: Maybe<UserModel>
+  vehicle?: Maybe<VehicleModel>
   /** The vehicles that belong to the request user organization */
   vehicles: OffsetPaginatedVehicle
 }
@@ -228,6 +236,10 @@ export type QueryUnregisteredUserArgs = {
 }
 
 export type QueryUserArgs = {
+  id: Scalars['Int']
+}
+
+export type QueryVehicleArgs = {
   id: Scalars['Int']
 }
 
@@ -306,6 +318,18 @@ export type UpdateUserDto = {
   password?: InputMaybe<Scalars['String']>
   removeGoogleProfileLink?: InputMaybe<Scalars['Boolean']>
   username?: InputMaybe<Scalars['String']>
+}
+
+export type UpdateVehicleDto = {
+  brand?: InputMaybe<Scalars['String']>
+  chassisNumber?: InputMaybe<Scalars['String']>
+  color?: InputMaybe<Scalars['String']>
+  fabricationYear?: InputMaybe<Scalars['Float']>
+  model?: InputMaybe<Scalars['String']>
+  modelYear?: InputMaybe<Scalars['Float']>
+  plate?: InputMaybe<Scalars['String']>
+  removePhoto?: InputMaybe<Scalars['Boolean']>
+  renavam?: InputMaybe<Scalars['String']>
 }
 
 /** user */
@@ -707,6 +731,20 @@ export type UserByIdQuery = {
     | undefined
 }
 
+export type VehicleFieldsFragment = {
+  __typename?: 'VehicleModel'
+  id: number
+  brand?: string | null | undefined
+  color?: string | null | undefined
+  model?: string | null | undefined
+  photo?: string | null | undefined
+  plate: string
+  renavam?: string | null | undefined
+  modelYear?: number | null | undefined
+  chassisNumber?: string | null | undefined
+  fabricationYear?: number | null | undefined
+}
+
 export type CreateVehicleMutationVariables = Exact<{
   photo?: InputMaybe<Scalars['Upload']>
   data: CreateVehicleDto
@@ -717,12 +755,36 @@ export type CreateVehicleMutation = {
   createVehicle: {
     __typename?: 'VehicleModel'
     id: number
-    plate: string
-    photo?: string | null | undefined
-    model?: string | null | undefined
-    modelYear?: number | null | undefined
+    brand?: string | null | undefined
     color?: string | null | undefined
+    model?: string | null | undefined
+    photo?: string | null | undefined
+    plate: string
     renavam?: string | null | undefined
+    modelYear?: number | null | undefined
+    chassisNumber?: string | null | undefined
+    fabricationYear?: number | null | undefined
+  }
+}
+
+export type UpdateVehicleMutationVariables = Exact<{
+  id: Scalars['Int']
+  photo?: InputMaybe<Scalars['Upload']>
+  data: UpdateVehicleDto
+}>
+
+export type UpdateVehicleMutation = {
+  __typename?: 'Mutation'
+  updateVehicle: {
+    __typename?: 'VehicleModel'
+    id: number
+    brand?: string | null | undefined
+    color?: string | null | undefined
+    model?: string | null | undefined
+    photo?: string | null | undefined
+    plate: string
+    renavam?: string | null | undefined
+    modelYear?: number | null | undefined
     chassisNumber?: string | null | undefined
     fabricationYear?: number | null | undefined
   }
@@ -747,9 +809,9 @@ export type ListVehiclesQuery = {
           plate: string
           photo?: string | null | undefined
           model?: string | null | undefined
-          modelYear?: number | null | undefined
           color?: string | null | undefined
           renavam?: string | null | undefined
+          modelYear?: number | null | undefined
           chassisNumber?: string | null | undefined
           fabricationYear?: number | null | undefined
           trackers: Array<{
@@ -767,6 +829,48 @@ export type ListVehiclesQuery = {
       hasPrevious: boolean
     }
   }
+}
+
+export type FullVehicleQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type FullVehicleQuery = {
+  __typename?: 'Query'
+  vehicle?:
+    | {
+        __typename?: 'VehicleModel'
+        id: number
+        brand?: string | null | undefined
+        color?: string | null | undefined
+        model?: string | null | undefined
+        photo?: string | null | undefined
+        plate: string
+        renavam?: string | null | undefined
+        modelYear?: number | null | undefined
+        chassisNumber?: string | null | undefined
+        fabricationYear?: number | null | undefined
+        trackers: Array<{
+          __typename?: 'TrackerModel'
+          id: number
+          model: string
+          lastPosition?:
+            | { __typename?: 'LatLng'; lat: number; lng: number }
+            | null
+            | undefined
+          simCards: Array<{
+            __typename?: 'SimCardModel'
+            id: number
+            ssn: string
+            apnUser: string
+            apnAddress: string
+            apnPassword: string
+            phoneNumber: string
+          }>
+        }>
+      }
+    | null
+    | undefined
 }
 
 export const FullUserFragmentDoc = {
@@ -914,6 +1018,34 @@ export const FullMasterUserFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<FullMasterUserFragment, unknown>
+export const VehicleFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'VehicleFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'VehicleModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'brand' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'photo' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'renavam' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'modelYear' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'chassisNumber' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'fabricationYear' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<VehicleFieldsFragment, unknown>
 export const LoginMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -1733,20 +1865,9 @@ export const CreateVehicleDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'photo' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'modelYear' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'color' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'renavam' } },
                 {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'chassisNumber' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'fabricationYear' },
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'VehicleFields' },
                 },
               ],
             },
@@ -1754,10 +1875,98 @@ export const CreateVehicleDocument = {
         ],
       },
     },
+    ...VehicleFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CreateVehicleMutation,
   CreateVehicleMutationVariables
+>
+export const UpdateVehicleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'updateVehicle' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'photo' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Upload' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UpdateVehicleDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateVehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'photo' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'photo' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'VehicleFields' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...VehicleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  UpdateVehicleMutation,
+  UpdateVehicleMutationVariables
 >
 export const ListVehiclesDocument = {
   kind: 'Document',
@@ -1869,14 +2078,14 @@ export const ListVehiclesDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'plate' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'photo' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'model' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'modelYear' },
-                      },
                       { kind: 'Field', name: { kind: 'Name', value: 'color' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'renavam' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'modelYear' },
                       },
                       {
                         kind: 'Field',
@@ -1932,3 +2141,113 @@ export const ListVehiclesDocument = {
     },
   ],
 } as unknown as DocumentNode<ListVehiclesQuery, ListVehiclesQueryVariables>
+export const FullVehicleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'fullVehicle' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'vehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'VehicleFields' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'trackers' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastPosition' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'lat' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'lng' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'simCards' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'ssn' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnUser' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnAddress' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnPassword' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'phoneNumber' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...VehicleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<FullVehicleQuery, FullVehicleQueryVariables>

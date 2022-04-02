@@ -47,11 +47,18 @@ const fitMapToTrackersBounds = (
   map.value.fitBounds(bounds)
 }
 
-watch(trackersToShow, (trackers) => {
-  if (trackers.length > 0 && trackedMapState.options.fitMapOnTrackerSelection) {
-    fitMapToTrackersBounds(trackers)
-  }
-})
+watch(
+  trackersToShow,
+  (trackers) => {
+    if (
+      trackers.length > 0 &&
+      trackedMapState.options.fitMapOnTrackerSelection
+    ) {
+      fitMapToTrackersBounds(trackers)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

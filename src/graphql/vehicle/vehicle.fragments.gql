@@ -1,0 +1,12 @@
+fragment VehicleFields on VehicleModel {
+  id
+  brand
+  color
+  model
+  photo
+  plate
+  renavam
+  modelYear
+  chassisNumber
+  fabricationYear
+}

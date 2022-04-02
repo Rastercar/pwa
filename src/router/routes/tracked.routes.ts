@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
+import { mapParamsToProps } from './routes.utils'
 
 export const trackedRoutes: RouteRecordRaw[] = [
   {
@@ -30,6 +31,7 @@ export const trackedRoutes: RouteRecordRaw[] = [
         path: 'veiculos/:id',
         name: 'veiculo',
         component: () => import('src/pages/tracked/vehicles/_id/Index.vue'),
+        props: mapParamsToProps({ id: 'integer' }),
         meta: { auth: { requiresLogin: true } },
       },
     ],

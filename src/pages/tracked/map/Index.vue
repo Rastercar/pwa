@@ -44,8 +44,8 @@ const showTrackerOverlay = (tracker: TrackerModel) => {
 
       <MapRightOverlay
         v-model="showMapRightOverlay"
-        :overlay-to-display="overlayToDisplay"
         :overlay-props="overlayProps"
+        :overlay-to-display="overlayToDisplay"
       />
     </GoogleMap>
   </q-page>
