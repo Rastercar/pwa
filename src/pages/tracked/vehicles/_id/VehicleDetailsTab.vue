@@ -10,8 +10,8 @@ import VehicleBrandInput from 'src/components/input/VehicleBrandInput.vue'
 import VehiclePlateInput from 'src/components/input/VehiclePlateInput.vue'
 import YearTextInput from 'src/components/input/YearTextInput.vue'
 import RenavamInput from 'src/components/input/RenavamInput.vue'
+import { computed, nextTick, PropType, Ref, ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import { computed, PropType, Ref, ref } from 'vue'
 import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -34,6 +34,8 @@ const props = defineProps({
   },
 })
 
+const DUMMY_FILENAME = '.'
+
 const quasar = useQuasar()
 const v = useVuelidate()
 
@@ -48,27 +50,41 @@ const createFormDefault = (): Form => ({
   fabricationYear: `${props.vehicle?.fabricationYear ?? ''}`,
 })
 
-// Must be a ref so changes can be tracked
 const initialFormValue = ref<Form>(createFormDefault())
-
 const formState = ref<Form>(createFormDefault())
 
+/**
+ * If any of the form fields or the vehicle photo differs from the initial form state
+ */
 const formHasChanged = computed(() => {
-  if (photo.value) return true
+  const photoHasChanged = photo.value !== props.vehicle.photo
+  const photoIsDummyFile = photo.value?.name === DUMMY_FILENAME
 
-  return Object.keys(initialFormValue.value).some((field) => {
-    const f = field as unknown as keyof Form
-    return formState.value[f] !== initialFormValue.value[f]
-  })
+  if (photoHasChanged && !photoIsDummyFile) return true
+
+  const someFormFieldHasChanged = Object.keys(initialFormValue.value).some(
+    (field) => {
+      const f = field as unknown as keyof Form
+      return formState.value[f] !== initialFormValue.value[f]
+    }
+  )
+
+  return someFormFieldHasChanged
 })
 
 const platesInUse: Ref<string[]> = ref([])
 
-const photo: Ref<null | File> = ref(null)
-const newPhotoPreview = ref('')
+const photo: Ref<null | File> = ref(
+  // If the vehicle already has a photo, create a dummy file so the filepicker contains some data
+  props.vehicle.photo ? new File([], DUMMY_FILENAME) : null
+)
 
-const photoSrc = computed(() => {
-  if (newPhotoPreview.value) return newPhotoPreview.value
+const newPhotoPreview = ref<string>('')
+
+const vehiclePhotoToDisplay = computed(() => {
+  // If null then the user removed the photo
+  // If non empty string the user selected a new photo
+  if (newPhotoPreview.value !== '') return newPhotoPreview.value
 
   const vehiclePhoto = props.vehicle?.photo
 
@@ -82,10 +98,27 @@ const { mutate } = useMutation(UpdateVehicleDocument)
 const loading = ref(false)
 
 const resetForm = () => {
-  formState.value = createFormDefault()
-  newPhotoPreview.value = ''
-  photo.value = null
+  photo.value = props.vehicle.photo ? new File([], DUMMY_FILENAME) : null
+
+  /**
+   * Bandaid fix:
+   * In order to keep the QFile picker in sync with the vehicle photo and a new selected photo
+   * a dummy file is created and set to `photo` whenever loading the page or after updating the
+   * vehicle, like in the line above
+   *
+   * Unfortunately if the file has been set to a dummy file, the `SingleImageFilePicker` will react
+   * to it and try to display a preview of the dummy file, we can override this by removing the preview
+   * on the next tick, but this also means that after updating the vehicle the file will be replaced
+   * twice, firstly for the preview of the DummyFile and secondly with the current vehicle photo, giving
+   * the QImage a buggy looking "flash" effect after reseting the form
+   */
+  nextTick(() => {
+    newPhotoPreview.value = ''
+  }).catch(() => null)
+
   platesInUse.value = []
+
+  formState.value = createFormDefault()
 }
 
 const submit = () => {
@@ -94,6 +127,11 @@ const submit = () => {
     const int = parseInt(v)
     return isNaN(int) ? null : int
   }
+
+  const shouldMaintainOriginalPhoto = photo.value?.name === DUMMY_FILENAME
+  const shouldRemovePhoto = photo.value === null
+
+  const photoToSend = shouldMaintainOriginalPhoto ? null : photo.value
 
   const data: UpdateVehicleDto = {
     plate: formState.value.plate,
@@ -106,11 +144,16 @@ const submit = () => {
     fabricationYear: toIntWithNullFallback(formState.value.fabricationYear),
   }
 
+  if (shouldRemovePhoto) data.removePhoto = true
+
   loading.value = true
 
-  mutate({ id: props.vehicle.id, photo: photo.value, data })
-    .then((res) => {
-      console.log(res?.data)
+  mutate({ id: props.vehicle.id, photo: photoToSend, data })
+    .then(() => {
+      initialFormValue.value = createFormDefault()
+
+      resetForm()
+
       quasar.notify({ type: 'positive', message: 'Veículo atualizado' })
     })
     .catch(({ graphQLErrors }: ApolloError) => {
@@ -131,7 +174,10 @@ const submit = () => {
 <template>
   <div>
     <q-img
-      :src="photoSrc || require('../../../../assets/placeholders/car.png')"
+      :src="
+        vehiclePhotoToDisplay ||
+        require('../../../../assets/placeholders/car.png')
+      "
       style="height: 250px"
       fit="cover"
     />

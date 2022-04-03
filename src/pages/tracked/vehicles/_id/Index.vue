@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { FullVehicleDocument } from 'src/graphql/generated/graphql-operations'
+import VehicleTrackersTab from './vehicle-trackers-tab/VehicleTrackersTab.vue'
 import VehicleDetailsTab from './VehicleDetailsTab.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { Ref, ref } from 'vue'
-import VehicleTrackersTab from './VehicleTrackersTab.vue'
 
 type tabs = 'details' | 'trackers' | 'history'
 

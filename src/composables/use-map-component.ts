@@ -1,25 +1,18 @@
 import { watch, ref, Ref, inject, InjectionKey } from 'vue'
 
 type mapComponent =
-  | google.maps.Marker
   | google.maps.Circle
   | google.maps.Polygon
   | google.maps.Polyline
   | google.maps.Rectangle
 
 type mapComponentOptions =
-  | google.maps.MarkerOptions
   | google.maps.CircleOptions
   | google.maps.PolygonOptions
   | google.maps.PolylineOptions
   | google.maps.RectangleOptions
 
-type mapComponentName =
-  | 'Marker'
-  | 'Polyline'
-  | 'Polygon'
-  | 'Rectangle'
-  | 'Circle'
+type mapComponentName = 'Circle' | 'Polygon' | 'Polyline' | 'Rectangle'
 
 /**
  * Global injection key for the global google map
