@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { TrackerModel } from 'src/graphql/generated/graphql-operations'
 import { FullVehicleQuery } from 'src/graphql/generated/graphql-operations'
-import { PropType } from 'vue'
+import AddTrackerForm from './add-tracker-form/AddTrackerForm.vue'
 import TrackerCard from './TrackerCard.vue'
+import { PropType } from 'vue'
 
 defineProps({
   vehicle: {
@@ -20,14 +21,15 @@ defineProps({
       Nenhum rastreador instalado
     </div>
 
-    <q-btn color="green" icon="fa fa-plus" label="adicionar" size="md" />
+    <q-separator class="q-my-md" />
+
+    <AddTrackerForm />
   </div>
 
-  <div>
-    <TrackerCard
-      v-for="tracker in vehicle.trackers"
-      :key="`tracker-${tracker.id}`"
-      :tracker="(tracker as TrackerModel)"
-    />
-  </div>
+  <TrackerCard
+    v-for="tracker in vehicle.trackers"
+    v-else
+    :key="`tracker-${tracker.id}`"
+    :tracker="(tracker as TrackerModel)"
+  />
 </template>
