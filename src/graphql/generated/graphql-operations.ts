@@ -96,9 +96,13 @@ export type MasterUserModel = {
 export type Mutation = {
   __typename?: 'Mutation'
   createVehicle: VehicleModel
+  /** Creates new trackers and associate them with a existing vehicle */
+  installTrackersOnVehicle: VehicleModel
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
+  /** Sets the trackers associated with the vehicle */
+  setVehicleTrackers: VehicleModel
   updateMyProfile: UserModel
   updateVehicle: VehicleModel
 }
@@ -106,6 +110,11 @@ export type Mutation = {
 export type MutationCreateVehicleArgs = {
   data: CreateVehicleDto
   photo?: InputMaybe<Scalars['Upload']>
+}
+
+export type MutationInstallTrackersOnVehicleArgs = {
+  data: UpdateVehicleDto
+  id: Scalars['Int']
 }
 
 export type MutationLoginArgs = {
@@ -118,6 +127,11 @@ export type MutationLoginWithTokenArgs = {
 
 export type MutationRegisterArgs = {
   user: RegisterUserDto
+}
+
+export type MutationSetVehicleTrackersArgs = {
+  id: Scalars['Int']
+  trackerIds: Array<Scalars['Int']>
 }
 
 export type MutationUpdateMyProfileArgs = {
@@ -216,10 +230,12 @@ export type Query = {
   isEmailInUse: Scalars['Boolean']
   me: UserOrMasterUser
   organization?: Maybe<OrganizationModel>
+  /** Sim cards that belong to the request user organization */
+  simCards: OffsetPaginatedSimCard
   unregisteredUser?: Maybe<UnregisteredUserModel>
   user?: Maybe<UserModel>
   vehicle?: Maybe<VehicleModel>
-  /** The vehicles that belong to the request user organization */
+  /** Vehicles that belong to the request user organization */
   vehicles: OffsetPaginatedVehicle
 }
 
@@ -229,6 +245,15 @@ export type QueryIsEmailInUseArgs = {
 
 export type QueryOrganizationArgs = {
   id: Scalars['Int']
+}
+
+export type QuerySimCardsArgs = {
+  descending?: InputMaybe<Scalars['Boolean']>
+  installedOnTracker?: InputMaybe<Scalars['Boolean']>
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  search?: InputMaybe<Scalars['String']>
 }
 
 export type QueryUnregisteredUserArgs = {
@@ -295,6 +320,8 @@ export type SubscriptionListenToTrackerArgs = {
 export type TrackerModel = {
   __typename?: 'TrackerModel'
   id: Scalars['Int']
+  /** A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2 */
+  identifier?: Maybe<Scalars['String']>
   lastPosition?: Maybe<LatLng>
   model: Scalars['String']
   organization: SimpleOrganizationModel
@@ -462,6 +489,40 @@ export type UnregisteredUserByUuidQuery = {
       }
     | null
     | undefined
+}
+
+export type ListSimCardsQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  descending?: InputMaybe<Scalars['Boolean']>
+  search?: InputMaybe<Scalars['String']>
+  installedOnTracker?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type ListSimCardsQuery = {
+  __typename?: 'Query'
+  simCards: {
+    __typename?: 'OffsetPaginatedSimCard'
+    nodes?:
+      | Array<{
+          __typename?: 'SimCardModel'
+          id: number
+          ssn: string
+          apnUser: string
+          apnAddress: string
+          apnPassword: string
+          phoneNumber: string
+        }>
+      | null
+      | undefined
+    pageInfo: {
+      __typename?: 'OffsetPageInfo'
+      total: number
+      hasMore: boolean
+      hasPrevious: boolean
+    }
+  }
 }
 
 export type ListActiveTrackersQueryVariables = Exact<{ [key: string]: never }>
@@ -1359,6 +1420,175 @@ export const UnregisteredUserByUuidDocument = {
   UnregisteredUserByUuidQuery,
   UnregisteredUserByUuidQueryVariables
 >
+export const ListSimCardsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listSimCards' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderBy' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'descending' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'installedOnTracker' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'simCards' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderBy' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'descending' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'descending' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'search' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'search' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'installedOnTracker' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'installedOnTracker' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnUser' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnAddress' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnPassword' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'phoneNumber' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasMore' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasPrevious' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ListSimCardsQuery, ListSimCardsQueryVariables>
 export const ListActiveTrackersDocument = {
   kind: 'Document',
   definitions: [

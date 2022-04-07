@@ -1,0 +1,31 @@
+query listSimCards(
+  $offset: Int
+  $limit: Int
+  $orderBy: String
+  $descending: Boolean
+  $search: String
+  $installedOnTracker: Boolean
+) {
+  simCards(
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    descending: $descending
+    search: $search
+    installedOnTracker: $installedOnTracker
+  ) {
+    nodes {
+      id
+      ssn
+      apnUser
+      apnAddress
+      apnPassword
+      phoneNumber
+    }
+    pageInfo {
+      total
+      hasMore
+      hasPrevious
+    }
+  }
+}
