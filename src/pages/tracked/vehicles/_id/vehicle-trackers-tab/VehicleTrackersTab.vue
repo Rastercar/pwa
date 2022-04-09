@@ -16,10 +16,7 @@ defineProps({
 <template>
   <!-- TODO: REMOVE ME: com id = 19 sem id = 223  -->
   <div v-if="vehicle.trackers.length === 0">
-    <div class="text-h6">
-      <q-icon name="fa fa-sim-card" class="q-mr-sm" />
-      Nenhum rastreador instalado
-    </div>
+    <div class="text-h6">Nenhum rastreador instalado</div>
 
     <q-separator class="q-my-md" />
 

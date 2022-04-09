@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import SingleImageFilePicker from 'src/components/input/SingleImageFilePicker.vue'
-import {
-  UpdateVehicleDocument,
-  FullVehicleQuery,
-  UpdateVehicleDto,
-} from 'src/graphql/generated/graphql-operations'
 import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
 import VehicleBrandInput from 'src/components/input/VehicleBrandInput.vue'
 import VehiclePlateInput from 'src/components/input/VehiclePlateInput.vue'
@@ -15,6 +10,12 @@ import { useMutation } from '@vue/apollo-composable'
 import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
+
+import {
+  UpdateVehicleDocument,
+  FullVehicleQuery,
+  UpdateVehicleDto,
+} from 'src/graphql/generated/graphql-operations'
 
 interface Form {
   plate: string

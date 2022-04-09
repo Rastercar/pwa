@@ -4,13 +4,21 @@ import { trackerModel, HOMOLOGATED_TRACKER } from 'src/constants/tracker'
 import AddSimCardForm from './AddSimCardForm.vue'
 import { computed, ref } from 'vue'
 
+interface NewSimCard {
+  ssn: string
+  phoneNumber: string
+  apnUser: string
+  apnAddress: string
+  apnPassword: string
+}
+
 const model = ref<trackerModel | null>(null)
 
 const simCardSlotsForModel = computed(() =>
   model.value ? HOMOLOGATED_TRACKER[model.value].simCardSlots : 0
 )
 
-// const simCards = ref({})
+const simCards = ref<(NewSimCard | number)[]>([])
 </script>
 
 <template>
@@ -24,9 +32,11 @@ const simCardSlotsForModel = computed(() =>
       TODO: COMPONENTIZAR ISSO NUM FORMULARIO DE SIM CARD QUE EMIT UM OBJETO DO SIM CARD AO ATT OU NULL SE NAO PRRENCHIDO
       TBM VERIFICAR SE AO MENOS 1 SIM CARD FOI INFORMADO COMPLETAMENTE E IMPEDIR SIM CARDS INCOMPLETOS, TD OU NADA
      -->
+    {{ simCards }}
     <AddSimCardForm
       v-for="index in simCardSlotsForModel"
       :key="`sim-card-form-${index}`"
+      v-model="simCards[index - 1]"
       flat
       bordered
     >
