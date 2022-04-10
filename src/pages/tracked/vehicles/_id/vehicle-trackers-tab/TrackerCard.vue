@@ -12,31 +12,38 @@ defineProps({
 </script>
 
 <template>
-  <q-card flat style="border: 2px solid black">
-    <q-card-section class="text-center q-pa-sm">
-      <span class="text-grey-8">Modelo: </span>
+  <q-card flat style="border: 2px solid #a6a6a6">
+    <q-card-section class="text-center q-px-sm q-py-md">
+      <span class="text-grey-8">Rastreador 1 - Modelo: </span>
       <strong>{{ tracker.model }}</strong>
     </q-card-section>
 
     <q-separator />
 
     <q-card-section class="q-px-none q-py-sm">
-      <q-item>
-        <div class="text-grey-8 q-mr-sm">Ultima posição:</div>
-        <div v-if="tracker.lastPosition">
-          <span>
-            LAT:
-            <strong> {{ tracker.lastPosition.lat.toFixed(3) }}</strong>
-          </span>
-          <span>
-            LNG:
-            <strong> {{ tracker.lastPosition.lng.toFixed(3) }}</strong>
-          </span>
-        </div>
-      </q-item>
+      <q-list dense>
+        <q-item class="items-center">
+          <div class="text-grey-8 q-mr-sm">Ultima posição:</div>
+          <div v-if="tracker.lastPosition">
+            <span>
+              LAT:
+              <strong> {{ tracker.lastPosition.lat.toFixed(3) }}</strong>
+            </span>
+            <span>
+              LNG:
+              <strong> {{ tracker.lastPosition.lng.toFixed(3) }}</strong>
+            </span>
+          </div>
+        </q-item>
+
+        <q-item class="items-center">
+          <div class="text-grey-8 q-mr-sm">ID:</div>
+          <strong>{{ tracker.identifier }}</strong>
+        </q-item>
+      </q-list>
 
       <q-item>
-        <div class="flex">
+        <div v-if="tracker.simCards.length > 0" class="flex">
           <div class="text-grey-8 q-mr-sm">Sim Cards Instalados:</div>
           <div v-if="tracker.simCards">
             <SimCardCard
@@ -45,8 +52,28 @@ defineProps({
               :sim-card="sim"
             />
           </div>
-          <!-- TODO: LIDAR COM CASO DE SIM NAO INSTALADO AQUI, FAZER PROMPT PARA INSTALAR SIM CARDS ! -->
         </div>
+
+        <q-card v-else class="bg-orange-4" flat style="max-width: 400px">
+          <q-card-section>
+            <q-icon
+              name="fa fa-exclamation-triangle"
+              size="18px"
+              class="q-mr-sm"
+            />
+            Este rastreador não tem nenhum SIM Card instalado
+
+            <q-separator class="q-my-sm" />
+
+            <!-- TODO: FINISH ME ?! -->
+            <div>
+              Para que seja possível receber posições e enviar comandos, instale
+              o sim card no equipamento e assimile o sim card instalado ao
+              equipamento, clicando
+              <span class="text-blue-8" style="cursor: pointer">aqui</span>
+            </div>
+          </q-card-section>
+        </q-card>
       </q-item>
     </q-card-section>
   </q-card>

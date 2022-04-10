@@ -14,7 +14,8 @@ const props = defineProps({
   },
 })
 
-const tab: Ref<tabs> = ref('details')
+// TODO: CHANGE ME BACK TO DETAILS
+const tab: Ref<tabs> = ref('trackers')
 
 const { result } = useQuery(FullVehicleDocument, { id: props.id })
 </script>

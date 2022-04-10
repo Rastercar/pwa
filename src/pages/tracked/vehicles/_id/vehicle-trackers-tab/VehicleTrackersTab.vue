@@ -14,13 +14,12 @@ defineProps({
 </script>
 
 <template>
-  <!-- TODO: REMOVE ME: com id = 19 sem id = 223  -->
   <div v-if="vehicle.trackers.length === 0">
     <div class="text-h6">Nenhum rastreador instalado</div>
 
     <q-separator class="q-my-md" />
 
-    <AddTrackerForm />
+    <AddTrackerForm :vehicle-id="vehicle.id" />
   </div>
 
   <TrackerCard

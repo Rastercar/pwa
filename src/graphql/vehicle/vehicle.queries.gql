@@ -24,6 +24,7 @@ query listVehicles(
       fabricationYear
       trackers {
         id
+        identifier
         model
       }
     }
@@ -40,6 +41,7 @@ query fullVehicle($id: Int!) {
     ...VehicleFields
     trackers {
       id
+      identifier
       model
       lastPosition {
         lat

@@ -16,7 +16,6 @@ defineEmits(['toggle:sidebar'])
       <q-toolbar-title class="flex">
         <q-space />
 
-        <!-- TODO, show route name here -->
         Rastercar
 
         <q-space />

@@ -39,10 +39,10 @@ const listenToPositionsForSelectedTrackers: QTableProps['onUpdate:selected'] = (
   listenToTrackers()
 }
 
-const selected: Ref<ListActiveTrackersQuery['allActiveTrackers']> = ref([])
+const selected: Ref<ListActiveTrackersQuery['activeTrackers']> = ref([])
 
 const syncPreviousSelectedTrackersWithDataTable = (
-  trackers: ListActiveTrackersQuery['allActiveTrackers']
+  trackers: ListActiveTrackersQuery['activeTrackers']
 ) => {
   selected.value = trackers.filter((tracker) => {
     return state.selectedTrackerIds.includes(tracker.id)
@@ -50,7 +50,7 @@ const syncPreviousSelectedTrackersWithDataTable = (
 }
 
 onTrackersFetched(({ data }) => {
-  syncPreviousSelectedTrackersWithDataTable(data.allActiveTrackers)
+  syncPreviousSelectedTrackersWithDataTable(data.activeTrackers)
 })
 
 onTrackerPosition(({ data }) => {
@@ -96,7 +96,7 @@ onTrackerPosition(({ data }) => {
 
       <SelectTrackerTable
         v-model:selected="selected"
-        :rows="result?.allActiveTrackers || []"
+        :rows="result?.activeTrackers || []"
         :loading="loading"
         :filter="filter"
         @update:selected="listenToPositionsForSelectedTrackers"

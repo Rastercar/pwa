@@ -28,13 +28,13 @@ const { result } = useQuery(ListActiveTrackersDocument)
 const { state: trackedMapState } = useTrackedMap()
 
 const trackersToShow = computed(() => {
-  const all = result.value?.allActiveTrackers ?? []
+  const all = result.value?.activeTrackers ?? []
 
   return all.filter((t) => trackedMapState.selectedTrackerIds.includes(t.id))
 })
 
 const fitMapToTrackersBounds = (
-  trackers: ListActiveTrackersQuery['allActiveTrackers']
+  trackers: ListActiveTrackersQuery['activeTrackers']
 ) => {
   if (!map.value) return
 

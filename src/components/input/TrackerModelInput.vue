@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
+import { helpers, required } from '@vuelidate/validators'
 import { TRACKER_MODELS } from 'src/constants/tracker'
+import useVuelidate from '@vuelidate/core'
 import { QSelectProps } from 'quasar'
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 
 const mutableTrackerModels = [...TRACKER_MODELS]
 
 const options = ref(mutableTrackerModels)
 
-const model = ref(null)
+defineEmits<{
+  (event: 'update:model-value', value: string): void
+}>()
 
 const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
   update(() => {
@@ -18,17 +23,38 @@ const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
     }
   })
 }
+
+const props = defineProps({
+  modelValue: {
+    type: String as PropType<string | null>,
+    required: true,
+  },
+})
+
+const rules = {
+  modelValue: {
+    required: helpers.withMessage(
+      'Selecione um modelo de rastreador',
+      required
+    ),
+  },
+}
+
+const v = useVuelidate(rules, props, { $autoDirty: true })
 </script>
 
 <template>
   <q-select
-    v-model="model"
+    :model-value="modelValue"
+    :options="options"
+    :error="v.modelValue.$error"
+    :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
+    label="Modelo do rastreador"
+    input-debounce="0"
+    behavior="menu"
     filled
     use-input
-    input-debounce="0"
-    label="Modelo do rastreador"
-    :options="options"
-    behavior="menu"
     @filter="filterFn"
+    @update:model-value="(v) => $emit('update:model-value', v)"
   />
 </template>

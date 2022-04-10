@@ -226,12 +226,14 @@ export enum Permission {
 export type Query = {
   __typename?: 'Query'
   /** All trackers that can recieve positions (trackers that have one or more sim cards) */
-  allActiveTrackers: Array<TrackerModel>
+  activeTrackers: Array<TrackerModel>
   isEmailInUse: Scalars['Boolean']
   me: UserOrMasterUser
   organization?: Maybe<OrganizationModel>
   /** Sim cards that belong to the request user organization */
   simCards: OffsetPaginatedSimCard
+  /** Trackers that belong to the request user organization */
+  trackers: OffsetPaginatedTracker
   unregisteredUser?: Maybe<UnregisteredUserModel>
   user?: Maybe<UserModel>
   vehicle?: Maybe<VehicleModel>
@@ -250,6 +252,15 @@ export type QueryOrganizationArgs = {
 export type QuerySimCardsArgs = {
   descending?: InputMaybe<Scalars['Boolean']>
   installedOnTracker?: InputMaybe<Scalars['Boolean']>
+  limit?: InputMaybe<Scalars['Int']>
+  offset?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  search?: InputMaybe<Scalars['String']>
+}
+
+export type QueryTrackersArgs = {
+  descending?: InputMaybe<Scalars['Boolean']>
+  installedOnVehicle?: InputMaybe<Scalars['Boolean']>
   limit?: InputMaybe<Scalars['Int']>
   offset?: InputMaybe<Scalars['Int']>
   orderBy?: InputMaybe<Scalars['String']>
@@ -529,9 +540,10 @@ export type ListActiveTrackersQueryVariables = Exact<{ [key: string]: never }>
 
 export type ListActiveTrackersQuery = {
   __typename?: 'Query'
-  allActiveTrackers: Array<{
+  activeTrackers: Array<{
     __typename?: 'TrackerModel'
     id: number
+    identifier?: string | null | undefined
     model: string
     lastPosition?:
       | { __typename?: 'LatLng'; lat: number; lng: number }
@@ -545,6 +557,37 @@ export type ListActiveTrackersQuery = {
       brand?: string | null | undefined
     }
   }>
+}
+
+export type ListTrackersQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  descending?: InputMaybe<Scalars['Boolean']>
+  search?: InputMaybe<Scalars['String']>
+  installedOnVehicle?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type ListTrackersQuery = {
+  __typename?: 'Query'
+  trackers: {
+    __typename?: 'OffsetPaginatedTracker'
+    nodes?:
+      | Array<{
+          __typename?: 'TrackerModel'
+          id: number
+          identifier?: string | null | undefined
+          model: string
+        }>
+      | null
+      | undefined
+    pageInfo: {
+      __typename?: 'OffsetPageInfo'
+      total: number
+      hasMore: boolean
+      hasPrevious: boolean
+    }
+  }
 }
 
 export type ListenToTrackerByIdSubscriptionVariables = Exact<{
@@ -851,6 +894,34 @@ export type UpdateVehicleMutation = {
   }
 }
 
+export type SetVehicleTrackersMutationVariables = Exact<{
+  id: Scalars['Int']
+  trackerIds: Array<Scalars['Int']> | Scalars['Int']
+}>
+
+export type SetVehicleTrackersMutation = {
+  __typename?: 'Mutation'
+  setVehicleTrackers: {
+    __typename?: 'VehicleModel'
+    id: number
+    brand?: string | null | undefined
+    color?: string | null | undefined
+    model?: string | null | undefined
+    photo?: string | null | undefined
+    plate: string
+    renavam?: string | null | undefined
+    modelYear?: number | null | undefined
+    chassisNumber?: string | null | undefined
+    fabricationYear?: number | null | undefined
+    trackers: Array<{
+      __typename?: 'TrackerModel'
+      id: number
+      identifier?: string | null | undefined
+      model: string
+    }>
+  }
+}
+
 export type ListVehiclesQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>
   limit?: InputMaybe<Scalars['Int']>
@@ -878,6 +949,7 @@ export type ListVehiclesQuery = {
           trackers: Array<{
             __typename?: 'TrackerModel'
             id: number
+            identifier?: string | null | undefined
             model: string
           }>
         }>
@@ -914,6 +986,7 @@ export type FullVehicleQuery = {
         trackers: Array<{
           __typename?: 'TrackerModel'
           id: number
+          identifier?: string | null | undefined
           model: string
           lastPosition?:
             | { __typename?: 'LatLng'; lat: number; lng: number }
@@ -1601,11 +1674,12 @@ export const ListActiveTrackersDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'allActiveTrackers' },
+            name: { kind: 'Name', value: 'activeTrackers' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'model' } },
                 {
                   kind: 'Field',
@@ -1642,6 +1716,163 @@ export const ListActiveTrackersDocument = {
   ListActiveTrackersQuery,
   ListActiveTrackersQueryVariables
 >
+export const ListTrackersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listTrackers' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderBy' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'descending' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'installedOnVehicle' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'trackers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderBy' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'descending' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'descending' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'search' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'search' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'installedOnVehicle' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'installedOnVehicle' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'identifier' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasMore' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasPrevious' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ListTrackersQuery, ListTrackersQueryVariables>
 export const ListenToTrackerByIdDocument = {
   kind: 'Document',
   definitions: [
@@ -2198,6 +2429,101 @@ export const UpdateVehicleDocument = {
   UpdateVehicleMutation,
   UpdateVehicleMutationVariables
 >
+export const SetVehicleTrackersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'setVehicleTrackers' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'trackerIds' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'Int' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'setVehicleTrackers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'trackerIds' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'trackerIds' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'VehicleFields' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'trackers' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'identifier' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...VehicleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  SetVehicleTrackersMutation,
+  SetVehicleTrackersMutationVariables
+>
 export const ListVehiclesDocument = {
   kind: 'Document',
   definitions: [
@@ -2337,6 +2663,10 @@ export const ListVehiclesDocument = {
                             },
                             {
                               kind: 'Field',
+                              name: { kind: 'Name', value: 'identifier' },
+                            },
+                            {
+                              kind: 'Field',
                               name: { kind: 'Name', value: 'model' },
                             },
                           ],
@@ -2418,6 +2748,10 @@ export const FullVehicleDocument = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'identifier' },
+                      },
                       { kind: 'Field', name: { kind: 'Name', value: 'model' } },
                       {
                         kind: 'Field',

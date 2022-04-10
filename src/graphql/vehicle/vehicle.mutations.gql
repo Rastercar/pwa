@@ -9,3 +9,14 @@ mutation updateVehicle($id: Int!, $photo: Upload, $data: UpdateVehicleDTO!) {
     ...VehicleFields
   }
 }
+
+mutation setVehicleTrackers($id: Int!, $trackerIds: [Int!]!) {
+  setVehicleTrackers(id: $id, trackerIds: $trackerIds) {
+    ...VehicleFields
+    trackers {
+      id
+      identifier
+      model
+    }
+  }
+}

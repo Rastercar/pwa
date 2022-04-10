@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ListSimCardsDocument } from 'src/graphql/generated/graphql-operations'
+import { ListTrackersDocument } from 'src/graphql/generated/graphql-operations'
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
 import { helpers, required } from '@vuelidate/validators'
 import { useQuery } from '@vue/apollo-composable'
@@ -11,11 +11,11 @@ const {
   result: options,
   loading,
   refetch,
-} = useQuery(ListSimCardsDocument, { search: null, installedOnTracker: false })
+} = useQuery(ListTrackersDocument, { search: null, installedOnVehicle: false })
 
 defineEmits<{
   /**
-   * The ID of the selected sim card
+   * The ID of the selected tracker
    */
   (event: 'update:model-value', value: number | null): void
 }>()
@@ -29,7 +29,7 @@ const props = defineProps({
 
 const rules = {
   modelValue: {
-    required: helpers.withMessage('Selecione um SIM Card', required),
+    required: helpers.withMessage('Selecione um rastreador', required),
   },
 }
 
@@ -38,7 +38,7 @@ const v = useVuelidate(rules, props, { $autoDirty: true })
 const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
   if (loading.value) return
 
-  refetch({ search: val, installedOnTracker: false })
+  refetch({ search: val, installedOnVehicle: false })
     ?.then(() => update(() => null))
     ?.catch(() => null)
 }
@@ -47,15 +47,15 @@ const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
 <template>
   <q-select
     :model-value="modelValue"
-    :hint="modelValue ? '' : 'pesquise por número'"
-    :options="options?.simCards.nodes ?? []"
+    :hint="modelValue ? '' : 'pesquise por identificador/modelo'"
+    :options="options?.trackers.nodes ?? []"
     :loading="loading"
     :error="v.modelValue.$error"
     :error-message="getVuelidateErrorMsg(v.modelValue.$errors)"
-    label="Sim Card"
+    label="Rastreador"
     input-debounce="200"
     option-value="id"
-    option-label="phoneNumber"
+    option-label="identifier"
     map-options
     emit-value
     use-input
@@ -63,11 +63,19 @@ const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
     @filter="filterFn"
     @update:model-value="(v) => $emit('update:model-value', v)"
   >
+    <template #option="{ opt, itemProps }">
+      <q-item v-bind="itemProps" class="q-px-md q-py-sm">
+        <div>
+          <div>ID: {{ opt.identifier }}</div>
+          <div class="text-grey-7">Modelo: {{ opt.model }}</div>
+        </div>
+      </q-item>
+    </template>
+
     <template #no-option>
       <q-item>
         <q-item-section class="text-italic text-grey-8">
-          Nenhum sim card não instalado em um rastreador encontrado com este
-          número.
+          Nenhum rastreador não instalado em um veículo encontrado.
         </q-item-section>
       </q-item>
     </template>
