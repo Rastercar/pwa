@@ -25,12 +25,12 @@ type onError = (error: Error) => void
  * ```
  */
 export function useGoogleMaps(key?: string) {
-  const apiKey = key || process.env.GMAPS_API_KEY
-
   let onSuccessHook: onSuccess | null = null
   let onErrorHook: onError | null = null
 
-  if (!api.value) {
+  const loadGmapsApi = () => {
+    const apiKey = key || process.env.GMAPS_API_KEY
+
     loading.value = true
 
     new Loader({ apiKey })
@@ -48,6 +48,8 @@ export function useGoogleMaps(key?: string) {
         loading.value = false
       })
   }
+
+  if (!api.value) loadGmapsApi()
 
   return {
     api,

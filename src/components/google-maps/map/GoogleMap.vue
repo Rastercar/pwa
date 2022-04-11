@@ -8,6 +8,7 @@ import {
   watch,
   toRef,
   ref,
+  onMounted,
 } from 'vue'
 import { MapSymbol, MapWasLoadedSymbol } from './GoogleMap'
 
@@ -192,8 +193,13 @@ export default defineComponent({
 
     const { onSuccess: onGoogleMapsLoad, api } = useGoogleMaps(props.apiKey)
 
-    onGoogleMapsLoad(() => {
+    onBeforeUnmount(() => {
+      if (map.value) api.value?.event.clearInstanceListeners(map.value)
+    })
+
+    const initMap = () => {
       map.value = new google.maps.Map(mapRef.value as HTMLElement, resolveOptions()) // prettier-ignore
+
       // For each event the map fires when it occours we emmit it
       mapEvents.forEach((event) => {
         map.value?.addListener(event, (e: unknown) => emit(event, e))
@@ -228,13 +234,19 @@ export default defineComponent({
 
       // Signals the parent component the map is ready for use and pass him the map ref
       emit('ready', map.value)
+    }
+
+    // After mounting the necessary DOM content, if the API is loaded,
+    // init the map, otherwise init it after loading
+    onMounted(() => {
+      api.value ? initMap() : onGoogleMapsLoad(initMap)
     })
 
     // Watch the map and the api until it loads then set the mapWasLoadedFlag as true
-    // prettier-ignore
-    const stopWatchingMapApiAndRef = watch([api, map], ([newApi, newMap]) => {
-
-       if (newApi && newMap) {
+    const stopWatchingMapApiAndRef = watch(
+      [api, map],
+      ([newApi, newMap]) => {
+        if (newApi && newMap) {
           newApi.event.addListenerOnce(newMap, 'tilesloaded', () => {
             mapWasLoaded.value = true
           })
@@ -244,10 +256,6 @@ export default defineComponent({
       },
       { immediate: true }
     )
-
-    onBeforeUnmount(() => {
-      if (map.value) api.value?.event.clearInstanceListeners(map.value)
-    })
 
     return { mapRef, map, api, mapWasLoaded }
   },
