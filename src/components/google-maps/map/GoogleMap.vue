@@ -1,20 +1,15 @@
 <script lang="ts">
-import { Loader } from '@googlemaps/js-api-loader'
+import { useGoogleMaps } from 'src/composables/use-google-maps'
 import {
   defineComponent,
   onBeforeUnmount,
-  onMounted,
   PropType,
   provide,
   watch,
   toRef,
   ref,
 } from 'vue'
-import {
-  MapWasLoadedSymbol,
-  ApiSymbol,
-  MapSymbol,
-} from 'src/composables/use-map-component'
+import { MapSymbol, MapWasLoadedSymbol } from './GoogleMap'
 
 const mapEvents = [
   'bounds_changed',
@@ -36,7 +31,7 @@ const mapEvents = [
   'tilt_changed',
   'zoom_changed',
   'projection_changed',
-]
+] as const
 
 export default defineComponent({
   inheritAttrs: false,
@@ -175,13 +170,11 @@ export default defineComponent({
   emits: [...mapEvents, 'ready'],
 
   setup(props, { emit }) {
-    const api = ref<typeof google.maps | null>(null)
     const map = ref<google.maps.Map | null>(null)
     const mapRef = ref<HTMLElement | null>(null)
     const mapWasLoaded = ref(false)
 
     provide(MapSymbol, map)
-    provide(ApiSymbol, api)
     provide(MapWasLoadedSymbol, mapWasLoaded)
 
     const resolveOptions = () => {
@@ -197,15 +190,10 @@ export default defineComponent({
       return opts
     }
 
-    onMounted(async () => {
-      if (window.isGoogleMapsScriptLoaded !== true) {
-        await new Loader({ apiKey: props.apiKey }).load()
-        window.isGoogleMapsScriptLoaded = true
-      }
+    const { onSuccess: onGoogleMapsLoad, api } = useGoogleMaps(props.apiKey)
 
-      api.value = google.maps
+    onGoogleMapsLoad(() => {
       map.value = new google.maps.Map(mapRef.value as HTMLElement, resolveOptions()) // prettier-ignore
-
       // For each event the map fires when it occours we emmit it
       mapEvents.forEach((event) => {
         map.value?.addListener(event, (e: unknown) => emit(event, e))
@@ -245,7 +233,8 @@ export default defineComponent({
     // Watch the map and the api until it loads then set the mapWasLoadedFlag as true
     // prettier-ignore
     const stopWatchingMapApiAndRef = watch([api, map], ([newApi, newMap]) => {
-        if (newApi && newMap) {
+
+       if (newApi && newMap) {
           newApi.event.addListenerOnce(newMap, 'tilesloaded', () => {
             mapWasLoaded.value = true
           })

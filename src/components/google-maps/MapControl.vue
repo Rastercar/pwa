@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, PropType, watch, ref, inject, Ref } from 'vue'
-import {
-  MapWasLoadedSymbol,
-  ApiSymbol,
-  MapSymbol,
-} from 'src/composables/use-map-component'
+import { useGoogleMaps } from 'src/composables/use-google-maps'
+import { MapSymbol, MapWasLoadedSymbol } from './map/GoogleMap'
 
 type ControlPosition = keyof typeof google.maps.ControlPosition
 type ControlRef = HTMLElement & { index: number }
@@ -34,7 +31,8 @@ const controlRef = ref<HTMLElement | null>(null)
 
 const mapWasLoaded = inject(MapWasLoadedSymbol, ref(false))
 const map = inject(MapSymbol, ref(null))
-const api = inject(ApiSymbol, ref(null))
+
+const { api } = useGoogleMaps()
 
 const showContent = ref(false)
 

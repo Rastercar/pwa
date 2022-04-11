@@ -2,7 +2,7 @@
 import { MapOverlayComponents } from './index/overlays/map-overlay-commons'
 import { TrackerModel } from 'src/graphql/generated/graphql-operations'
 import TrackerMarkers from './index/map-items/TrackerMarkers.vue'
-import GoogleMap from 'src/components/google-maps/GoogleMap.vue'
+import GoogleMap from 'src/components/google-maps/map/GoogleMap.vue'
 import { useGeolocation } from 'src/composables/use-geolocation'
 import MapRightOverlay from './index/MapRightOverlay.vue'
 import MapTopMenu from './index/MapTopMenu.vue'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ApiSymbol, MapSymbol } from 'src/composables/use-map-component'
+import { useGoogleMaps } from 'src/composables/use-google-maps'
 import {
   defineComponent,
   onBeforeUnmount,
@@ -11,6 +11,7 @@ import {
   Ref,
   WatchCallback,
 } from 'vue'
+import { MapSymbol } from './map/GoogleMap'
 
 const markerEvents = [
   'animation_changed',
@@ -55,7 +56,8 @@ export default defineComponent({
     const markerRef: Ref<google.maps.Marker | null> = ref(null)
 
     const map = inject(MapSymbol, ref(null))
-    const api = inject(ApiSymbol, ref(null))
+
+    const { api } = useGoogleMaps()
 
     const removeMarkerIfSet = () => {
       if (!marker) return

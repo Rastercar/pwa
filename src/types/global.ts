@@ -3,7 +3,7 @@
  */
 declare global {
   interface Window {
-    isGoogleMapsScriptLoaded?: boolean
+    rastercar?: true
   }
 }
 

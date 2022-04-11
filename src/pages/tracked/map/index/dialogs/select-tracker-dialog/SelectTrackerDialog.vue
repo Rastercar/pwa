@@ -6,11 +6,11 @@ import {
   TrackerModel,
 } from '../../../../../../graphql/generated/graphql-operations'
 import { useSubscription, useQuery } from '@vue/apollo-composable'
-import { MapSymbol } from 'src/composables/use-map-component'
 import { useTrackedMap } from 'src/state/tracked-map.state'
 import SelectTrackerTable from './SelectTrackerTable.vue'
 import { inject, Ref, ref } from 'vue'
 import { QTableProps } from 'quasar'
+import { MapSymbol } from 'src/components/google-maps/map/GoogleMap'
 
 const {
   onResult: onTrackersFetched,

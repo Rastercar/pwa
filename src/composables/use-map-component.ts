@@ -1,4 +1,6 @@
-import { watch, ref, Ref, inject, InjectionKey } from 'vue'
+import { MapSymbol } from 'src/components/google-maps/map/GoogleMap'
+import { watch, ref, Ref, inject } from 'vue'
+import { useGoogleMaps } from './use-google-maps'
 
 type mapComponent =
   | google.maps.Circle
@@ -13,21 +15,6 @@ type mapComponentOptions =
   | google.maps.RectangleOptions
 
 type mapComponentName = 'Circle' | 'Polygon' | 'Polyline' | 'Rectangle'
-
-/**
- * Global injection key for the global google map
- */
-export const MapSymbol: InjectionKey<Ref<google.maps.Map | null>> = Symbol('map') // prettier-ignore
-
-/**
- * Global injection key for the google map
- */
-export const ApiSymbol: InjectionKey<Ref<typeof google.maps | null>> = Symbol('api') // prettier-ignore
-
-/**
- * Indicates the map **and its tiles** have been loaded
- */
-export const MapWasLoadedSymbol: InjectionKey<Ref<boolean>> = Symbol('mapwasloaded') // prettier-ignore
 
 interface UseMapComponentArgs {
   events: string[]
@@ -45,7 +32,7 @@ interface UseMapComponentRet {
  *
  * **NOTE:** What this does is basically create a new instance of google.maps.<Component> for the given map
  * and recreate the component if the map or the component options change, if you want more fine grained reactivity
- * without reinstantiating the marker than do not use this. Make your own implementation and observe/react to the
+ * without reinstantiating the component than do not use this. Make your own implementation and observe/react to the
  * <Component> options changes properly
  *
  * @param args.componentName
@@ -62,7 +49,8 @@ export const useMapComponent = (
   const component = ref<mapComponent | null>(null)
 
   const map = inject(MapSymbol, ref(null))
-  const api = inject(ApiSymbol, ref(null))
+
+  const { api } = useGoogleMaps()
 
   watch(
     [map, options],

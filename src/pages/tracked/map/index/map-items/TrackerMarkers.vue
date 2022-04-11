@@ -4,11 +4,11 @@ import {
   ListActiveTrackersQuery,
   TrackerModel,
 } from '../../../../../graphql/generated/graphql-operations'
-import { MapSymbol } from 'src/composables/use-map-component'
 import { useTrackedMap } from 'src/state/tracked-map.state'
 import Marker from 'src/components/google-maps/Marker.vue'
 import { computed, inject, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
+import { MapSymbol } from 'src/components/google-maps/map/GoogleMap'
 
 defineEmits<{
   (event: 'tracker:selected', tracker: TrackerModel): void
