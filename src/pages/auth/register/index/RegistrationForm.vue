@@ -79,7 +79,13 @@ const submitForm = () => {
         return
       }
 
-      AUTH_LOGIN(res.data.register.token)
+      const { token, user } = res.data.register
+
+      AUTH_LOGIN({
+        bearerToken: token.value,
+        organizationId:
+          user.__typename === 'UserModel' ? user.organization.id : null,
+      })
 
       router.push('/').catch(() => null)
     })

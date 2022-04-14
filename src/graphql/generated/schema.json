@@ -1515,7 +1515,25 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "CREATE_VEHICLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DELETE_VEHICLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "EDIT_OTHER_USERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE_VEHICLE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

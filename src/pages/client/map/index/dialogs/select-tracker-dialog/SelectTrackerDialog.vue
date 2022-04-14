@@ -50,7 +50,7 @@ const syncPreviousSelectedTrackersWithDataTable = (
 }
 
 onTrackersFetched(({ data }) => {
-  syncPreviousSelectedTrackersWithDataTable(data.activeTrackers)
+  syncPreviousSelectedTrackersWithDataTable(data?.activeTrackers ?? [])
 })
 
 onTrackerPosition(({ data }) => {

@@ -15,12 +15,15 @@ type onError = (error: Error) => void
  * if you use the hook multiple times with different keys, only the
  * first key will be used to load the api
  *
+ * **NOTE 2:** If the api is already loaded, the onSuccess hook will not
+ * be fired
+ *
  * @example
  * ```ts
  * const { api: googleMapsApi, onSuccess } = useGoogleMaps(myApiKey)
  *
  * onSuccess(() => {
- *   console.log('Google maps api loaded !')
+ *   console.log('Google maps api just loaded !')
  * })
  * ```
  */

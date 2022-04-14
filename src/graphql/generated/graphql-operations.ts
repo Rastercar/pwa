@@ -220,7 +220,10 @@ export type OrganizationModelVehiclesArgs = {
 }
 
 export enum Permission {
+  CreateVehicle = 'CREATE_VEHICLE',
+  DeleteVehicle = 'DELETE_VEHICLE',
   EditOtherUsers = 'EDIT_OTHER_USERS',
+  UpdateVehicle = 'UPDATE_VEHICLE',
 }
 
 export type Query = {
@@ -441,6 +444,7 @@ export type LoginMutationMutation = {
             __typename?: 'SimpleOrganizationModel'
             id: number
             name: string
+            blocked: boolean
             billingEmail: string
             billingEmailVerified: boolean
           }
@@ -471,6 +475,21 @@ export type LoginByTokenMutationMutation = {
           email: string
           username: string
           emailVerified: boolean
+          googleProfileId?: string | null | undefined
+          organization: {
+            __typename?: 'SimpleOrganizationModel'
+            id: number
+            name: string
+            blocked: boolean
+            billingEmail: string
+            billingEmailVerified: boolean
+          }
+          accessLevel: {
+            __typename?: 'AccessLevelModel'
+            id: number
+            name: string
+            permissions: Array<Permission>
+          }
         }
   }
 }
@@ -617,6 +636,7 @@ export type FullUserFragment = {
     __typename?: 'SimpleOrganizationModel'
     id: number
     name: string
+    blocked: boolean
     billingEmail: string
     billingEmailVerified: boolean
   }
@@ -705,6 +725,7 @@ export type RegisterUserMutation = {
             __typename?: 'SimpleOrganizationModel'
             id: number
             name: string
+            blocked: boolean
             billingEmail: string
             billingEmailVerified: boolean
           }
@@ -769,6 +790,7 @@ export type CurrentUserQuery = {
           __typename?: 'SimpleOrganizationModel'
           id: number
           name: string
+          blocked: boolean
           billingEmail: string
           billingEmailVerified: boolean
         }
@@ -821,6 +843,7 @@ export type UserByIdQuery = {
           __typename?: 'SimpleOrganizationModel'
           id: number
           name: string
+          blocked: boolean
           billingEmail: string
           billingEmailVerified: boolean
         }
@@ -1033,6 +1056,7 @@ export const FullUserFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'blocked' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'billingEmail' },
@@ -1356,20 +1380,8 @@ export const LoginByTokenMutationDocument = {
                           kind: 'SelectionSet',
                           selections: [
                             {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'email' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'username' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'emailVerified' },
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'FullUser' },
                             },
                           ],
                         },
@@ -1383,6 +1395,7 @@ export const LoginByTokenMutationDocument = {
         ],
       },
     },
+    ...FullUserFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   LoginByTokenMutationMutation,

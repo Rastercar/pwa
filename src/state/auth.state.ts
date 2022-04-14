@@ -1,7 +1,6 @@
-import { JwtModel } from 'src/graphql/generated/graphql-operations'
 import { loadFromLS, syncWithLS } from './utils/persist-state'
-import { computed, reactive, readonly } from 'vue'
 import { useApolloClient } from '@vue/apollo-composable'
+import { computed, reactive, readonly } from 'vue'
 
 /*
  | Auth State: 
@@ -18,19 +17,33 @@ interface AuthState {
    * A JWT bearer token used to authenticate with the graphql / rest endpoints of the rastercar api
    */
   apiToken: string | null
+  /**
+   * The organization selected/being viewed on the client dashboard/pages, if the current user is a regular user
+   * its the organization that he belongs too, if the user is a master user its a organization he can select
+   * whenever acessing the client dashboard/pages
+   */
+  organizationId: number | null
 }
 
-const state: AuthState = reactive(loadFromLS('authState', { apiToken: null }))
+const state: AuthState = reactive<AuthState>(
+  loadFromLS('authState', { apiToken: null, organizationId: null })
+)
 
 syncWithLS({ authState: state })
 
+interface LoginArgs {
+  bearerToken: string
+  organizationId?: number | null
+}
+
 /**
- * Sets the API token
+ * Sets the API token and the selected organization
  */
-const AUTH_LOGIN = (token: JwtModel) => {
+const AUTH_LOGIN = (loginData: LoginArgs) => {
   // Dont worry too much about about storing the JWT in the local storage
   // https://pragmaticwebsecurity.com/articles/oauthoidc/localstorage-xss.html
-  state.apiToken = token.value
+  state.apiToken = loginData.bearerToken
+  state.organizationId = loginData.organizationId ?? null
 }
 
 /**
@@ -50,8 +63,8 @@ const AUTH_LOGOUT = (options = { clearApolloCache: true }) => {
 }
 
 export const useAuth = () => ({
-  AUTH_LOGIN,
   AUTH_LOGOUT,
+  AUTH_LOGIN,
 
   isLoggedIn: computed(() => !!state.apiToken),
 

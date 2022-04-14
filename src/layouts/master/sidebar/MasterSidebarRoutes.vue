@@ -1,25 +1,10 @@
 <script setup lang="ts">
-defineProps({
-  /**
-   * If the sidebar containing the user section is in the 'mini' state
-   */
-  mini: {
-    type: Boolean,
-    default: false,
-  },
-})
-
 const menuList = [
   {
-    icon: 'fa fa-map-marker-alt',
-    label: 'Mapa',
-    route: { name: 'mapa' },
+    icon: 'fa fa-home',
+    label: 'Home',
+    route: { name: 'master-home' },
     separator: false,
-  },
-  {
-    icon: 'fa fa-car',
-    label: 'Meus veículos',
-    route: { name: 'veiculos' },
   },
 ]
 
@@ -46,10 +31,6 @@ if (process.env.NODE_ENV === 'development') {
           :to="menuItem.route"
           :disable="!menuItem.route"
         >
-          <!--
-            Size must be the same as mini-with of the sidebard otherwise 
-            we have a discreancy on the icon position when toggling mini
-          -->
           <q-item-section
             avatar
             style="width: 80px"

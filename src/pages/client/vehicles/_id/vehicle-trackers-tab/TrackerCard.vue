@@ -23,6 +23,11 @@ defineProps({
     <q-card-section class="q-px-none q-py-sm">
       <q-list dense>
         <q-item class="items-center">
+          <div class="text-grey-8 q-mr-sm">ID:</div>
+          <strong>{{ tracker.identifier }}</strong>
+        </q-item>
+
+        <q-item class="items-center">
           <div class="text-grey-8 q-mr-sm">Ultima posição:</div>
           <div v-if="tracker.lastPosition">
             <span>
@@ -35,17 +40,12 @@ defineProps({
             </span>
           </div>
         </q-item>
-
-        <q-item class="items-center">
-          <div class="text-grey-8 q-mr-sm">ID:</div>
-          <strong>{{ tracker.identifier }}</strong>
-        </q-item>
       </q-list>
 
       <q-item>
-        <div v-if="tracker.simCards.length > 0" class="flex">
-          <div class="text-grey-8 q-mr-sm">Sim Cards Instalados:</div>
-          <div v-if="tracker.simCards">
+        <div v-if="tracker.simCards.length > 0">
+          <div class="text-grey-8 q-mb-sm">Sim Cards Instalados:</div>
+          <div v-if="tracker.simCards" class="flex">
             <SimCardCard
               v-for="sim in tracker.simCards"
               :key="`sim-${sim.id}`"

@@ -49,10 +49,16 @@ const attemptLogin = async () => {
     .then((res) => {
       if (!res?.data) throw new Error('Invalid login response')
 
+      const { token, user } = res.data.login
+
       userWithEmailNotFound.value = false
       passwordIsInvalid.value = false
 
-      AUTH_LOGIN(res.data.login.token)
+      AUTH_LOGIN({
+        bearerToken: token.value,
+        organizationId:
+          user.__typename === 'UserModel' ? user.organization.id : null,
+      })
 
       router.push('/').catch(() => null)
     })

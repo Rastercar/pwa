@@ -16,19 +16,13 @@ defineProps({
     <q-list v-if="vehicle" style="min-width: 100px">
       <q-item
         :to="{
-          name: 'veiculo',
+          name: 'cliente-veiculo',
           params: { id: vehicle.id },
         }"
         clickable
       >
         <q-item-section>Editar</q-item-section>
       </q-item>
-
-      <q-separator />
-
-      <!-- <q-item clickable :to="{ name: 'vehicle', params: { id: vehicle.id } }">
-        <q-item-section>Ver detalhes</q-item-section>
-      </q-item> -->
     </q-list>
   </q-menu>
 </template>

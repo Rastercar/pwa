@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 export const devRoutes: RouteRecordRaw[] = [
   {
     path: '/dev/test',
-    component: () => import('layouts/tracked/TrackedLayout.vue'),
+    component: () => import('layouts/client/TrackedLayout.vue'),
     children: [
       {
         path: '',

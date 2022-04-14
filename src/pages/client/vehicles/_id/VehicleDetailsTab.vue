@@ -272,7 +272,7 @@ const submit = () => {
           type="submit"
           color="primary"
           :loading="loading"
-          :disable="v.$invalid"
+          :disable="v.$invalid || !formHasChanged"
           @click="submit"
         />
       </div>

@@ -44,7 +44,13 @@ const attemptLogin = () => {
     .then((res) => {
       if (!res?.data) throw new Error('Invalid login response')
 
-      AUTH_LOGIN(res.data.loginWithToken.token)
+      const { token, user } = res.data.loginWithToken
+
+      AUTH_LOGIN({
+        bearerToken: token.value,
+        organizationId:
+          user.__typename === 'UserModel' ? user.organization.id : null,
+      })
 
       router.push('/').catch(() => null)
     })
