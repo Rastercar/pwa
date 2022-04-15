@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import SidebarUserSection from './user-section/SidebarUserSection.vue'
 import MasterSidebarRoutes from './MasterSidebarRoutes.vue'
+import SidebarUserSection from 'src/components/sidebar/sidebar-user-section/SidebarUserSection.vue'
 </script>
 
 <template>

@@ -535,6 +535,24 @@ export type ListOrganizationsQuery = {
   }>
 }
 
+export type OrganizationByIdQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type OrganizationByIdQuery = {
+  __typename?: 'Query'
+  organization?:
+    | {
+        __typename?: 'OrganizationModel'
+        id: number
+        name: string
+        billingEmail: string
+        billingEmailVerified: boolean
+      }
+    | null
+    | undefined
+}
+
 export type ListSimCardsQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>
   limit?: InputMaybe<Scalars['Int']>
@@ -1556,6 +1574,63 @@ export const ListOrganizationsDocument = {
 } as unknown as DocumentNode<
   ListOrganizationsQuery,
   ListOrganizationsQueryVariables
+>
+export const OrganizationByIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organizationById' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmail' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmailVerified' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  OrganizationByIdQuery,
+  OrganizationByIdQueryVariables
 >
 export const ListSimCardsDocument = {
   kind: 'Document',

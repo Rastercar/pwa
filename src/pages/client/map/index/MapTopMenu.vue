@@ -33,6 +33,8 @@ const selectTrackerDialogLabel = computed(() => {
 
   return `Vendo ${selectedTrackerQtd} Rastreadores`
 })
+
+console.log('render')
 </script>
 
 <template>

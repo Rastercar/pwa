@@ -6,3 +6,12 @@ query listOrganizations {
     billingEmailVerified
   }
 }
+
+query organizationById($id: Int!) {
+  organization(id: $id) {
+    id
+    name
+    billingEmail
+    billingEmailVerified
+  }
+}

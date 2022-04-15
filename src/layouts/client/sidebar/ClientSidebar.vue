@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import SidebarUserSection from './user-section/SidebarUserSection.vue'
-import SidebarRoutes from './SidebarRoutes.vue'
+import ClientSidebarRoutes from './ClientSidebarRoutes.vue'
 import { ref } from 'vue'
+import SidebarUserSection from 'src/components/sidebar/sidebar-user-section/SidebarUserSection.vue'
 
 const mini = ref(false)
 </script>
@@ -10,7 +10,7 @@ const mini = ref(false)
   <q-drawer :width="250" :mini="mini" :mini-width="80" elevated>
     <SidebarUserSection :mini="mini" />
 
-    <SidebarRoutes :mini="mini" />
+    <ClientSidebarRoutes :mini="mini" />
 
     <q-item
       v-ripple

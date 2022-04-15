@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import ClientSidebar from './sidebar/ClientSidebar.vue'
 import { useLayout } from 'src/state/layout.state'
 import TrackedHeader from './header/Header.vue'
-import Sidebar from './sidebar/Sidebar.vue'
 import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 
@@ -29,7 +29,7 @@ if (platform.is.desktop) SET_SIDEBAR(true)
     -->
     <TrackedHeader v-if="headerVisible" @toggle:sidebar="TOGGLE_SIDEBAR" />
 
-    <Sidebar
+    <ClientSidebar
       :model-value="state.sidebarOpen"
       @update:model-value="SET_SIDEBAR"
     />

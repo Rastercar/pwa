@@ -51,6 +51,7 @@ const LOGIN = (loginData: LoginArgs) => {
  */
 const LOGOUT = (options = { clearApolloCache: true }) => {
   state.apiToken = null
+  state.organizationId = null
 
   if (options.clearApolloCache) {
     // The apollo client cant be defined in this file root as the application

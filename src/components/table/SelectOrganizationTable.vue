@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrganizationModel } from '../../../../graphql/generated/graphql-operations'
+import { OrganizationModel } from '../../graphql/generated/graphql-operations'
 import { QTableProps } from 'quasar'
 
 const columns: QTableProps['columns'] = [

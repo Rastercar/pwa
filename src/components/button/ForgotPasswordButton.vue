@@ -52,11 +52,8 @@ const props = defineProps({
   },
 })
 
-const { result: currentUser, loading: fetchingCurrentUser } = useQuery(
-  CurrentUserDocument,
-  undefined,
-  { fetchPolicy: 'cache-first' }
-)
+const { result: currentUser, loading: fetchingCurrentUser } =
+  useQuery(CurrentUserDocument)
 
 const timesEmailWasSent = ref(0)
 

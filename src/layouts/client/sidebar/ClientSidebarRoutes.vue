@@ -2,6 +2,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
 import { computed } from 'vue'
+import AcessingClientWarning from './AcessingClientWarning.vue'
 
 defineProps({
   /**
@@ -56,6 +57,8 @@ const routes = computed(() => {
 
 <template>
   <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
+    <AcessingClientWarning :mini="mini" />
+
     <q-list>
       <q-separator />
 

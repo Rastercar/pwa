@@ -4,13 +4,6 @@ import { QTableProps } from 'quasar'
 
 const columns: QTableProps['columns'] = [
   {
-    name: 'id',
-    align: 'center',
-    label: 'ID',
-    field: 'id',
-    sortable: true,
-  },
-  {
     name: 'veiculo',
     align: 'center',
     label: 'Placa',

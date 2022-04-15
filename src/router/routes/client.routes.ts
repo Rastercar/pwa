@@ -16,7 +16,7 @@ export const clientRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/cliente',
-    component: () => import('layouts/client/TrackedLayout.vue'),
+    component: () => import('src/layouts/client/ClientLayout.vue'),
     children: [
       {
         path: 'meu-perfil',

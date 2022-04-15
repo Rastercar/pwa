@@ -6,6 +6,7 @@ import GoogleMap from 'src/components/google-maps/map/GoogleMap.vue'
 import { useGeolocation } from 'src/composables/use-geolocation'
 import MapRightOverlay from './index/MapRightOverlay.vue'
 import MapTopMenu from './index/MapTopMenu.vue'
+import { useAuth } from 'src/state/auth.state'
 import { Ref, ref, toRaw } from 'vue'
 
 const { coords: userCoordinates } = useGeolocation({
@@ -24,11 +25,19 @@ const showTrackerOverlay = (tracker: TrackerModel) => {
   overlayToDisplay.value = 'tracker'
   showMapRightOverlay.value = !showMapRightOverlay.value
 }
+
+const { state: authState } = useAuth()
 </script>
 
 <template>
   <q-page class="bg-grey">
+    <!--
+      :key="`${authState.organizationId}`"
+      When the organization changes, reload the map as all the map content is depentent
+      on the selected organization
+    -->
     <GoogleMap
+      :key="`${authState.organizationId}`"
       :center="center"
       :fullscreen-control="false"
       :street-view-control="false"
@@ -38,18 +47,15 @@ const showTrackerOverlay = (tracker: TrackerModel) => {
         mapTypeIds: ['roadmap', 'satellite'],
       }"
     >
+      <TrackerMarkers @tracker:selected="showTrackerOverlay" />
+
       <MapTopMenu />
 
-      <template v-if="2 + 2 === 5">
-        <TrackerMarkers @tracker:selected="showTrackerOverlay" />
-        <MapTopMenu />
-
-        <MapRightOverlay
-          v-model="showMapRightOverlay"
-          :overlay-props="overlayProps"
-          :overlay-to-display="overlayToDisplay"
-        />
-      </template>
+      <MapRightOverlay
+        v-model="showMapRightOverlay"
+        :overlay-props="overlayProps"
+        :overlay-to-display="overlayToDisplay"
+      />
     </GoogleMap>
   </q-page>
 </template>
