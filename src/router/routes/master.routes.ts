@@ -11,6 +11,7 @@ import { RouteRecordRaw } from 'vue-router'
 export const masterRoutes: RouteRecordRaw[] = [
   {
     path: '/rastreadora',
+    name: 'rastreadora',
     redirect: '/rastreadora/home',
   },
   {

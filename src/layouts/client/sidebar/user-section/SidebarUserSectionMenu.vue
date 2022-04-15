@@ -4,10 +4,10 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const { AUTH_LOGOUT } = useAuth()
+const { LOGOUT } = useAuth()
 
 const logout = () => {
-  AUTH_LOGOUT()
+  LOGOUT()
   router.push({ name: 'login' }).catch(() => null)
 }
 </script>

@@ -39,7 +39,7 @@ interface LoginArgs {
 /**
  * Sets the API token and the selected organization
  */
-const AUTH_LOGIN = (loginData: LoginArgs) => {
+const LOGIN = (loginData: LoginArgs) => {
   // Dont worry too much about about storing the JWT in the local storage
   // https://pragmaticwebsecurity.com/articles/oauthoidc/localstorage-xss.html
   state.apiToken = loginData.bearerToken
@@ -49,7 +49,7 @@ const AUTH_LOGIN = (loginData: LoginArgs) => {
 /**
  * Unsets the API token and clears the apollo cache
  */
-const AUTH_LOGOUT = (options = { clearApolloCache: true }) => {
+const LOGOUT = (options = { clearApolloCache: true }) => {
   state.apiToken = null
 
   if (options.clearApolloCache) {
@@ -62,11 +62,15 @@ const AUTH_LOGOUT = (options = { clearApolloCache: true }) => {
   }
 }
 
-export const useAuth = () => ({
-  AUTH_LOGOUT,
-  AUTH_LOGIN,
+const SET_ORGANIZATION = (organizationId: number | null) => {
+  state.organizationId = organizationId
+}
 
-  isLoggedIn: computed(() => !!state.apiToken),
+export const useAuth = () => ({
+  LOGIN,
+  LOGOUT,
+  SET_ORGANIZATION,
 
   state: readonly(state),
+  isLoggedIn: computed(() => !!state.apiToken),
 })

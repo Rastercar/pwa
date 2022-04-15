@@ -23,7 +23,7 @@ type onError = (error: Error) => void
  * const { api: googleMapsApi, onSuccess } = useGoogleMaps(myApiKey)
  *
  * onSuccess(() => {
- *   console.log('Google maps api just loaded !')
+ *   // log('Google maps api just loaded !')
  * })
  * ```
  */

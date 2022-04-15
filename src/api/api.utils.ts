@@ -14,15 +14,19 @@ export const isAxiosError = (error: unknown): error is AxiosError => {
  */
 export function api(options?: AxiosRequestConfig): AxiosInstance {
   const { state: authState } = useAuth()
-  const { apiToken } = authState
+  const { apiToken, organizationId = 2 } = authState
+
+  const headers: Record<string, string | number> = {
+    'Access-Control-Allow-Origin': '*',
+    'X-Requested-With': 'XMLHttpRequest',
+  }
+
+  if (apiToken) headers.Authorization = `Bearer ${apiToken}`
+  if (organizationId) headers.organizationid = organizationId
 
   const defaultOptions: AxiosRequestConfig = {
     baseURL: process.env.API_BASE_URL,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'X-Requested-With': 'XMLHttpRequest',
-      Authorization: apiToken ? `Bearer ${apiToken}` : null,
-    },
+    headers,
   }
 
   const axiosOptions = merge(defaultOptions, options)

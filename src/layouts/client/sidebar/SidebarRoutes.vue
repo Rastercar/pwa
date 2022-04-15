@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useQuery } from '@vue/apollo-composable'
+import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
+import { computed } from 'vue'
+
 defineProps({
   /**
    * If the sidebar containing the user section is in the 'mini' state
@@ -9,28 +13,45 @@ defineProps({
   },
 })
 
-const menuList = [
-  {
-    icon: 'fa fa-map-marker-alt',
-    label: 'Mapa',
-    route: { name: 'cliente-mapa' },
-    separator: false,
-  },
-  {
-    icon: 'fa fa-car',
-    label: 'Meus veículos',
-    route: { name: 'cliente-veiculos' },
-  },
-]
+const { result } = useQuery(CurrentUserDocument, undefined, {
+  fetchPolicy: 'cache-only',
+})
 
-if (process.env.NODE_ENV === 'development') {
-  menuList.unshift({
-    icon: 'fa fa-microchip',
-    label: 'dev',
-    route: { name: 'test' },
-    separator: true,
-  })
-}
+const routes = computed(() => {
+  const menuList = [
+    {
+      icon: 'fa fa-map-marker-alt',
+      label: 'Mapa',
+      route: { name: 'cliente-mapa' },
+      separator: false,
+    },
+    {
+      icon: 'fa fa-car',
+      label: 'Meus veículos',
+      route: { name: 'cliente-veiculos' },
+    },
+  ]
+
+  if (process.env.NODE_ENV === 'development') {
+    menuList.unshift({
+      icon: 'fa fa-microchip',
+      label: 'dev',
+      route: { name: 'test' },
+      separator: true,
+    })
+  }
+
+  if (result.value?.me.__typename === 'MasterUserModel') {
+    menuList.unshift({
+      icon: 'fa fa-globe-americas',
+      label: 'Painel Geral',
+      route: { name: 'rastreadora' },
+      separator: true,
+    })
+  }
+
+  return menuList
+})
 </script>
 
 <template>
@@ -38,7 +59,7 @@ if (process.env.NODE_ENV === 'development') {
     <q-list>
       <q-separator />
 
-      <template v-for="(menuItem, index) in menuList" :key="index">
+      <template v-for="(menuItem, index) in routes" :key="index">
         <q-item
           v-ripple
           class="q-pa-none"

@@ -16,7 +16,7 @@ const props = defineProps({
 
 const router = useRouter()
 
-const { AUTH_LOGIN } = useAuth()
+const { LOGIN } = useAuth()
 
 const autoLoginErrorType: Ref<null | 'unauthorized' | 'other'> = ref(null)
 const willLoginSoon = ref(true)
@@ -46,7 +46,7 @@ const attemptLogin = () => {
 
       const { token, user } = res.data.loginWithToken
 
-      AUTH_LOGIN({
+      LOGIN({
         bearerToken: token.value,
         organizationId:
           user.__typename === 'UserModel' ? user.organization.id : null,

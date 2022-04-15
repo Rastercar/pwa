@@ -10,6 +10,8 @@ const { state } = useAuth()
 export const wsLink = new GraphQLWsLink(
   createClient({
     url,
-    connectionParams: () => ({ authToken: state.apiToken }),
+    connectionParams: () => {
+      return { authToken: state.apiToken, organizationid: state.organizationId }
+    },
   })
 )

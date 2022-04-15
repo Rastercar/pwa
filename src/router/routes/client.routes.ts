@@ -11,6 +11,7 @@ import { RouteRecordRaw } from 'vue-router'
 export const clientRoutes: RouteRecordRaw[] = [
   {
     path: '/cliente',
+    name: 'cliente',
     redirect: '/cliente/mapa',
   },
   {

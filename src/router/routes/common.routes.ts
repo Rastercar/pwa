@@ -10,7 +10,7 @@ export const commonRoutes: RouteRecordRaw[] = [
     // need for redirection on a async fn and `redirect` is sync
     path: '/',
     beforeEnter: async () => {
-      const { isLoggedIn, AUTH_LOGOUT } = useAuth()
+      const { isLoggedIn, LOGOUT } = useAuth()
 
       if (!isLoggedIn.value) return 'login'
 
@@ -22,7 +22,7 @@ export const commonRoutes: RouteRecordRaw[] = [
       // If we are logged in (we have a JWT in the local storage) but we failed to fetch
       // the current user then something is very wrong, so we just reset the application
       if (!currentUser) {
-        AUTH_LOGOUT()
+        LOGOUT()
         return '/login'
       }
 

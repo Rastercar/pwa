@@ -38,7 +38,7 @@ onError(({ graphQLErrors }) => {
 const v = useVuelidate({ $autoDirty: true })
 const router = useRouter()
 
-const { AUTH_LOGIN } = useAuth()
+const { LOGIN } = useAuth()
 
 const attemptLogin = async () => {
   const isFormValid = await v.value.$validate().catch(() => false)
@@ -54,7 +54,7 @@ const attemptLogin = async () => {
       userWithEmailNotFound.value = false
       passwordIsInvalid.value = false
 
-      AUTH_LOGIN({
+      LOGIN({
         bearerToken: token.value,
         organizationId:
           user.__typename === 'UserModel' ? user.organization.id : null,

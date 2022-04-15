@@ -149,6 +149,7 @@ type Query {
   isEmailInUse(email: String!): Boolean!
   me: UserOrMasterUser!
   organization(id: Int!): OrganizationModel
+  organizations: [OrganizationModel!]!
 
   """Sim cards that belong to the request user organization"""
   simCards(

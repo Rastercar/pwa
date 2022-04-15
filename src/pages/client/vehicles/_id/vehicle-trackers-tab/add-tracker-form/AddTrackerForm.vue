@@ -54,11 +54,6 @@ const submit = () => {
   if (v.value.$invalid) return
 
   if (useExistingTracker.value && selectedTrackerId.value) {
-    console.log({
-      id: props.vehicleId,
-      trackerIds: [selectedTrackerId.value],
-    })
-
     setTrackers({
       id: props.vehicleId,
       trackerIds: [selectedTrackerId.value],

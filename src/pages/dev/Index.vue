@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useAuth } from 'src/state/auth.state'
 
-const { AUTH_LOGOUT, isLoggedIn } = useAuth()
+const { LOGOUT, isLoggedIn } = useAuth()
 
 const attemptLogout = () => {
-  AUTH_LOGOUT()
+  LOGOUT()
 }
 </script>
 

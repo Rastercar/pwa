@@ -68,7 +68,7 @@ const {
   fetchPolicy: 'network-only',
 })
 
-const { AUTH_LOGIN } = useAuth()
+const { LOGIN } = useAuth()
 const router = useRouter()
 
 const submitForm = () => {
@@ -81,7 +81,7 @@ const submitForm = () => {
 
       const { token, user } = res.data.register
 
-      AUTH_LOGIN({
+      LOGIN({
         bearerToken: token.value,
         organizationId:
           user.__typename === 'UserModel' ? user.organization.id : null,

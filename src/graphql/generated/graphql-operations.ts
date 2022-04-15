@@ -233,6 +233,7 @@ export type Query = {
   isEmailInUse: Scalars['Boolean']
   me: UserOrMasterUser
   organization?: Maybe<OrganizationModel>
+  organizations: Array<OrganizationModel>
   /** Sim cards that belong to the request user organization */
   simCards: OffsetPaginatedSimCard
   /** Trackers that belong to the request user organization */
@@ -519,6 +520,19 @@ export type UnregisteredUserByUuidQuery = {
       }
     | null
     | undefined
+}
+
+export type ListOrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type ListOrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<{
+    __typename?: 'OrganizationModel'
+    id: number
+    name: string
+    billingEmail: string
+    billingEmailVerified: boolean
+  }>
 }
 
 export type ListSimCardsQueryVariables = Exact<{
@@ -1505,6 +1519,43 @@ export const UnregisteredUserByUuidDocument = {
 } as unknown as DocumentNode<
   UnregisteredUserByUuidQuery,
   UnregisteredUserByUuidQueryVariables
+>
+export const ListOrganizationsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listOrganizations' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizations' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmail' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'billingEmailVerified' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ListOrganizationsQuery,
+  ListOrganizationsQueryVariables
 >
 export const ListSimCardsDocument = {
   kind: 'Document',

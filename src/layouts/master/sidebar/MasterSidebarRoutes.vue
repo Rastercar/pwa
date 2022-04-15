@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AccessClientPanelBtn from './access-client-panel-btn/AccessClientPanelBtn.vue'
 const menuList = [
   {
     icon: 'fa fa-home',
@@ -20,9 +21,13 @@ if (process.env.NODE_ENV === 'development') {
 
 <template>
   <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
-    <q-list>
-      <q-separator />
+    <q-separator />
 
+    <AccessClientPanelBtn />
+
+    <q-separator />
+
+    <q-list>
       <template v-for="(menuItem, index) in menuList" :key="index">
         <q-item
           v-ripple

@@ -35,7 +35,7 @@ const getApiErrorsResponsesFromGraphqlErrors = (
   graphQLErrors: GraphQLErrors = []
 ): ApiErrorResponse[] => {
   return graphQLErrors
-    .map((error) => error.extensions.response)
+    .map((error) => error?.extensions?.response)
     .filter((response) => isApiErrorResponse(response)) as ApiErrorResponse[]
 }
 

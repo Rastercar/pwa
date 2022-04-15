@@ -38,15 +38,18 @@ const showTrackerOverlay = (tracker: TrackerModel) => {
         mapTypeIds: ['roadmap', 'satellite'],
       }"
     >
-      <TrackerMarkers @tracker:selected="showTrackerOverlay" />
-
       <MapTopMenu />
 
-      <MapRightOverlay
-        v-model="showMapRightOverlay"
-        :overlay-props="overlayProps"
-        :overlay-to-display="overlayToDisplay"
-      />
+      <template v-if="2 + 2 === 5">
+        <TrackerMarkers @tracker:selected="showTrackerOverlay" />
+        <MapTopMenu />
+
+        <MapRightOverlay
+          v-model="showMapRightOverlay"
+          :overlay-props="overlayProps"
+          :overlay-to-display="overlayToDisplay"
+        />
+      </template>
     </GoogleMap>
   </q-page>
 </template>

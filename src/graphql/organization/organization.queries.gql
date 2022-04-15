@@ -1,0 +1,8 @@
+query listOrganizations {
+  organizations {
+    id
+    name
+    billingEmail
+    billingEmailVerified
+  }
+}
