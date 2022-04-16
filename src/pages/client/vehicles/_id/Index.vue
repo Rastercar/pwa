@@ -4,6 +4,7 @@ import VehicleTrackersTab from './vehicle-trackers-tab/VehicleTrackersTab.vue'
 import VehicleDetailsTab from './VehicleDetailsTab.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { Ref, ref } from 'vue'
+import NotFoundFiller from 'src/components/fillers/NotFoundFiller.vue'
 
 type tabs = 'details' | 'trackers' | 'history'
 
@@ -14,24 +15,32 @@ const props = defineProps({
   },
 })
 
-// TODO: CHANGE ME BACK TO DETAILS
-const tab: Ref<tabs> = ref('trackers')
+const tab: Ref<tabs> = ref('details')
 
-const { result } = useQuery(FullVehicleDocument, { id: props.id })
+const { result, loading } = useQuery(FullVehicleDocument, { id: props.id })
 </script>
 
 <template>
-  <q-page padding class="row justify-center" style="background-color: #fafafa">
+  <NotFoundFiller
+    v-if="!result?.vehicle && !loading"
+    error-message="Veículo não encontrado"
+  />
+
+  <q-page
+    v-else
+    padding
+    class="row justify-center"
+    style="background-color: #fafafa"
+  >
     <div class="column">
       <div class="row">
-        <q-card style="max-width: 650px">
+        <q-card v-if="result?.vehicle" style="max-width: 650px">
           <q-tabs
             v-model="tab"
             dense
             class="text-grey"
             active-color="primary"
             indicator-color="primary"
-            narrow-indicator
           >
             <q-tab name="details" label="Detalhes" />
             <q-tab name="trackers" label="Rastreadores" />
@@ -40,7 +49,7 @@ const { result } = useQuery(FullVehicleDocument, { id: props.id })
 
           <q-separator />
 
-          <q-tab-panels v-if="result?.vehicle" v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated>
             <q-tab-panel class="q-pa-none" name="details">
               <VehicleDetailsTab :vehicle="result.vehicle" />
             </q-tab-panel>

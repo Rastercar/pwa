@@ -1,3 +1,8 @@
+import { useApolloClient } from '@vue/apollo-composable'
+import {
+  CurrentUserDocument,
+  CurrentUserQuery,
+} from 'src/graphql/generated/graphql-operations'
 import { RouteLocationNormalized } from 'vue-router'
 
 /**
@@ -43,4 +48,18 @@ export const mapParamsToProps = (paramsToMap: ParamTypeDescription) => {
 
     return props
   }
+}
+
+/**
+ * Gets the current user in a non component context, using the graphql CurrentUserQuery
+ */
+export const getCurrentUser = async (): Promise<
+  CurrentUserQuery['me'] | null
+> => {
+  const { data: currentUser } = await useApolloClient()
+    .resolveClient()
+    .query({ query: CurrentUserDocument })
+    .catch(() => ({ data: null }))
+
+  return currentUser?.me || null
 }

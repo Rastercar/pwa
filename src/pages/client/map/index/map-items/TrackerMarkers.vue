@@ -44,21 +44,13 @@ const fitMapToTrackersBounds = (
     if (tracker.lastPosition) bounds.extend(tracker.lastPosition)
   })
 
-  map.value.fitBounds(bounds)
+  if (!bounds.isEmpty()) map.value.fitBounds(bounds)
 }
 
-watch(
-  trackersToShow,
-  (trackers) => {
-    if (
-      trackers.length > 0 &&
-      trackedMapState.options.fitMapOnTrackerSelection
-    ) {
-      fitMapToTrackersBounds(trackers)
-    }
-  },
-  { immediate: true }
-)
+// prettier-ignore
+watch(trackersToShow, (trackers) => {
+  if (trackers.length > 0 && trackedMapState.options.fitMapOnTrackerSelection) fitMapToTrackersBounds(trackers)
+}, { immediate: true })
 </script>
 
 <template>

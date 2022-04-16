@@ -33,6 +33,7 @@ const createAppRouter = route(() => {
     const { requiresLogin, requiresLogoff } = to.meta?.auth || {}
 
     if (requiresLogin && !isLoggedIn.value) return next({ name: 'login' })
+
     if (requiresLogoff && isLoggedIn.value) return false
 
     return next()

@@ -20,3 +20,14 @@ mutation setVehicleTrackers($id: Int!, $trackerIds: [Int!]!) {
     }
   }
 }
+
+mutation installVehicleTracker($id: Int!, $tracker: CreateTrackerDTO!) {
+  installTrackersOnVehicle(id: $id, tracker: $tracker) {
+    ...VehicleFields
+    trackers {
+      id
+      identifier
+      model
+    }
+  }
+}

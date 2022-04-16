@@ -10,6 +10,20 @@ type AccessLevelModel {
   permissions: [PERMISSION!]!
 }
 
+input CreateSimCardDTO {
+  apnAddress: String!
+  apnPassword: String!
+  apnUser: String!
+  phoneNumber: String!
+  ssn: String!
+}
+
+input CreateTrackerDTO {
+  identifier: String!
+  model: String!
+  simCards: [CreateSimCardDTO!]!
+}
+
 input CreateVehicleDTO {
   brand: String
   chassisNumber: String
@@ -68,7 +82,7 @@ type Mutation {
   createVehicle(data: CreateVehicleDTO!, photo: Upload): VehicleModel!
 
   """Creates new trackers and associate them with a existing vehicle"""
-  installTrackersOnVehicle(data: UpdateVehicleDTO!, id: Int!): VehicleModel!
+  installTrackersOnVehicle(id: Int!, tracker: CreateTrackerDTO!): VehicleModel!
   login(credentials: LoginInput!): LoginResponse!
   loginWithToken(token: String!): LoginResponse!
   register(user: RegisterUserDTO!): LoginResponse!
@@ -302,10 +316,13 @@ union UserOrMasterUser = MasterUserModel | UserModel
 
 """vehicle"""
 type VehicleModel {
+  additionalInfo: Float
   brand: String
   chassisNumber: String
   color: String
   fabricationYear: Float
+  fuelConsumption: Float
+  fuelType: String
   id: Int!
   model: String
   modelYear: Float

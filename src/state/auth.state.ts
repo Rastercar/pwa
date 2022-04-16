@@ -1,6 +1,7 @@
 import { loadFromLS, syncWithLS } from './utils/persist-state'
 import { useApolloClient } from '@vue/apollo-composable'
 import { computed, reactive, readonly } from 'vue'
+import { useTrackedMap } from './tracked-map.state'
 
 /*
  | Auth State: 
@@ -36,6 +37,13 @@ interface LoginArgs {
   organizationId?: number | null
 }
 
+// The apollo client cant be defined in this file root as the application
+// has not bootstraped so we need to call useApolloClient() here
+const clearApolloCache = (options = { refetch: false }) => {
+  const client = useApolloClient().resolveClient()
+  return options.refetch ? client.resetStore() : client.clearStore()
+}
+
 /**
  * Sets the API token and the selected organization
  */
@@ -53,17 +61,22 @@ const LOGOUT = (options = { clearApolloCache: true }) => {
   state.apiToken = null
   state.organizationId = null
 
-  if (options.clearApolloCache) {
-    // The apollo client cant be defined in this file root as the application
-    // has not bootstraped so we need to call useApolloClient() here
-    useApolloClient()
-      .resolveClient()
-      .clearStore()
-      .catch(() => null)
-  }
+  if (options.clearApolloCache) clearApolloCache().catch(() => null)
 }
 
 const SET_ORGANIZATION = (organizationId: number | null) => {
+  // For master users, since we query organization data using a custom header to send the organization ID
+  // other than sending the ID as a query argument for every single query, the apollo cache should be cleared,
+  // otherwise if we can have the following scenario:
+  // - we are using organization 4 and we query and cache some of its data
+  // - we change to organization 5 and query the same data
+  // - apollo gets the cached data of organization 4 for organization 5
+  clearApolloCache({ refetch: true }).catch(() => null)
+
+  const { SET_SELECTED_TRACKERS } = useTrackedMap()
+
+  SET_SELECTED_TRACKERS([])
+
   state.organizationId = organizationId
 }
 

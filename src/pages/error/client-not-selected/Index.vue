@@ -2,8 +2,8 @@
 import {
   ListOrganizationsDocument,
   OrganizationModel,
-} from '../../graphql/generated/graphql-operations'
-import SelectOrganizationTable from '../table/SelectOrganizationTable.vue'
+} from '../../../graphql/generated/graphql-operations'
+import SelectOrganizationTable from '../../../components/table/SelectOrganizationTable.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { useAuth } from 'src/state/auth.state'
 import { useRouter } from 'vue-router'
@@ -24,31 +24,24 @@ const accessUserPanel: QTable['onRowClick'] = (_e, row) => {
   router.push({ name: 'cliente' }).catch(() => null)
 }
 
-const showSelectOrgDialog = ref(false)
 const filter = ref('')
 
 const { loading, result } = useQuery(ListOrganizationsDocument)
 </script>
 
 <template>
-  <q-dialog v-model="showSelectOrgDialog">
-    <q-card>
+  <!-- This cant be a QPage for some reason -->
+  <div class="fullscreen bg-blue text-center flex flex-center">
+    <q-card style="max-width: 600px">
+      <q-card-section class="flex items-center q-py-sm bg-warning text-bold">
+        Erro ao acessar o painel do cliente, nenhum cliente selecionado !
+      </q-card-section>
+
       <q-card-section class="flex items-center q-py-sm">
-        <div class="text-h6">
+        <div class="text-h5">
           <q-icon size="25px" class="q-mr-sm" name="fa fa-building" />
           Selecione o cliente a acessar o painel
         </div>
-
-        <q-space />
-
-        <q-btn
-          v-close-popup
-          icon="fa fa-times"
-          size="sm"
-          fab
-          flat
-          @click="$emit('update:model-value', false)"
-        />
       </q-card-section>
 
       <q-input
@@ -63,8 +56,9 @@ const { loading, result } = useQuery(ListOrganizationsDocument)
         :rows="result?.organizations || []"
         :loading="loading"
         :filter="filter"
+        hide-bottom
         @row-click="accessUserPanel"
       />
     </q-card>
-  </q-dialog>
+  </div>
 </template>

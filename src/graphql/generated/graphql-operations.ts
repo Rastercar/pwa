@@ -34,6 +34,20 @@ export type AccessLevelModel = {
   permissions: Array<Permission>
 }
 
+export type CreateSimCardDto = {
+  apnAddress: Scalars['String']
+  apnPassword: Scalars['String']
+  apnUser: Scalars['String']
+  phoneNumber: Scalars['String']
+  ssn: Scalars['String']
+}
+
+export type CreateTrackerDto = {
+  identifier: Scalars['String']
+  model: Scalars['String']
+  simCards: Array<CreateSimCardDto>
+}
+
 export type CreateVehicleDto = {
   brand?: InputMaybe<Scalars['String']>
   chassisNumber?: InputMaybe<Scalars['String']>
@@ -113,8 +127,8 @@ export type MutationCreateVehicleArgs = {
 }
 
 export type MutationInstallTrackersOnVehicleArgs = {
-  data: UpdateVehicleDto
   id: Scalars['Int']
+  tracker: CreateTrackerDto
 }
 
 export type MutationLoginArgs = {
@@ -391,10 +405,13 @@ export type UserOrMasterUser = MasterUserModel | UserModel
 /** vehicle */
 export type VehicleModel = {
   __typename?: 'VehicleModel'
+  additionalInfo?: Maybe<Scalars['Float']>
   brand?: Maybe<Scalars['String']>
   chassisNumber?: Maybe<Scalars['String']>
   color?: Maybe<Scalars['String']>
   fabricationYear?: Maybe<Scalars['Float']>
+  fuelConsumption?: Maybe<Scalars['Float']>
+  fuelType?: Maybe<Scalars['String']>
   id: Scalars['Int']
   model?: Maybe<Scalars['String']>
   modelYear?: Maybe<Scalars['Float']>
@@ -957,6 +974,34 @@ export type SetVehicleTrackersMutationVariables = Exact<{
 export type SetVehicleTrackersMutation = {
   __typename?: 'Mutation'
   setVehicleTrackers: {
+    __typename?: 'VehicleModel'
+    id: number
+    brand?: string | null | undefined
+    color?: string | null | undefined
+    model?: string | null | undefined
+    photo?: string | null | undefined
+    plate: string
+    renavam?: string | null | undefined
+    modelYear?: number | null | undefined
+    chassisNumber?: string | null | undefined
+    fabricationYear?: number | null | undefined
+    trackers: Array<{
+      __typename?: 'TrackerModel'
+      id: number
+      identifier?: string | null | undefined
+      model: string
+    }>
+  }
+}
+
+export type InstallVehicleTrackerMutationVariables = Exact<{
+  id: Scalars['Int']
+  tracker: CreateTrackerDto
+}>
+
+export type InstallVehicleTrackerMutation = {
+  __typename?: 'Mutation'
+  installTrackersOnVehicle: {
     __typename?: 'VehicleModel'
     id: number
     brand?: string | null | undefined
@@ -2662,6 +2707,95 @@ export const SetVehicleTrackersDocument = {
 } as unknown as DocumentNode<
   SetVehicleTrackersMutation,
   SetVehicleTrackersMutationVariables
+>
+export const InstallVehicleTrackerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'installVehicleTracker' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tracker' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'CreateTrackerDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'installTrackersOnVehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tracker' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'tracker' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'VehicleFields' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'trackers' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'identifier' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...VehicleFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  InstallVehicleTrackerMutation,
+  InstallVehicleTrackerMutationVariables
 >
 export const ListVehiclesDocument = {
   kind: 'Document',

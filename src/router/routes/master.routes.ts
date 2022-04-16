@@ -1,3 +1,4 @@
+import { createUserTypeGuard } from '../guards/user-type-only.guard'
 import { RouteRecordRaw } from 'vue-router'
 
 /**
@@ -17,6 +18,10 @@ export const masterRoutes: RouteRecordRaw[] = [
   {
     path: '/rastreadora',
     component: () => import('layouts/master/MasterLayout.vue'),
+    beforeEnter: createUserTypeGuard({
+      allowedType: 'MasterUserModel',
+      onFailureRedirectTo: '/error/acesso-negado',
+    }),
     children: [
       {
         path: 'home',

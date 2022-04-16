@@ -1,4 +1,5 @@
-import { mapParamsToProps } from './routes.utils'
+import { getCurrentUser, mapParamsToProps } from '../routes.utils'
+import { useAuth } from 'src/state/auth.state'
 import { RouteRecordRaw } from 'vue-router'
 
 /**
@@ -17,6 +18,18 @@ export const clientRoutes: RouteRecordRaw[] = [
   {
     path: '/cliente',
     component: () => import('src/layouts/client/ClientLayout.vue'),
+    beforeEnter: async () => {
+      const { state: authState } = useAuth()
+
+      const user = await getCurrentUser()
+
+      const isMasterUserAcessingClientRouteWithNoSelectedClient =
+        user?.__typename === 'MasterUserModel' && !authState.organizationId
+
+      if (isMasterUserAcessingClientRouteWithNoSelectedClient) {
+        return '/error/cliente-nao-especificado'
+      }
+    },
     children: [
       {
         path: 'meu-perfil',

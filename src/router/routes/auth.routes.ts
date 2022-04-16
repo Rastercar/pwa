@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import { mapQueryToProps } from './routes.utils'
+import { mapQueryToProps } from '../routes.utils'
 
 export const authRoutes: RouteRecordRaw[] = [
   // Unfortunately since the root path '/' is a componentless

@@ -16,9 +16,7 @@ const {
   onResult: onTrackersFetched,
   loading,
   result,
-} = useQuery(ListActiveTrackersDocument, undefined, {
-  fetchPolicy: 'cache-and-network',
-})
+} = useQuery(ListActiveTrackersDocument)
 
 const filter = ref('')
 

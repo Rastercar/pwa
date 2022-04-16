@@ -1,5 +1,4 @@
-import { CurrentUserDocument } from 'src/graphql/generated/graphql-operations'
-import { useApolloClient } from '@vue/apollo-composable'
+import { getCurrentUser } from '../routes.utils'
 import { useAuth } from 'src/state/auth.state'
 import { RouteRecordRaw } from 'vue-router'
 
@@ -14,21 +13,16 @@ export const commonRoutes: RouteRecordRaw[] = [
 
       if (!isLoggedIn.value) return 'login'
 
-      const { data: currentUser } = await useApolloClient()
-        .resolveClient()
-        .query({ query: CurrentUserDocument })
-        .catch(() => ({ data: null }))
+      const user = await getCurrentUser()
 
       // If we are logged in (we have a JWT in the local storage) but we failed to fetch
       // the current user then something is very wrong, so we just reset the application
-      if (!currentUser) {
+      if (!user) {
         LOGOUT()
         return '/login'
       }
 
-      return currentUser.me.__typename === 'MasterUserModel'
-        ? '/rastreadora'
-        : '/cliente'
+      return user.__typename === 'MasterUserModel' ? '/rastreadora' : '/cliente'
     },
     components: {},
   },
