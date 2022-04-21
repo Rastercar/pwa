@@ -2,14 +2,10 @@
 import SelectSimCard from 'src/components/select/SelectSimCard.vue'
 import UseNewSimForm from './UseNewSimForm.vue'
 import { ref } from 'vue'
-
-interface NewSimCard {
-  ssn: string
-  phoneNumber: string
-  apnUser: string
-  apnAddress: string
-  apnPassword: string
-}
+import {
+  CreateSimCardDtoOrId,
+  CreateSimCardDto,
+} from 'src/graphql/generated/graphql-operations'
 
 defineEmits<{
   /**
@@ -19,7 +15,7 @@ defineEmits<{
    * - number, the ID of a existing sim card to use
    * - object, a new sim card to be registered
    */
-  (event: 'update:model-value', value: number | NewSimCard | null): void
+  (event: 'update:model-value', value: CreateSimCardDtoOrId | null): void
 }>()
 
 const emptySim = {
@@ -30,7 +26,7 @@ const emptySim = {
   apnPassword: '',
 }
 
-const newSimCard = ref<NewSimCard>({ ...emptySim })
+const newSimCard = ref<CreateSimCardDto>({ ...emptySim })
 
 const useExistingSim = ref(false)
 const selectedSimId = ref<number | null>(null)
@@ -72,14 +68,16 @@ const resetForm = () => {
         v-model="selectedSimId"
         class="q-mb-md"
         square
-        @update:model-value="(v) => $emit('update:model-value', v)"
+        @update:model-value="
+          (v) => $emit('update:model-value', v ? { id: v } : null)
+        "
       />
     </q-card-section>
 
     <q-card-section v-else class="q-pb-none">
       <UseNewSimForm
         v-model="newSimCard"
-        @update:model-value="(v) => $emit('update:model-value', v)"
+        @update:model-value="(v) => $emit('update:model-value', { dto: v })"
       />
     </q-card-section>
   </q-card>

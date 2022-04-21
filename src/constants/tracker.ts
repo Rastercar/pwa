@@ -10,7 +10,7 @@ export const TRACKER_MODELS = ['GT06'] as const
  */
 export type trackerModel = typeof TRACKER_MODELS[number]
 
-interface TrackerDescription {
+export interface TrackerDescription {
   /**
    * The amount of sim card slots for the tracker model, limits
    * how many sim cards can be associated with the tracker

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TrackerModel } from 'src/graphql/generated/graphql-operations'
-import { PropType } from 'vue'
 import SimCardCard from './SimCardCard.vue'
+import { PropType } from 'vue'
 
 defineProps({
   tracker: {

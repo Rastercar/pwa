@@ -18,10 +18,25 @@ input CreateSimCardDTO {
   ssn: String!
 }
 
+"""
+Wrapper input for either a object with a existing SimCard ID or a DTO for creating a new SimCard
+"""
+input CreateSimCardDtoOrId {
+  """
+  The data of the sim card to be created, if this is not null ID must be null
+  """
+  dto: CreateSimCardDTO
+
+  """
+  The ID of the sim card to be used, DTO must be null if this is prop is not null
+  """
+  id: Int
+}
+
 input CreateTrackerDTO {
   identifier: String!
   model: String!
-  simCards: [CreateSimCardDTO!]!
+  simCards: [CreateSimCardDtoOrId!]!
 }
 
 input CreateVehicleDTO {
@@ -81,8 +96,10 @@ type MasterUserModel {
 type Mutation {
   createVehicle(data: CreateVehicleDTO!, photo: Upload): VehicleModel!
 
-  """Creates new trackers and associate them with a existing vehicle"""
-  installTrackersOnVehicle(id: Int!, tracker: CreateTrackerDTO!): VehicleModel!
+  """
+  Creates a new tracker and/or its new simCards and associate the tracker with a existing vehicle
+  """
+  installNewTrackerOnVehicle(id: Int!, tracker: CreateTrackerDTO!): VehicleModel!
   login(credentials: LoginInput!): LoginResponse!
   loginWithToken(token: String!): LoginResponse!
   register(user: RegisterUserDTO!): LoginResponse!
@@ -258,7 +275,7 @@ type TrackerModel {
   id: Int!
 
   """A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2"""
-  identifier: String
+  identifier: String!
   lastPosition: LatLng
   model: String!
   organization: SimpleOrganizationModel!
@@ -316,7 +333,7 @@ union UserOrMasterUser = MasterUserModel | UserModel
 
 """vehicle"""
 type VehicleModel {
-  additionalInfo: Float
+  additionalInfo: String
   brand: String
   chassisNumber: String
   color: String

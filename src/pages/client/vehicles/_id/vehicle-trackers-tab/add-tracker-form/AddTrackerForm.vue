@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import {
-  SetVehicleTrackersDocument,
   InstallVehicleTrackerDocument,
+  SetVehicleTrackersDocument,
   CreateTrackerDto,
 } from 'src/graphql/generated/graphql-operations'
+import {
+  HOMOLOGATED_TRACKER,
+  TrackerDescription,
+  trackerModel,
+} from 'src/constants/tracker'
+import TrackerIdentifierInput from 'src/components/input/TrackerIdentifierInput.vue'
 import TrackerModelInput from 'src/components/input/TrackerModelInput.vue'
-import { trackerModel, HOMOLOGATED_TRACKER } from 'src/constants/tracker'
 import SelectTracker from 'src/components/select/SelectTracker.vue'
 import AddSimCardForm from './add-sim-form/AddSimCardForm.vue'
 import { useMutation } from '@vue/apollo-composable'
 import { computed, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { helpers, required } from '@vuelidate/validators'
-import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
+import { cloneDeep } from 'lodash-es'
+import { useQuasar } from 'quasar'
+import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
+import { ApolloError } from '@apollo/client'
 
 const props = defineProps({
   /**
@@ -24,54 +31,38 @@ const props = defineProps({
   },
 })
 
-// TODO: FIX TYPES (USE QUERY TYPES ?)
-// CLEANUP submit() CODE
-// FORMAT PHONE NUMBERS TO E164 BEFORE SENDING
+const v = useVuelidate({ $autoDirty: true })
+const quasar = useQuasar()
 
-interface NewSimCard {
-  ssn: string
-  phoneNumber: string
-  apnUser: string
-  apnAddress: string
-  apnPassword: string
-}
+const trackerIdentifiersInUse = ref<string[]>([])
 
-interface NewTracker {
-  model: trackerModel | null
-  identifier: string
-  simCards: NewSimCard[]
-}
+const emptyNewTracker = { model: '', identifier: '', simCards: [] }
 
-const emptyNewTracker = { model: null, identifier: '', simCards: [] }
-
-const newTracker = ref<NewTracker>({ ...emptyNewTracker })
+const newTracker = ref<CreateTrackerDto>({ ...emptyNewTracker })
 
 const useExistingTracker = ref(false)
 const selectedTrackerId = ref<number | null>(null)
 
-const simCardSlotsForModel = computed(() =>
-  newTracker.value.model
-    ? HOMOLOGATED_TRACKER[newTracker.value.model]?.simCardSlots || 0
-    : 0
-)
+const simCardSlotsForModel = computed(() => {
+  const model = newTracker.value.model as trackerModel
+
+  const trackerModelObj: TrackerDescription | undefined =
+    HOMOLOGATED_TRACKER[model]
+
+  return trackerModelObj?.simCardSlots || 0
+})
 
 const resetForm = () => {
   newTracker.value = { ...emptyNewTracker }
   selectedTrackerId.value = null
+  trackerIdentifiersInUse.value = []
+}
+
+const fullPhoneNumberToE164 = (phoneNumber: string) => {
+  return `+${phoneNumber.replace(/\D/g, '')}`
 }
 
 watch(useExistingTracker, resetForm)
-
-const rules = {
-  identifier: {
-    required: helpers.withMessage(
-      'Informe um identificador unico para o rastreador',
-      required
-    ),
-  },
-}
-
-const v = useVuelidate(rules, newTracker, { $autoDirty: true })
 
 const { mutate: setTrackers, loading: settingTrackers } = useMutation(
   SetVehicleTrackersDocument
@@ -81,26 +72,54 @@ const { mutate: installTracker, loading: creatingTracker } = useMutation(
   InstallVehicleTrackerDocument
 )
 
+const setExistingTrackerToVehicle = (trackerId: number) => {
+  setTrackers({ id: props.vehicleId, trackerIds: [trackerId] }).catch(() => {
+    quasar.notify({
+      type: 'negative',
+      message: 'Erro ao configurar rastreadores do veículo',
+    })
+  })
+}
+
+const installNewTrackersOnVehicle = (dto: CreateTrackerDto) => {
+  // Since dto.trackers is a array of refs we need to remove the reactivity to be
+  // able to alter the phone number, a lazy solution is to deepClone the object
+  const tracker = cloneDeep(dto)
+
+  tracker.simCards.forEach((s) => {
+    if (s.dto) s.dto.phoneNumber = fullPhoneNumberToE164(s.dto.phoneNumber)
+  })
+
+  installTracker({
+    tracker,
+    id: props.vehicleId,
+  }).catch(({ graphQLErrors }: ApolloError) => {
+    const uniqueViolations = getUniqueViolationsFromGraphqlErrors(graphQLErrors)
+
+    if (uniqueViolations.includes('identifier')) {
+      trackerIdentifiersInUse.value.push(tracker.identifier)
+    } else {
+      quasar.notify({
+        type: 'negative',
+        message: 'Erro ao instalar rastreadores no veículo',
+      })
+    }
+  })
+}
+
 const submit = () => {
   if (v.value.$invalid) return
 
   if (useExistingTracker.value && selectedTrackerId.value) {
-    setTrackers({
-      id: props.vehicleId,
-      trackerIds: [selectedTrackerId.value],
-    }).catch(console.error)
+    setExistingTrackerToVehicle(selectedTrackerId.value)
   } else if (newTracker.value.model !== null) {
-    installTracker({
-      tracker: newTracker.value as CreateTrackerDto,
-      id: props.vehicleId,
-    }).catch(console.error)
+    installNewTrackersOnVehicle(newTracker.value)
   }
 }
 </script>
 
 <template>
   <div>
-    {{ newTracker }}
     <q-btn-group outline style="width: 100%" class="q-mb-md">
       <q-btn
         :outline="!useExistingTracker"
@@ -110,6 +129,7 @@ const submit = () => {
         class="col-6"
         @click="useExistingTracker = true"
       />
+
       <q-btn
         :outline="useExistingTracker"
         :color="!useExistingTracker ? 'primary' : 'grey'"
@@ -120,20 +140,15 @@ const submit = () => {
       />
     </q-btn-group>
 
-    <template v-if="useExistingTracker">
-      <SelectTracker v-model="selectedTrackerId" />
-    </template>
+    <SelectTracker v-if="useExistingTracker" v-model="selectedTrackerId" />
 
     <template v-else>
       <TrackerModelInput v-model="newTracker.model" />
 
-      <q-input
+      <TrackerIdentifierInput
         v-model="newTracker.identifier"
-        label="Identificador"
-        filled
+        :identifiers-in-use="trackerIdentifiersInUse"
         class="q-mb-md"
-        :error="v.identifier.$error"
-        :error-message="getVuelidateErrorMsg(v.identifier.$errors)"
       />
 
       <AddSimCardForm
@@ -142,6 +157,7 @@ const submit = () => {
         v-model="newTracker.simCards[index - 1]"
         flat
         bordered
+        @update:model-value="(xd) => xd"
       >
         <template #title>
           <q-card-section class="q-pb-none text-body1">
@@ -161,6 +177,7 @@ const submit = () => {
         :label="
           useExistingTracker ? 'Instalar rastreador' : 'Cadastrar Rastreador'
         "
+        :loading="settingTrackers || creatingTracker"
         @click="submit"
       />
     </q-card-section>

@@ -196,6 +196,41 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "CreateSimCardDtoOrId",
+        "description": "Wrapper input for either a object with a existing SimCard ID or a DTO for creating a new SimCard",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "dto",
+            "description": "The data of the sim card to be created, if this is not null ID must be null",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CreateSimCardDTO",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": "The ID of the sim card to be used, DTO must be null if this is prop is not null",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "CreateTrackerDTO",
         "description": null,
         "fields": null,
@@ -246,7 +281,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "CreateSimCardDTO",
+                    "name": "CreateSimCardDtoOrId",
                     "ofType": null
                   }
                 }
@@ -822,8 +857,8 @@
             "deprecationReason": null
           },
           {
-            "name": "installTrackersOnVehicle",
-            "description": "Creates new trackers and associate them with a existing vehicle",
+            "name": "installNewTrackerOnVehicle",
+            "description": "Creates a new tracker and/or its new simCards and associate the tracker with a existing vehicle",
             "args": [
               {
                 "name": "id",
@@ -2559,9 +2594,13 @@
             "description": "A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -3078,7 +3117,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Float",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,

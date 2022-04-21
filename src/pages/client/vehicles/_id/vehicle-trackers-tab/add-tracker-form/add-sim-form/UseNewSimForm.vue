@@ -5,18 +5,11 @@ import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
 import { helpers, minLength, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { PropType, ref, watch } from 'vue'
-
-interface NewSimCard {
-  ssn: string
-  phoneNumber: string
-  apnUser: string
-  apnAddress: string
-  apnPassword: string
-}
+import { CreateSimCardDto } from 'src/graphql/generated/graphql-operations'
 
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<NewSimCard>,
+    type: Object as PropType<CreateSimCardDto>,
     required: true,
   },
 })
@@ -25,10 +18,10 @@ const emit = defineEmits<{
   /**
    * A object with the data of the new SimCard to be created
    */
-  (event: 'update:model-value', value: NewSimCard): void
+  (event: 'update:model-value', value: CreateSimCardDto): void
 }>()
 
-const internalValue = ref<NewSimCard>({ ...props.modelValue })
+const internalValue = ref<CreateSimCardDto>({ ...props.modelValue })
 
 const isUsingApnSuggestion = ref(false)
 const simCardOperator = ref('')

@@ -42,10 +42,18 @@ export type CreateSimCardDto = {
   ssn: Scalars['String']
 }
 
+/** Wrapper input for either a object with a existing SimCard ID or a DTO for creating a new SimCard */
+export type CreateSimCardDtoOrId = {
+  /** The data of the sim card to be created, if this is not null ID must be null */
+  dto?: InputMaybe<CreateSimCardDto>
+  /** The ID of the sim card to be used, DTO must be null if this is prop is not null */
+  id?: InputMaybe<Scalars['Int']>
+}
+
 export type CreateTrackerDto = {
   identifier: Scalars['String']
   model: Scalars['String']
-  simCards: Array<CreateSimCardDto>
+  simCards: Array<CreateSimCardDtoOrId>
 }
 
 export type CreateVehicleDto = {
@@ -110,8 +118,8 @@ export type MasterUserModel = {
 export type Mutation = {
   __typename?: 'Mutation'
   createVehicle: VehicleModel
-  /** Creates new trackers and associate them with a existing vehicle */
-  installTrackersOnVehicle: VehicleModel
+  /** Creates a new tracker and/or its new simCards and associate the tracker with a existing vehicle */
+  installNewTrackerOnVehicle: VehicleModel
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
@@ -126,7 +134,7 @@ export type MutationCreateVehicleArgs = {
   photo?: InputMaybe<Scalars['Upload']>
 }
 
-export type MutationInstallTrackersOnVehicleArgs = {
+export type MutationInstallNewTrackerOnVehicleArgs = {
   id: Scalars['Int']
   tracker: CreateTrackerDto
 }
@@ -350,7 +358,7 @@ export type TrackerModel = {
   __typename?: 'TrackerModel'
   id: Scalars['Int']
   /** A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2 */
-  identifier?: Maybe<Scalars['String']>
+  identifier: Scalars['String']
   lastPosition?: Maybe<LatLng>
   model: Scalars['String']
   organization: SimpleOrganizationModel
@@ -405,7 +413,7 @@ export type UserOrMasterUser = MasterUserModel | UserModel
 /** vehicle */
 export type VehicleModel = {
   __typename?: 'VehicleModel'
-  additionalInfo?: Maybe<Scalars['Float']>
+  additionalInfo?: Maybe<Scalars['String']>
   brand?: Maybe<Scalars['String']>
   chassisNumber?: Maybe<Scalars['String']>
   color?: Maybe<Scalars['String']>
@@ -611,7 +619,7 @@ export type ListActiveTrackersQuery = {
   activeTrackers: Array<{
     __typename?: 'TrackerModel'
     id: number
-    identifier?: string | null | undefined
+    identifier: string
     model: string
     lastPosition?:
       | { __typename?: 'LatLng'; lat: number; lng: number }
@@ -644,7 +652,7 @@ export type ListTrackersQuery = {
       | Array<{
           __typename?: 'TrackerModel'
           id: number
-          identifier?: string | null | undefined
+          identifier: string
           model: string
         }>
       | null
@@ -988,7 +996,7 @@ export type SetVehicleTrackersMutation = {
     trackers: Array<{
       __typename?: 'TrackerModel'
       id: number
-      identifier?: string | null | undefined
+      identifier: string
       model: string
     }>
   }
@@ -1001,7 +1009,7 @@ export type InstallVehicleTrackerMutationVariables = Exact<{
 
 export type InstallVehicleTrackerMutation = {
   __typename?: 'Mutation'
-  installTrackersOnVehicle: {
+  installNewTrackerOnVehicle: {
     __typename?: 'VehicleModel'
     id: number
     brand?: string | null | undefined
@@ -1016,7 +1024,7 @@ export type InstallVehicleTrackerMutation = {
     trackers: Array<{
       __typename?: 'TrackerModel'
       id: number
-      identifier?: string | null | undefined
+      identifier: string
       model: string
     }>
   }
@@ -1049,7 +1057,7 @@ export type ListVehiclesQuery = {
           trackers: Array<{
             __typename?: 'TrackerModel'
             id: number
-            identifier?: string | null | undefined
+            identifier: string
             model: string
           }>
         }>
@@ -1086,7 +1094,7 @@ export type FullVehicleQuery = {
         trackers: Array<{
           __typename?: 'TrackerModel'
           id: number
-          identifier?: string | null | undefined
+          identifier: string
           model: string
           lastPosition?:
             | { __typename?: 'LatLng'; lat: number; lng: number }
@@ -2744,7 +2752,7 @@ export const InstallVehicleTrackerDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'installTrackersOnVehicle' },
+            name: { kind: 'Name', value: 'installNewTrackerOnVehicle' },
             arguments: [
               {
                 kind: 'Argument',
