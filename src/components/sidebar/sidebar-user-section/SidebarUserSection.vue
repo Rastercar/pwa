@@ -65,25 +65,22 @@ const userMenuVisible = ref(false)
   </q-item>
 </template>
 
-<style>
-.rotate {
-  -moz-transition: all 0.2s linear;
-  -webkit-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-}
-.rotate.down {
-  -moz-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
+<style lang="sass" scoped>
+.rotate
+  -moz-transition: all 0.2s linear
+  -webkit-transition: all 0.2s linear
+  transition: all 0.2s linear
 
-.slide-fade-enter-active {
-  transition: all 0.2s ease-out;
-}
+.rotate.down
+  -moz-transform: rotate(90deg)
+  -webkit-transform: rotate(90deg)
+  transform: rotate(90deg)
 
-.slide-fade-enter-from {
-  margin-left: 20px;
-  transform: translateX(-25px);
-  opacity: 0;
-}
+.slide-fade-enter-active
+  transition: all 0.2s ease-out
+
+.slide-fade-enter-from
+  margin-left: 20px
+  transform: translateX(-25px)
+  opacity: 0
 </style>

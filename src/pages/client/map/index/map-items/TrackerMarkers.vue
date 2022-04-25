@@ -59,7 +59,7 @@ watch(trackersToShow, (trackers) => {
     :key="tracker.id"
     :options="{
       icon: markerIcon,
-      label: tracker.vehicle.plate,
+      label: tracker.vehicle?.plate || tracker.identifier.substring(0, 5),
       position: tracker.lastPosition ?? { lat: 0, lng: 0 },
     }"
     @click="$emit('tracker:selected', tracker as any)"

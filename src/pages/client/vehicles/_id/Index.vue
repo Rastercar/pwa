@@ -17,7 +17,9 @@ const props = defineProps({
 
 const tab: Ref<tabs> = ref('details')
 
-const { result, loading } = useQuery(FullVehicleDocument, { id: props.id })
+const { result, loading, refetch } = useQuery(FullVehicleDocument, {
+  id: props.id,
+})
 </script>
 
 <template>
@@ -34,11 +36,10 @@ const { result, loading } = useQuery(FullVehicleDocument, { id: props.id })
   >
     <div class="column">
       <div class="row">
-        <q-card v-if="result?.vehicle" style="max-width: 650px">
+        <q-card v-if="result?.vehicle" style="width: 650px">
           <q-tabs
             v-model="tab"
-            dense
-            class="text-grey"
+            class="text-grey-8 w-100"
             active-color="primary"
             indicator-color="primary"
           >
@@ -55,7 +56,10 @@ const { result, loading } = useQuery(FullVehicleDocument, { id: props.id })
             </q-tab-panel>
 
             <q-tab-panel name="trackers">
-              <VehicleTrackersTab :vehicle="result.vehicle" />
+              <VehicleTrackersTab
+                :vehicle="result.vehicle"
+                @tracker-removed="refetch"
+              />
             </q-tab-panel>
 
             <q-tab-panel name="history">

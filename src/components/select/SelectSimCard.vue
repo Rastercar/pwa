@@ -66,8 +66,7 @@ const filterFn: NonNullable<QSelectProps['onFilter']> = (val, update) => {
     <template #no-option>
       <q-item>
         <q-item-section class="text-italic text-grey-8">
-          Nenhum sim card não instalado em um rastreador encontrado com este
-          número.
+          Nenhum sim card não instalado em um rastreador encontrado.
         </q-item-section>
       </q-item>
     </template>

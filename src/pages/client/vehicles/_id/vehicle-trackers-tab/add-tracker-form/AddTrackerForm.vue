@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
-  InstallVehicleTrackerDocument,
   SetVehicleTrackersDocument,
   CreateTrackerDto,
+  InstallNewTrackerOnVehicleDocument,
 } from 'src/graphql/generated/graphql-operations'
 import {
   HOMOLOGATED_TRACKER,
@@ -69,7 +69,7 @@ const { mutate: setTrackers, loading: settingTrackers } = useMutation(
 )
 
 const { mutate: installTracker, loading: creatingTracker } = useMutation(
-  InstallVehicleTrackerDocument
+  InstallNewTrackerOnVehicleDocument
 )
 
 const setExistingTrackerToVehicle = (trackerId: number) => {

@@ -17,17 +17,42 @@ mutation setVehicleTrackers($id: Int!, $trackerIds: [Int!]!) {
       id
       identifier
       model
+      simCards {
+        id
+        ssn
+        apnUser
+        apnAddress
+        apnPassword
+        phoneNumber
+      }
     }
   }
 }
 
-mutation installVehicleTracker($id: Int!, $tracker: CreateTrackerDTO!) {
+mutation installNewTrackerOnVehicle($id: Int!, $tracker: CreateTrackerDTO!) {
   installNewTrackerOnVehicle(id: $id, tracker: $tracker) {
     ...VehicleFields
     trackers {
       id
       identifier
       model
+    }
+  }
+}
+
+mutation removeTrackerFromVehicle(
+  $trackerId: Int!
+  $removeSimsFromTracker: Boolean
+) {
+  removeTrackerFromVehicle(
+    trackerId: $trackerId
+    removeSimsFromTracker: $removeSimsFromTracker
+  ) {
+    id
+    identifier
+    model
+    vehicle {
+      id
     }
   }
 }

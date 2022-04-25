@@ -4,8 +4,6 @@
 export const TRACKER_MODELS = ['GT06'] as const
 
 /**
- * TODO: CHANGE ME TO A REAL LIST OF HOMOLOGATED TRACKER MODELS
- *
  * Tracker models that are supported by the rastercar plataform.
  */
 export type trackerModel = typeof TRACKER_MODELS[number]

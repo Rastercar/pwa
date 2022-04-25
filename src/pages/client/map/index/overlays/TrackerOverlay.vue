@@ -14,7 +14,7 @@ const props = defineProps({
 defineEmits(['close'])
 
 const photoSrc = computed(() => {
-  return props.tracker.vehicle.photo &&
+  return props.tracker.vehicle?.photo &&
     typeof props.tracker.vehicle.photo === 'string'
     ? `${process.env.RASTERCAR_UPLOADS_URL}/${props.tracker.vehicle.photo}`
     : null
@@ -30,8 +30,6 @@ const photoSrc = computed(() => {
     />
 
     <q-separator />
-
-    {{ tracker }}
 
     <q-card-section class="text-center q-pa-sm">
       <span class="text-grey-8">placa: </span>

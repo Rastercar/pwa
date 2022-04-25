@@ -71,11 +71,11 @@ onTrackerPosition(({ data }) => {
 
 <template>
   <q-dialog>
-    <q-card style="width: 350px">
+    <q-card style="min-width: 350px">
       <q-card-section class="flex items-center q-py-sm">
         <div class="text-h6">
           <q-icon size="25px" class="q-mr-sm" name="fa fa-sim-card" />
-          Rastreadores
+          Rastreadores a exibir
         </div>
         <q-space />
 
@@ -88,7 +88,7 @@ onTrackerPosition(({ data }) => {
 
       <q-input
         v-model="filter"
-        label="Busca por placa/modelo"
+        label="Busca por placa ou ID"
         class="full-width"
         filled
         square

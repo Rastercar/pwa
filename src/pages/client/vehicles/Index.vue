@@ -141,7 +141,7 @@ const showCreateVehicleOverlay = ref(false)
   </q-page>
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .vehicle-table
   thead tr:first-child th:first-child
     background-color: #ededed

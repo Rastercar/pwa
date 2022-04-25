@@ -7,6 +7,10 @@ defineProps({
     type: Object as PropType<SimCardModel>,
     required: true,
   },
+  slotIndex: {
+    type: Number,
+    required: true,
+  },
 })
 
 const simCardFields: { label: string; key: keyof SimCardModel }[] = [
@@ -19,8 +23,18 @@ const simCardFields: { label: string; key: keyof SimCardModel }[] = [
 </script>
 
 <template>
-  <q-card flat bordered>
-    <q-item v-for="field in simCardFields" :key="`${field.key}-${simCard.id}`">
+  <q-card flat class="flex row bg-grey-3">
+    <q-item class="col-6 items-center">
+      <q-icon name="fa fa-sim-card" size="20px" color="grey" class="q-mr-sm" />
+      <span>SLOT {{ slotIndex }}</span>
+    </q-item>
+
+    <q-item
+      v-for="field in simCardFields"
+      :key="`${field.key}-${simCard.id}`"
+      class="col-6"
+      clickable
+    >
       <q-item-section>
         <div class="text-grey-8 q-mr-sm">
           {{ field.label }}

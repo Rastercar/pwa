@@ -123,6 +123,8 @@ export type Mutation = {
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
+  /** Removes a tracker from the the vehicle its installed, optionally removing the sim cards from the removed tracker aswell */
+  removeTrackerFromVehicle: TrackerModel
   /** Sets the trackers associated with the vehicle */
   setVehicleTrackers: VehicleModel
   updateMyProfile: UserModel
@@ -149,6 +151,11 @@ export type MutationLoginWithTokenArgs = {
 
 export type MutationRegisterArgs = {
   user: RegisterUserDto
+}
+
+export type MutationRemoveTrackerFromVehicleArgs = {
+  removeSimsFromTracker?: InputMaybe<Scalars['Boolean']>
+  trackerId: Scalars['Int']
 }
 
 export type MutationSetVehicleTrackersArgs = {
@@ -363,7 +370,7 @@ export type TrackerModel = {
   model: Scalars['String']
   organization: SimpleOrganizationModel
   simCards: Array<SimCardModel>
-  vehicle: VehicleModel
+  vehicle?: Maybe<VehicleModel>
 }
 
 /** unregistered user */
@@ -625,13 +632,16 @@ export type ListActiveTrackersQuery = {
       | { __typename?: 'LatLng'; lat: number; lng: number }
       | null
       | undefined
-    vehicle: {
-      __typename?: 'VehicleModel'
-      id: number
-      plate: string
-      model?: string | null | undefined
-      brand?: string | null | undefined
-    }
+    vehicle?:
+      | {
+          __typename?: 'VehicleModel'
+          id: number
+          plate: string
+          model?: string | null | undefined
+          brand?: string | null | undefined
+        }
+      | null
+      | undefined
   }>
 }
 
@@ -998,16 +1008,25 @@ export type SetVehicleTrackersMutation = {
       id: number
       identifier: string
       model: string
+      simCards: Array<{
+        __typename?: 'SimCardModel'
+        id: number
+        ssn: string
+        apnUser: string
+        apnAddress: string
+        apnPassword: string
+        phoneNumber: string
+      }>
     }>
   }
 }
 
-export type InstallVehicleTrackerMutationVariables = Exact<{
+export type InstallNewTrackerOnVehicleMutationVariables = Exact<{
   id: Scalars['Int']
   tracker: CreateTrackerDto
 }>
 
-export type InstallVehicleTrackerMutation = {
+export type InstallNewTrackerOnVehicleMutation = {
   __typename?: 'Mutation'
   installNewTrackerOnVehicle: {
     __typename?: 'VehicleModel'
@@ -1027,6 +1046,22 @@ export type InstallVehicleTrackerMutation = {
       identifier: string
       model: string
     }>
+  }
+}
+
+export type RemoveTrackerFromVehicleMutationVariables = Exact<{
+  trackerId: Scalars['Int']
+  removeSimsFromTracker?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type RemoveTrackerFromVehicleMutation = {
+  __typename?: 'Mutation'
+  removeTrackerFromVehicle: {
+    __typename?: 'TrackerModel'
+    id: number
+    identifier: string
+    model: string
+    vehicle?: { __typename?: 'VehicleModel'; id: number } | null | undefined
   }
 }
 
@@ -2701,6 +2736,39 @@ export const SetVehicleTrackersDocument = {
                         name: { kind: 'Name', value: 'identifier' },
                       },
                       { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'simCards' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'ssn' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnUser' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnAddress' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apnPassword' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'phoneNumber' },
+                            },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
@@ -2716,13 +2784,13 @@ export const SetVehicleTrackersDocument = {
   SetVehicleTrackersMutation,
   SetVehicleTrackersMutationVariables
 >
-export const InstallVehicleTrackerDocument = {
+export const InstallNewTrackerOnVehicleDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'installVehicleTracker' },
+      name: { kind: 'Name', value: 'installNewTrackerOnVehicle' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -2802,8 +2870,87 @@ export const InstallVehicleTrackerDocument = {
     ...VehicleFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
-  InstallVehicleTrackerMutation,
-  InstallVehicleTrackerMutationVariables
+  InstallNewTrackerOnVehicleMutation,
+  InstallNewTrackerOnVehicleMutationVariables
+>
+export const RemoveTrackerFromVehicleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'trackerId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'removeSimsFromTracker' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'trackerId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'trackerId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'removeSimsFromTracker' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'removeSimsFromTracker' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'vehicle' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  RemoveTrackerFromVehicleMutation,
+  RemoveTrackerFromVehicleMutationVariables
 >
 export const ListVehiclesDocument = {
   kind: 'Document',

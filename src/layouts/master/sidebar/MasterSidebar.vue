@@ -4,7 +4,6 @@ import SidebarUserSection from 'src/components/sidebar/sidebar-user-section/Side
 </script>
 
 <template>
-  <!-- TODO: REMOVE BG COLOR -->
   <q-drawer
     model-value
     :width="250"
