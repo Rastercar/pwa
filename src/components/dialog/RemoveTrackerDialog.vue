@@ -43,8 +43,7 @@ const removeTrackerFromVehicle = () => {
     trackerId: props.tracker.id,
     removeSimsFromTracker: removeSimsFromTrackerOnTrackerRemoval.value,
   })
-    .then((xd) => {
-      console.log(xd)
+    .then(() => {
       emit('removal:success')
       emit('update:model-value', false)
     })
@@ -72,7 +71,7 @@ const removeTrackerFromVehicle = () => {
         equipamento não será associada ao veículo !
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
+      <q-card-section v-show="tracker.simCards.length >= 1" class="q-pt-none">
         <q-separator class="q-mb-md" />
 
         <q-toggle
@@ -87,10 +86,10 @@ const removeTrackerFromVehicle = () => {
 
       <q-card-actions align="right" class="text-primary q-pa-md">
         <q-btn
-          v-close-popup
           color="green"
           label="Cancelar"
           :loading="loading"
+          @click="$emit('update:model-value', false)"
         />
         <q-btn
           :loading="loading"

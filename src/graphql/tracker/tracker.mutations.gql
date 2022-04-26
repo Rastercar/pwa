@@ -1,0 +1,12 @@
+mutation setTrackerSimCards($id: Int!, $simCardIds: [Int!]!) {
+  setTrackerSimCards(id: $id, simCardIds: $simCardIds) {
+    id
+    simCards {
+      id
+      ssn
+      apnUser
+      apnAddress
+      apnPassword
+    }
+  }
+}

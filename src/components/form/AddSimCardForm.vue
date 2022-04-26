@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import SelectSimCard from 'src/components/select/SelectSimCard.vue'
-import UseNewSimForm from './UseNewSimForm.vue'
-import { ref } from 'vue'
+import { ComponentPublicInstance, ref } from 'vue'
 import {
   CreateSimCardDtoOrId,
   CreateSimCardDto,
 } from 'src/graphql/generated/graphql-operations'
+import CreateSimCardForm from 'src/components/form/CreateSimCardForm.vue'
 
 defineEmits<{
   /**
@@ -31,10 +31,16 @@ const newSimCard = ref<CreateSimCardDto>({ ...emptySim })
 const useExistingSim = ref(false)
 const selectedSimId = ref<number | null>(null)
 
+const createSimCardForm =
+  ref<ComponentPublicInstance<{ resetForm: () => void }>>()
+
 const resetForm = () => {
   selectedSimId.value = null
   newSimCard.value = { ...emptySim }
+  createSimCardForm.value?.resetForm()
 }
+
+defineExpose({ resetForm })
 </script>
 
 <template>
@@ -63,10 +69,9 @@ const resetForm = () => {
       </q-icon>
     </q-card-section>
 
-    <q-card-section v-if="useExistingSim" class="q-pb-none">
+    <q-card-section v-if="useExistingSim" class="q-pb-none q-pb-lg">
       <SelectSimCard
         v-model="selectedSimId"
-        class="q-mb-md"
         square
         @update:model-value="
           (v) => $emit('update:model-value', v ? { id: v } : null)
@@ -75,7 +80,8 @@ const resetForm = () => {
     </q-card-section>
 
     <q-card-section v-else class="q-pb-none">
-      <UseNewSimForm
+      <CreateSimCardForm
+        ref="createSimCardForm"
         v-model="newSimCard"
         @update:model-value="(v) => $emit('update:model-value', { dto: v })"
       />

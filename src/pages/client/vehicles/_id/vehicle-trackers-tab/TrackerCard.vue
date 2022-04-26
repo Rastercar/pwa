@@ -3,56 +3,21 @@ import type { TrackerModel } from 'src/graphql/generated/graphql-operations'
 import SimCardCard from './SimCardCard.vue'
 import { PropType } from 'vue'
 
-defineEmits<{
-  (event: 'add-btn-click'): void
-  (event: 'remove-btn-click'): void
-}>()
-
 defineProps({
   tracker: {
     type: Object as PropType<TrackerModel>,
     required: true,
   },
-  slotIndex: {
-    type: Number,
-    required: true,
-  },
-  showAddTrackerBtn: {
-    type: Boolean,
-    default: false,
-  },
 })
+
+defineEmits<{
+  (event: 'add-sim-clicked'): void
+}>()
 </script>
 
 <template>
   <q-card class="q-pa-none bg-grey-1" flat bordered>
-    <q-card-section class="flex ext-center q-py-md items-center">
-      <span class="text-grey-8">Rastreador {{ slotIndex }} - Modelo:</span>
-      <strong class="q-ml-sm">{{ tracker.model }}</strong>
-
-      <q-space />
-
-      <!-- TODO: FINISH MY FUNCTIONALITY -->
-      <q-btn
-        v-if="showAddTrackerBtn"
-        push
-        color="green"
-        size="sm"
-        round
-        icon="fa fa-plus"
-        class="q-mr-md"
-        @click="$emit('add-btn-click')"
-      />
-
-      <q-btn
-        push
-        color="red"
-        size="sm"
-        round
-        icon="fa fa-trash"
-        @click="$emit('remove-btn-click')"
-      />
-    </q-card-section>
+    <slot name="header"></slot>
 
     <q-separator />
 
@@ -103,12 +68,17 @@ defineProps({
 
             <q-separator class="q-my-sm" />
 
-            <!-- TODO: FINISH ME ?! -->
             <div>
               Para que seja possível receber posições e enviar comandos, instale
               o sim card no equipamento e assimile o sim card instalado ao
               equipamento, clicando
-              <span class="text-blue-8" style="cursor: pointer">aqui</span>
+              <span
+                class="text-blue-8"
+                style="cursor: pointer"
+                @click="$emit('add-sim-clicked')"
+              >
+                aqui
+              </span>
             </div>
           </q-card-section>
         </q-card>

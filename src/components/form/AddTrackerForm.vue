@@ -3,6 +3,7 @@ import {
   SetVehicleTrackersDocument,
   CreateTrackerDto,
   InstallNewTrackerOnVehicleDocument,
+  VehicleModel,
 } from 'src/graphql/generated/graphql-operations'
 import {
   HOMOLOGATED_TRACKER,
@@ -10,23 +11,28 @@ import {
   trackerModel,
 } from 'src/constants/tracker'
 import TrackerIdentifierInput from 'src/components/input/TrackerIdentifierInput.vue'
+import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
 import TrackerModelInput from 'src/components/input/TrackerModelInput.vue'
 import SelectTracker from 'src/components/select/SelectTracker.vue'
-import AddSimCardForm from './add-sim-form/AddSimCardForm.vue'
 import { useMutation } from '@vue/apollo-composable'
-import { computed, ref, watch } from 'vue'
+import { computed, PropType, ref, watch } from 'vue'
+import { ApolloError } from '@apollo/client'
 import useVuelidate from '@vuelidate/core'
 import { cloneDeep } from 'lodash-es'
 import { useQuasar } from 'quasar'
-import { getUniqueViolationsFromGraphqlErrors } from 'src/graphql/graphql.utils'
-import { ApolloError } from '@apollo/client'
+import AddSimCardForm from 'src/components/form/AddSimCardForm.vue'
+
+const emit = defineEmits<{
+  (event: 'new-tracker-instaled'): void
+  (event: 'existing-tracker-installed'): void
+}>()
 
 const props = defineProps({
   /**
    * The vehicle to add trackers on
    */
-  vehicleId: {
-    type: Number,
+  vehicle: {
+    type: Object as PropType<VehicleModel>,
     required: true,
   },
 })
@@ -56,6 +62,8 @@ const resetForm = () => {
   newTracker.value = { ...emptyNewTracker }
   selectedTrackerId.value = null
   trackerIdentifiersInUse.value = []
+
+  v.value.$reset()
 }
 
 const fullPhoneNumberToE164 = (phoneNumber: string) => {
@@ -73,12 +81,20 @@ const { mutate: installTracker, loading: creatingTracker } = useMutation(
 )
 
 const setExistingTrackerToVehicle = (trackerId: number) => {
-  setTrackers({ id: props.vehicleId, trackerIds: [trackerId] }).catch(() => {
-    quasar.notify({
-      type: 'negative',
-      message: 'Erro ao configurar rastreadores do veículo',
-    })
+  setTrackers({
+    id: props.vehicle.id,
+    trackerIds: [...props.vehicle.trackers.map((t) => t.id), trackerId],
   })
+    .then(() => {
+      emit('existing-tracker-installed')
+      resetForm()
+    })
+    .catch(() => {
+      quasar.notify({
+        type: 'negative',
+        message: 'Erro ao configurar rastreadores do veículo',
+      })
+    })
 }
 
 const installNewTrackersOnVehicle = (dto: CreateTrackerDto) => {
@@ -92,19 +108,25 @@ const installNewTrackersOnVehicle = (dto: CreateTrackerDto) => {
 
   installTracker({
     tracker,
-    id: props.vehicleId,
-  }).catch(({ graphQLErrors }: ApolloError) => {
-    const uniqueViolations = getUniqueViolationsFromGraphqlErrors(graphQLErrors)
-
-    if (uniqueViolations.includes('identifier')) {
-      trackerIdentifiersInUse.value.push(tracker.identifier)
-    } else {
-      quasar.notify({
-        type: 'negative',
-        message: 'Erro ao instalar rastreadores no veículo',
-      })
-    }
+    id: props.vehicle.id,
   })
+    .then(() => {
+      emit('new-tracker-instaled')
+      resetForm()
+    })
+    .catch(({ graphQLErrors }: ApolloError) => {
+      const uniqueViolations =
+        getUniqueViolationsFromGraphqlErrors(graphQLErrors)
+
+      if (uniqueViolations.includes('identifier')) {
+        trackerIdentifiersInUse.value.push(tracker.identifier)
+      } else {
+        quasar.notify({
+          type: 'negative',
+          message: 'Erro ao instalar rastreadores no veículo',
+        })
+      }
+    })
 }
 
 const submit = () => {
@@ -116,6 +138,8 @@ const submit = () => {
     installNewTrackersOnVehicle(newTracker.value)
   }
 }
+
+defineExpose({ resetForm })
 </script>
 
 <template>
@@ -157,7 +181,6 @@ const submit = () => {
         v-model="newTracker.simCards[index - 1]"
         flat
         bordered
-        @update:model-value="(xd) => xd"
       >
         <template #title>
           <q-card-section class="q-pb-none text-body1">

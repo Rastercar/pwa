@@ -123,8 +123,10 @@ export type Mutation = {
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
-  /** Removes a tracker from the the vehicle its installed, optionally removing the sim cards from the removed tracker aswell */
+  /** Removes a tracker from the vehicle its installed, optionally removing the sim cards from the removed tracker aswell */
   removeTrackerFromVehicle: TrackerModel
+  /** Sets the sim cards associated with the vehicle */
+  setTrackerSimCards: TrackerModel
   /** Sets the trackers associated with the vehicle */
   setVehicleTrackers: VehicleModel
   updateMyProfile: UserModel
@@ -156,6 +158,11 @@ export type MutationRegisterArgs = {
 export type MutationRemoveTrackerFromVehicleArgs = {
   removeSimsFromTracker?: InputMaybe<Scalars['Boolean']>
   trackerId: Scalars['Int']
+}
+
+export type MutationSetTrackerSimCardsArgs = {
+  id: Scalars['Int']
+  simCardIds: Array<Scalars['Int']>
 }
 
 export type MutationSetVehicleTrackersArgs = {
@@ -616,6 +623,27 @@ export type ListSimCardsQuery = {
       hasMore: boolean
       hasPrevious: boolean
     }
+  }
+}
+
+export type SetTrackerSimCardsMutationVariables = Exact<{
+  id: Scalars['Int']
+  simCardIds: Array<Scalars['Int']> | Scalars['Int']
+}>
+
+export type SetTrackerSimCardsMutation = {
+  __typename?: 'Mutation'
+  setTrackerSimCards: {
+    __typename?: 'TrackerModel'
+    id: number
+    simCards: Array<{
+      __typename?: 'SimCardModel'
+      id: number
+      ssn: string
+      apnUser: string
+      apnAddress: string
+      apnPassword: string
+    }>
   }
 }
 
@@ -1889,6 +1917,105 @@ export const ListSimCardsDocument = {
     },
   ],
 } as unknown as DocumentNode<ListSimCardsQuery, ListSimCardsQueryVariables>
+export const SetTrackerSimCardsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'setTrackerSimCards' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'simCardIds' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'Int' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'setTrackerSimCards' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'simCardIds' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'simCardIds' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'simCards' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnUser' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnAddress' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnPassword' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SetTrackerSimCardsMutation,
+  SetTrackerSimCardsMutationVariables
+>
 export const ListActiveTrackersDocument = {
   kind: 'Document',
   definitions: [

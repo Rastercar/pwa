@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import useVuelidate from '@vuelidate/core'
+import { helpers, minLength, required } from '@vuelidate/validators'
 import SimCardOperatorInput from 'src/components/input/SimCardOperatorInput.vue'
 import { apnsByBrazillianProvider } from 'src/constants/sim-card-apn'
-import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
-import { helpers, minLength, required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
-import { PropType, ref, watch } from 'vue'
 import { CreateSimCardDto } from 'src/graphql/generated/graphql-operations'
+import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
+import { PropType, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -21,6 +21,14 @@ const emit = defineEmits<{
   (event: 'update:model-value', value: CreateSimCardDto): void
 }>()
 
+const emptySimCard = {
+  apnAddress: '',
+  apnPassword: '',
+  apnUser: '',
+  phoneNumber: '',
+  ssn: '',
+}
+
 const internalValue = ref<CreateSimCardDto>({ ...props.modelValue })
 
 const isUsingApnSuggestion = ref(false)
@@ -29,8 +37,7 @@ const simCardOperator = ref('')
 const emptyApn = { apnUser: '', apnAddress: '', apnPassword: '' }
 
 const onSimCardOperatorChange = (operator = '') => {
-  const apnSuggestion =
-    apnsByBrazillianProvider[operator as keyof typeof apnsByBrazillianProvider]
+  const apnSuggestion = apnsByBrazillianProvider[operator as keyof typeof apnsByBrazillianProvider] // prettier-ignore
 
   isUsingApnSuggestion.value = !!apnSuggestion
 
@@ -62,6 +69,12 @@ const rules = {
 }
 
 const v = useVuelidate(rules, internalValue, { $autoDirty: true })
+
+const resetForm = () => {
+  internalValue.value = { ...emptySimCard }
+}
+
+defineExpose({ resetForm })
 </script>
 
 <template>
