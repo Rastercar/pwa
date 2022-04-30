@@ -1,11 +1,28 @@
 <script setup lang="ts">
 import SelectSimCard from 'src/components/select/SelectSimCard.vue'
-import { ComponentPublicInstance, ref } from 'vue'
+import { ComponentPublicInstance, PropType, ref } from 'vue'
 import {
   CreateSimCardDtoOrId,
   CreateSimCardDto,
 } from 'src/graphql/generated/graphql-operations'
 import CreateSimCardForm from 'src/components/form/CreateSimCardForm.vue'
+
+defineProps({
+  /**
+   * Sim card ssns that are in use and cannot be used to register new sim cards
+   */
+  ssnsInUse: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+  /**
+   * Sim card phone numbers that are in use and cannot be used to register new sim cards
+   */
+  phoneNumbersInUse: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+})
 
 defineEmits<{
   /**
@@ -83,6 +100,8 @@ defineExpose({ resetForm })
       <CreateSimCardForm
         ref="createSimCardForm"
         v-model="newSimCard"
+        :ssns-in-use="ssnsInUse"
+        :phone-numbers-in-use="phoneNumbersInUse"
         @update:model-value="(v) => $emit('update:model-value', { dto: v })"
       />
     </q-card-section>

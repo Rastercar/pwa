@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { TrackerModel } from 'src/graphql/generated/graphql-operations'
+import type {
+  SimCardModel,
+  TrackerModel,
+} from 'src/graphql/generated/graphql-operations'
 import SimCardCard from './SimCardCard.vue'
 import { PropType } from 'vue'
 
@@ -12,6 +15,7 @@ defineProps({
 
 defineEmits<{
   (event: 'add-sim-clicked'): void
+  (event: 'remove-sim-clicked', simToRemove: SimCardModel): void
 }>()
 </script>
 
@@ -53,6 +57,8 @@ defineEmits<{
               :sim-card="sim"
               :slot-index="i + 1"
               :class="{ 'q-mb-md': i + 1 !== tracker.simCards.length }"
+              show-remove-sim-btn
+              @remove-sim-clicked="(sim) => $emit('remove-sim-clicked', sim)"
             />
           </div>
         </div>

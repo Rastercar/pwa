@@ -857,6 +857,55 @@
             "deprecationReason": null
           },
           {
+            "name": "installNewSimCardOnTracker",
+            "description": "Creates a new simCard and associates it with a existing tracker",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "simCard",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CreateSimCardDTO",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TrackerModel",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "installNewTrackerOnVehicle",
             "description": "Creates a new tracker and/or its new simCards and associate the tracker with a existing vehicle",
             "args": [
@@ -1005,6 +1054,39 @@
             "deprecationReason": null
           },
           {
+            "name": "removeSimCardFromTracker",
+            "description": "Removes a simCard from the tracker its installed on",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SimCardModel",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "removeTrackerFromVehicle",
             "description": "Removes a tracker from the vehicle its installed, optionally removing the sim cards from the removed tracker aswell",
             "args": [
@@ -1051,7 +1133,7 @@
           },
           {
             "name": "setTrackerSimCards",
-            "description": "Sets the sim cards associated with the vehicle",
+            "description": "Sets the sim cards associated with the tracker",
             "args": [
               {
                 "name": "id",

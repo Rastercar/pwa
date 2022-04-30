@@ -10,3 +10,22 @@ mutation setTrackerSimCards($id: Int!, $simCardIds: [Int!]!) {
     }
   }
 }
+
+mutation installNewSimCardOnTracker(
+  $trackerId: Int!
+  $simCard: CreateSimCardDTO!
+) {
+  installNewSimCardOnTracker(id: $trackerId, simCard: $simCard) {
+    id
+    model
+    identifier
+    simCards {
+      id
+      ssn
+      phoneNumber
+      apnUser
+      apnAddress
+      apnPassword
+    }
+  }
+}

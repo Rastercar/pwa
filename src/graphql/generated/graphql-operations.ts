@@ -118,14 +118,18 @@ export type MasterUserModel = {
 export type Mutation = {
   __typename?: 'Mutation'
   createVehicle: VehicleModel
+  /** Creates a new simCard and associates it with a existing tracker */
+  installNewSimCardOnTracker: TrackerModel
   /** Creates a new tracker and/or its new simCards and associate the tracker with a existing vehicle */
   installNewTrackerOnVehicle: VehicleModel
   login: LoginResponse
   loginWithToken: LoginResponse
   register: LoginResponse
+  /** Removes a simCard from the tracker its installed on */
+  removeSimCardFromTracker: SimCardModel
   /** Removes a tracker from the vehicle its installed, optionally removing the sim cards from the removed tracker aswell */
   removeTrackerFromVehicle: TrackerModel
-  /** Sets the sim cards associated with the vehicle */
+  /** Sets the sim cards associated with the tracker */
   setTrackerSimCards: TrackerModel
   /** Sets the trackers associated with the vehicle */
   setVehicleTrackers: VehicleModel
@@ -136,6 +140,11 @@ export type Mutation = {
 export type MutationCreateVehicleArgs = {
   data: CreateVehicleDto
   photo?: InputMaybe<Scalars['Upload']>
+}
+
+export type MutationInstallNewSimCardOnTrackerArgs = {
+  id: Scalars['Int']
+  simCard: CreateSimCardDto
 }
 
 export type MutationInstallNewTrackerOnVehicleArgs = {
@@ -153,6 +162,10 @@ export type MutationLoginWithTokenArgs = {
 
 export type MutationRegisterArgs = {
   user: RegisterUserDto
+}
+
+export type MutationRemoveSimCardFromTrackerArgs = {
+  id: Scalars['Int']
 }
 
 export type MutationRemoveTrackerFromVehicleArgs = {
@@ -592,6 +605,24 @@ export type OrganizationByIdQuery = {
     | undefined
 }
 
+export type RemoveSimCardFromTrackerMutationVariables = Exact<{
+  simCardId: Scalars['Int']
+}>
+
+export type RemoveSimCardFromTrackerMutation = {
+  __typename?: 'Mutation'
+  removeSimCardFromTracker: {
+    __typename?: 'SimCardModel'
+    id: number
+    ssn: string
+    phoneNumber: string
+    apnUser: string
+    apnAddress: string
+    apnPassword: string
+    tracker?: { __typename?: 'TrackerModel'; id: number } | null | undefined
+  }
+}
+
 export type ListSimCardsQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>
   limit?: InputMaybe<Scalars['Int']>
@@ -640,6 +671,30 @@ export type SetTrackerSimCardsMutation = {
       __typename?: 'SimCardModel'
       id: number
       ssn: string
+      apnUser: string
+      apnAddress: string
+      apnPassword: string
+    }>
+  }
+}
+
+export type InstallNewSimCardOnTrackerMutationVariables = Exact<{
+  trackerId: Scalars['Int']
+  simCard: CreateSimCardDto
+}>
+
+export type InstallNewSimCardOnTrackerMutation = {
+  __typename?: 'Mutation'
+  installNewSimCardOnTracker: {
+    __typename?: 'TrackerModel'
+    id: number
+    model: string
+    identifier: string
+    simCards: Array<{
+      __typename?: 'SimCardModel'
+      id: number
+      ssn: string
+      phoneNumber: string
       apnUser: string
       apnAddress: string
       apnPassword: string
@@ -1748,6 +1803,72 @@ export const OrganizationByIdDocument = {
   OrganizationByIdQuery,
   OrganizationByIdQueryVariables
 >
+export const RemoveSimCardFromTrackerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'removeSimCardFromTracker' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'simCardId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeSimCardFromTracker' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'simCardId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'phoneNumber' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'apnUser' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'apnAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'apnPassword' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tracker' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  RemoveSimCardFromTrackerMutation,
+  RemoveSimCardFromTrackerMutationVariables
+>
 export const ListSimCardsDocument = {
   kind: 'Document',
   definitions: [
@@ -2015,6 +2136,108 @@ export const SetTrackerSimCardsDocument = {
 } as unknown as DocumentNode<
   SetTrackerSimCardsMutation,
   SetTrackerSimCardsMutationVariables
+>
+export const InstallNewSimCardOnTrackerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'installNewSimCardOnTracker' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'trackerId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'simCard' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'CreateSimCardDTO' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'installNewSimCardOnTracker' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'trackerId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'simCard' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'simCard' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'simCards' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'phoneNumber' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnUser' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnAddress' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apnPassword' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  InstallNewSimCardOnTrackerMutation,
+  InstallNewSimCardOnTrackerMutationVariables
 >
 export const ListActiveTrackersDocument = {
   kind: 'Document',

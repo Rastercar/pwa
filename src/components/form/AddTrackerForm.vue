@@ -21,6 +21,7 @@ import useVuelidate from '@vuelidate/core'
 import { cloneDeep } from 'lodash-es'
 import { useQuasar } from 'quasar'
 import AddSimCardForm from 'src/components/form/AddSimCardForm.vue'
+import { maskedPhoneNumberToE164 } from 'src/utils/string/phone-number.utils'
 
 const emit = defineEmits<{
   (event: 'new-tracker-instaled'): void
@@ -66,10 +67,6 @@ const resetForm = () => {
   v.value.$reset()
 }
 
-const fullPhoneNumberToE164 = (phoneNumber: string) => {
-  return `+${phoneNumber.replace(/\D/g, '')}`
-}
-
 watch(useExistingTracker, resetForm)
 
 const { mutate: setTrackers, loading: settingTrackers } = useMutation(
@@ -103,7 +100,7 @@ const installNewTrackersOnVehicle = (dto: CreateTrackerDto) => {
   const tracker = cloneDeep(dto)
 
   tracker.simCards.forEach((s) => {
-    if (s.dto) s.dto.phoneNumber = fullPhoneNumberToE164(s.dto.phoneNumber)
+    if (s.dto) s.dto.phoneNumber = maskedPhoneNumberToE164(s.dto.phoneNumber)
   })
 
   installTracker({

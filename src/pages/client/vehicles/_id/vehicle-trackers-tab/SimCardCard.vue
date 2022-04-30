@@ -7,11 +7,19 @@ defineProps({
     type: Object as PropType<SimCardModel>,
     required: true,
   },
+  showRemoveSimBtn: {
+    type: Boolean,
+    default: false,
+  },
   slotIndex: {
     type: Number,
     required: true,
   },
 })
+
+defineEmits<{
+  (event: 'remove-sim-clicked', simToRemove: SimCardModel): void
+}>()
 
 const simCardFields: { label: string; key: keyof SimCardModel }[] = [
   { label: 'SSN', key: 'ssn' },
@@ -24,9 +32,29 @@ const simCardFields: { label: string; key: keyof SimCardModel }[] = [
 
 <template>
   <q-card flat class="flex row bg-grey-3">
-    <q-item class="col-6 items-center">
-      <q-icon name="fa fa-sim-card" size="20px" color="grey" class="q-mr-sm" />
-      <span>SLOT {{ slotIndex }}</span>
+    <q-item class="col-6 items-center" clickable>
+      <div>
+        <q-icon
+          name="fa fa-sim-card"
+          size="20px"
+          color="grey"
+          class="q-mr-sm"
+        />
+        <span>SLOT {{ slotIndex }}</span>
+      </div>
+
+      <q-space />
+
+      <q-btn
+        v-if="showRemoveSimBtn"
+        push
+        color="red"
+        size="sm"
+        round
+        flat
+        icon="fa fa-trash"
+        @click="() => $emit('remove-sim-clicked', simCard)"
+      />
     </q-item>
 
     <q-item

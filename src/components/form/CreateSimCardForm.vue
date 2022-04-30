@@ -4,6 +4,7 @@ import { helpers, minLength, required } from '@vuelidate/validators'
 import SimCardOperatorInput from 'src/components/input/SimCardOperatorInput.vue'
 import { apnsByBrazillianProvider } from 'src/constants/sim-card-apn'
 import { CreateSimCardDto } from 'src/graphql/generated/graphql-operations'
+import { maskedPhoneNumberToE164 } from 'src/utils/string/phone-number.utils'
 import { getVuelidateErrorMsg } from 'src/utils/validation.utils'
 import { PropType, ref, watch } from 'vue'
 
@@ -11,6 +12,20 @@ const props = defineProps({
   modelValue: {
     type: Object as PropType<CreateSimCardDto>,
     required: true,
+  },
+  /**
+   * Sim card ssns that are in use and cannot be used to register new sim cards
+   */
+  ssnsInUse: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+  /**
+   * Sim card phone numbers that are in use and cannot be used to register new sim cards
+   */
+  phoneNumbersInUse: {
+    type: Array as PropType<string[]>,
+    default: () => [],
   },
 })
 
@@ -49,13 +64,31 @@ watch(internalValue, (v) => emit('update:model-value', v), { deep: true })
 const rules = {
   ssn: {
     required: helpers.withMessage('Informe o serial', required),
+    isNotInUse: helpers.withMessage(
+      'Já existe um sim card com esse SSN',
+      (v?: string) => {
+        if (!v) return true
+        return !props.ssnsInUse.includes(v)
+      }
+    ),
   },
   phoneNumber: {
     required: helpers.withMessage('Informe o número de telefone', required),
     // Since we have a mask to garantee our numbers
-    // will follow the format +55 (99) 99999-9999'
+    // will follow the format +55 (99) 99999-9999
     // all we need is to be sure the length is 18 or 19
     minLen: helpers.withMessage('Telefone incompleto', minLength(18)),
+    isNotInUse: helpers.withMessage(
+      'Já existe um sim card com número de telefone',
+      (v?: string) => {
+        if (!v) return true
+
+        return (
+          !props.phoneNumbersInUse.includes(v) &&
+          !props.phoneNumbersInUse.includes(maskedPhoneNumberToE164(v))
+        )
+      }
+    ),
   },
   apnUser: {
     required: helpers.withMessage('Informe o usuário APN', required),

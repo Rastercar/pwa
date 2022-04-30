@@ -59,6 +59,7 @@ const { result, loading, refetch } = useQuery(FullVehicleDocument, {
               <VehicleTrackersTab
                 :vehicle="result.vehicle"
                 @tracker-removed="refetch({ id })"
+                @sim-card-removed="refetch({ id })"
               />
             </q-tab-panel>
 

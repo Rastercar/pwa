@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {
+  SimCardModel,
   TrackerModel,
   VehicleModel,
 } from 'src/graphql/generated/graphql-operations'
@@ -10,6 +11,7 @@ import RemoveTrackerDialog from 'src/components/dialog/RemoveTrackerDialog.vue'
 import AddTrackerOverlay from 'src/components/overlay/AddTrackerOverlay.vue'
 import AddTrackerForm from 'src/components/form/AddTrackerForm.vue'
 import AddSimCardOverlay from 'src/components/overlay/AddSimCardOverlay.vue'
+import RemoveSimCardDialog from 'src/components/dialog/RemoveSimCardDialog.vue'
 
 defineProps({
   vehicle: {
@@ -20,19 +22,22 @@ defineProps({
 
 defineEmits<{
   (event: 'tracker-removed', payload: TrackerModel): void
+  (event: 'sim-card-removed', payload: SimCardModel): void
 }>()
 
 const trackerToRemove = ref<TrackerModel | null>(null)
+const simCardToRemove = ref<SimCardModel | null>(null)
 
 const overlayInView = ref<'add-tracker-overlay' | 'add-sim-overlay' | null>(
   null
 )
 
-const showRmTrakckerDialog = ref(false)
+const showRmTrackerDialog = ref(false)
+const showRmSimDialog = ref(false)
 
 const onRmTrackerBtnClick = (tracker: TrackerModel) => {
   trackerToRemove.value = tracker
-  showRmTrakckerDialog.value = true
+  showRmTrackerDialog.value = true
 }
 
 const trackerToInstallSimCardOn = ref<TrackerModel | null>(null)
@@ -40,6 +45,11 @@ const trackerToInstallSimCardOn = ref<TrackerModel | null>(null)
 const onAddSimCardToTrackerClicked = (tracker: TrackerModel) => {
   trackerToInstallSimCardOn.value = tracker
   overlayInView.value = 'add-sim-overlay'
+}
+
+const onRemoveSimCardClicked = (simToRemove: SimCardModel) => {
+  simCardToRemove.value = simToRemove
+  showRmSimDialog.value = true
 }
 </script>
 
@@ -61,6 +71,7 @@ const onAddSimCardToTrackerClicked = (tracker: TrackerModel) => {
     :tracker="(tracker as TrackerModel)"
     :class="{ 'q-mb-md': i + 1 !== vehicle.trackers.length }"
     @add-sim-clicked="() => onAddSimCardToTrackerClicked(tracker as TrackerModel)"
+    @remove-sim-clicked="onRemoveSimCardClicked"
   >
     <template #header>
       <q-card-section class="flex ext-center q-py-md items-center">
@@ -110,9 +121,16 @@ const onAddSimCardToTrackerClicked = (tracker: TrackerModel) => {
 
   <RemoveTrackerDialog
     v-if="trackerToRemove"
-    v-model="showRmTrakckerDialog"
+    v-model="showRmTrackerDialog"
     :tracker="trackerToRemove"
     :vehicle="(vehicle as VehicleModel)"
-    @removal:success="$emit('tracker-removed', trackerToRemove as TrackerModel)"
+    @removal:success="$emit('tracker-removed', trackerToRemove)"
+  />
+
+  <RemoveSimCardDialog
+    v-if="simCardToRemove"
+    v-model="showRmSimDialog"
+    :sim-card="simCardToRemove"
+    @removal:success="$emit('sim-card-removed', simCardToRemove)"
   />
 </template>
