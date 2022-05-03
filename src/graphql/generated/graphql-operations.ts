@@ -488,11 +488,11 @@ export type LoginMutationMutation = {
         }
       | {
           __typename?: 'UserModel'
-          id: number
           email: string
-          username: string
           emailVerified: boolean
           googleProfileId?: string | null | undefined
+          id: number
+          username: string
           organization: {
             __typename?: 'SimpleOrganizationModel'
             id: number
@@ -524,11 +524,11 @@ export type LoginByTokenMutationMutation = {
       | { __typename?: 'MasterUserModel' }
       | {
           __typename?: 'UserModel'
-          id: number
           email: string
-          username: string
           emailVerified: boolean
           googleProfileId?: string | null | undefined
+          id: number
+          username: string
           organization: {
             __typename?: 'SimpleOrganizationModel'
             id: number
@@ -605,6 +605,16 @@ export type OrganizationByIdQuery = {
     | undefined
 }
 
+export type SimCardScalarFieldsFragment = {
+  __typename?: 'SimCardModel'
+  apnAddress: string
+  apnPassword: string
+  apnUser: string
+  id: number
+  phoneNumber: string
+  ssn: string
+}
+
 export type RemoveSimCardFromTrackerMutationVariables = Exact<{
   simCardId: Scalars['Int']
 }>
@@ -613,12 +623,12 @@ export type RemoveSimCardFromTrackerMutation = {
   __typename?: 'Mutation'
   removeSimCardFromTracker: {
     __typename?: 'SimCardModel'
-    id: number
-    ssn: string
-    phoneNumber: string
-    apnUser: string
     apnAddress: string
     apnPassword: string
+    apnUser: string
+    id: number
+    phoneNumber: string
+    ssn: string
     tracker?: { __typename?: 'TrackerModel'; id: number } | null | undefined
   }
 }
@@ -639,12 +649,12 @@ export type ListSimCardsQuery = {
     nodes?:
       | Array<{
           __typename?: 'SimCardModel'
-          id: number
-          ssn: string
-          apnUser: string
           apnAddress: string
           apnPassword: string
+          apnUser: string
+          id: number
           phoneNumber: string
+          ssn: string
         }>
       | null
       | undefined
@@ -657,6 +667,13 @@ export type ListSimCardsQuery = {
   }
 }
 
+export type TrackerScalarFieldsFragment = {
+  __typename?: 'TrackerModel'
+  id: number
+  identifier: string
+  model: string
+}
+
 export type SetTrackerSimCardsMutationVariables = Exact<{
   id: Scalars['Int']
   simCardIds: Array<Scalars['Int']> | Scalars['Int']
@@ -667,13 +684,16 @@ export type SetTrackerSimCardsMutation = {
   setTrackerSimCards: {
     __typename?: 'TrackerModel'
     id: number
+    identifier: string
+    model: string
     simCards: Array<{
       __typename?: 'SimCardModel'
-      id: number
-      ssn: string
-      apnUser: string
       apnAddress: string
       apnPassword: string
+      apnUser: string
+      id: number
+      phoneNumber: string
+      ssn: string
     }>
   }
 }
@@ -688,17 +708,32 @@ export type InstallNewSimCardOnTrackerMutation = {
   installNewSimCardOnTracker: {
     __typename?: 'TrackerModel'
     id: number
-    model: string
     identifier: string
+    model: string
     simCards: Array<{
       __typename?: 'SimCardModel'
-      id: number
-      ssn: string
-      phoneNumber: string
-      apnUser: string
       apnAddress: string
       apnPassword: string
+      apnUser: string
+      id: number
+      phoneNumber: string
+      ssn: string
     }>
+  }
+}
+
+export type RemoveTrackerFromVehicleMutationVariables = Exact<{
+  trackerId: Scalars['Int']
+  removeSimsFromTracker?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type RemoveTrackerFromVehicleMutation = {
+  __typename?: 'Mutation'
+  removeTrackerFromVehicle: {
+    __typename?: 'TrackerModel'
+    id: number
+    identifier: string
+    model: string
   }
 }
 
@@ -775,13 +810,22 @@ export type ListenToTrackerByIdSubscription = {
   }
 }
 
-export type FullUserFragment = {
+export type UserScalarFieldsFragment = {
   __typename?: 'UserModel'
-  id: number
   email: string
-  username: string
   emailVerified: boolean
   googleProfileId?: string | null | undefined
+  id: number
+  username: string
+}
+
+export type FullUserFragment = {
+  __typename?: 'UserModel'
+  email: string
+  emailVerified: boolean
+  googleProfileId?: string | null | undefined
+  id: number
+  username: string
   organization: {
     __typename?: 'SimpleOrganizationModel'
     id: number
@@ -798,16 +842,7 @@ export type FullUserFragment = {
   }
 }
 
-export type UserSimpleFieldsFragment = {
-  __typename?: 'UserModel'
-  id: number
-  email: string
-  username: string
-  emailVerified: boolean
-  googleProfileId?: string | null | undefined
-}
-
-export type MasterUserSimpleFieldsFragment = {
+export type MasterUserScalarFieldsFragment = {
   __typename?: 'MasterUserModel'
   id: number
   email: string
@@ -866,11 +901,11 @@ export type RegisterUserMutation = {
         }
       | {
           __typename?: 'UserModel'
-          id: number
           email: string
-          username: string
           emailVerified: boolean
           googleProfileId?: string | null | undefined
+          id: number
+          username: string
           organization: {
             __typename?: 'SimpleOrganizationModel'
             id: number
@@ -897,11 +932,11 @@ export type UpdateMyProfileMutation = {
   __typename?: 'Mutation'
   updateMyProfile: {
     __typename?: 'UserModel'
-    id: number
     email: string
-    username: string
     emailVerified: boolean
     googleProfileId?: string | null | undefined
+    id: number
+    username: string
   }
 }
 
@@ -931,11 +966,11 @@ export type CurrentUserQuery = {
       }
     | {
         __typename?: 'UserModel'
-        id: number
         email: string
-        username: string
         emailVerified: boolean
         googleProfileId?: string | null | undefined
+        id: number
+        username: string
         organization: {
           __typename?: 'SimpleOrganizationModel'
           id: number
@@ -967,11 +1002,11 @@ export type CurrentUserSimpleQuery = {
       }
     | {
         __typename?: 'UserModel'
-        id: number
         email: string
-        username: string
         emailVerified: boolean
         googleProfileId?: string | null | undefined
+        id: number
+        username: string
       }
 }
 
@@ -984,11 +1019,11 @@ export type UserByIdQuery = {
   user?:
     | {
         __typename?: 'UserModel'
-        id: number
         email: string
-        username: string
         emailVerified: boolean
         googleProfileId?: string | null | undefined
+        id: number
+        username: string
         organization: {
           __typename?: 'SimpleOrganizationModel'
           id: number
@@ -1008,7 +1043,7 @@ export type UserByIdQuery = {
     | undefined
 }
 
-export type VehicleFieldsFragment = {
+export type VehicleScalarFieldsFragment = {
   __typename?: 'VehicleModel'
   id: number
   brand?: string | null | undefined
@@ -1132,22 +1167,6 @@ export type InstallNewTrackerOnVehicleMutation = {
   }
 }
 
-export type RemoveTrackerFromVehicleMutationVariables = Exact<{
-  trackerId: Scalars['Int']
-  removeSimsFromTracker?: InputMaybe<Scalars['Boolean']>
-}>
-
-export type RemoveTrackerFromVehicleMutation = {
-  __typename?: 'Mutation'
-  removeTrackerFromVehicle: {
-    __typename?: 'TrackerModel'
-    id: number
-    identifier: string
-    model: string
-    vehicle?: { __typename?: 'VehicleModel'; id: number } | null | undefined
-  }
-}
-
 export type ListVehiclesQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>
   limit?: InputMaybe<Scalars['Int']>
@@ -1233,6 +1252,74 @@ export type FullVehicleQuery = {
     | undefined
 }
 
+export const SimCardScalarFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SimCardScalarFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'SimCardModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'apnAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'apnPassword' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'apnUser' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'phoneNumber' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SimCardScalarFieldsFragment, unknown>
+export const TrackerScalarFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackerScalarFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'TrackerModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackerScalarFieldsFragment, unknown>
+export const UserScalarFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UserScalarFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'UserModel' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'googleProfileId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserScalarFieldsFragment, unknown>
 export const FullUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1246,11 +1333,10 @@ export const FullUserFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'googleProfileId' } },
+          {
+            kind: 'FragmentSpread',
+            name: { kind: 'Name', value: 'UserScalarFields' },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -1286,37 +1372,15 @@ export const FullUserFragmentDoc = {
         ],
       },
     },
+    ...UserScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<FullUserFragment, unknown>
-export const UserSimpleFieldsFragmentDoc = {
+export const MasterUserScalarFieldsFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UserSimpleFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'UserModel' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'googleProfileId' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UserSimpleFieldsFragment, unknown>
-export const MasterUserSimpleFieldsFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'MasterUserSimpleFields' },
+      name: { kind: 'Name', value: 'MasterUserScalarFields' },
       typeCondition: {
         kind: 'NamedType',
         name: { kind: 'Name', value: 'MasterUserModel' },
@@ -1332,7 +1396,7 @@ export const MasterUserSimpleFieldsFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<MasterUserSimpleFieldsFragment, unknown>
+} as unknown as DocumentNode<MasterUserScalarFieldsFragment, unknown>
 export const FullMasterUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1346,10 +1410,10 @@ export const FullMasterUserFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'username' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'emailVerified' } },
+          {
+            kind: 'FragmentSpread',
+            name: { kind: 'Name', value: 'MasterUserScalarFields' },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'accessLevel' },
@@ -1377,14 +1441,15 @@ export const FullMasterUserFragmentDoc = {
         ],
       },
     },
+    ...MasterUserScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<FullMasterUserFragment, unknown>
-export const VehicleFieldsFragmentDoc = {
+export const VehicleScalarFieldsFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'VehicleFields' },
+      name: { kind: 'Name', value: 'VehicleScalarFields' },
       typeCondition: {
         kind: 'NamedType',
         name: { kind: 'Name', value: 'VehicleModel' },
@@ -1406,7 +1471,7 @@ export const VehicleFieldsFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<VehicleFieldsFragment, unknown>
+} as unknown as DocumentNode<VehicleScalarFieldsFragment, unknown>
 export const LoginMutationDocument = {
   kind: 'Document',
   definitions: [
@@ -1842,12 +1907,10 @@ export const RemoveSimCardFromTrackerDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'phoneNumber' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'apnUser' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'apnAddress' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'apnPassword' } },
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'SimCardScalarFields' },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'tracker' },
@@ -1864,6 +1927,7 @@ export const RemoveSimCardFromTrackerDocument = {
         ],
       },
     },
+    ...SimCardScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   RemoveSimCardFromTrackerMutation,
@@ -1991,23 +2055,9 @@ export const ListSimCardsDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnUser' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnAddress' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnPassword' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'phoneNumber' },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'SimCardScalarFields' },
                       },
                     ],
                   },
@@ -2036,6 +2086,7 @@ export const ListSimCardsDocument = {
         ],
       },
     },
+    ...SimCardScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<ListSimCardsQuery, ListSimCardsQueryVariables>
 export const SetTrackerSimCardsDocument = {
@@ -2102,26 +2153,19 @@ export const SetTrackerSimCardsDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'TrackerScalarFields' },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'simCards' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnUser' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnAddress' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnPassword' },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'SimCardScalarFields' },
                       },
                     ],
                   },
@@ -2132,6 +2176,8 @@ export const SetTrackerSimCardsDocument = {
         ],
       },
     },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
+    ...SimCardScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   SetTrackerSimCardsMutation,
@@ -2198,32 +2244,19 @@ export const InstallNewSimCardOnTrackerDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'TrackerScalarFields' },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'simCards' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'ssn' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'phoneNumber' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnUser' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnAddress' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'apnPassword' },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'SimCardScalarFields' },
                       },
                     ],
                   },
@@ -2234,10 +2267,83 @@ export const InstallNewSimCardOnTrackerDocument = {
         ],
       },
     },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
+    ...SimCardScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   InstallNewSimCardOnTrackerMutation,
   InstallNewSimCardOnTrackerMutationVariables
+>
+export const RemoveTrackerFromVehicleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'trackerId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'removeSimsFromTracker' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'trackerId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'trackerId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'removeSimsFromTracker' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'removeSimsFromTracker' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'TrackerScalarFields' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  RemoveTrackerFromVehicleMutation,
+  RemoveTrackerFromVehicleMutationVariables
 >
 export const ListActiveTrackersDocument = {
   kind: 'Document',
@@ -2415,12 +2521,10 @@ export const ListTrackersDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'identifier' },
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'TrackerScalarFields' },
                       },
-                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
                     ],
                   },
                 },
@@ -2448,6 +2552,7 @@ export const ListTrackersDocument = {
         ],
       },
     },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<ListTrackersQuery, ListTrackersQueryVariables>
 export const ListenToTrackerByIdDocument = {
@@ -2666,7 +2771,7 @@ export const UpdateMyProfileDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'UserSimpleFields' },
+                  name: { kind: 'Name', value: 'UserScalarFields' },
                 },
               ],
             },
@@ -2674,7 +2779,7 @@ export const UpdateMyProfileDocument = {
         ],
       },
     },
-    ...UserSimpleFieldsFragmentDoc.definitions,
+    ...UserScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UpdateMyProfileMutation,
@@ -2765,7 +2870,7 @@ export const CurrentUserSimpleDocument = {
                     selections: [
                       {
                         kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'UserSimpleFields' },
+                        name: { kind: 'Name', value: 'UserScalarFields' },
                       },
                     ],
                   },
@@ -2781,7 +2886,7 @@ export const CurrentUserSimpleDocument = {
                     selections: [
                       {
                         kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'MasterUserSimpleFields' },
+                        name: { kind: 'Name', value: 'MasterUserScalarFields' },
                       },
                     ],
                   },
@@ -2792,8 +2897,8 @@ export const CurrentUserSimpleDocument = {
         ],
       },
     },
-    ...UserSimpleFieldsFragmentDoc.definitions,
-    ...MasterUserSimpleFieldsFragmentDoc.definitions,
+    ...UserScalarFieldsFragmentDoc.definitions,
+    ...MasterUserScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserSimpleQuery,
@@ -2905,7 +3010,7 @@ export const CreateVehicleDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'VehicleFields' },
+                  name: { kind: 'Name', value: 'VehicleScalarFields' },
                 },
               ],
             },
@@ -2913,7 +3018,7 @@ export const CreateVehicleDocument = {
         ],
       },
     },
-    ...VehicleFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CreateVehicleMutation,
@@ -2992,7 +3097,7 @@ export const UpdateVehicleDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'VehicleFields' },
+                  name: { kind: 'Name', value: 'VehicleScalarFields' },
                 },
               ],
             },
@@ -3000,7 +3105,7 @@ export const UpdateVehicleDocument = {
         ],
       },
     },
-    ...VehicleFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UpdateVehicleMutation,
@@ -3072,7 +3177,7 @@ export const SetVehicleTrackersDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'VehicleFields' },
+                  name: { kind: 'Name', value: 'VehicleScalarFields' },
                 },
                 {
                   kind: 'Field',
@@ -3128,7 +3233,7 @@ export const SetVehicleTrackersDocument = {
         ],
       },
     },
-    ...VehicleFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   SetVehicleTrackersMutation,
@@ -3194,7 +3299,7 @@ export const InstallNewTrackerOnVehicleDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'VehicleFields' },
+                  name: { kind: 'Name', value: 'VehicleScalarFields' },
                 },
                 {
                   kind: 'Field',
@@ -3217,90 +3322,11 @@ export const InstallNewTrackerOnVehicleDocument = {
         ],
       },
     },
-    ...VehicleFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   InstallNewTrackerOnVehicleMutation,
   InstallNewTrackerOnVehicleMutationVariables
->
-export const RemoveTrackerFromVehicleDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'trackerId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'removeSimsFromTracker' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'removeTrackerFromVehicle' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'trackerId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'trackerId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'removeSimsFromTracker' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'removeSimsFromTracker' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'vehicle' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  RemoveTrackerFromVehicleMutation,
-  RemoveTrackerFromVehicleMutationVariables
 >
 export const ListVehiclesDocument = {
   kind: 'Document',
@@ -3517,7 +3543,7 @@ export const FullVehicleDocument = {
               selections: [
                 {
                   kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'VehicleFields' },
+                  name: { kind: 'Name', value: 'VehicleScalarFields' },
                 },
                 {
                   kind: 'Field',
@@ -3590,6 +3616,6 @@ export const FullVehicleDocument = {
         ],
       },
     },
-    ...VehicleFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<FullVehicleQuery, FullVehicleQueryVariables>

@@ -1,18 +1,18 @@
 mutation createVehicle($photo: Upload, $data: CreateVehicleDTO!) {
   createVehicle(photo: $photo, data: $data) {
-    ...VehicleFields
+    ...VehicleScalarFields
   }
 }
 
 mutation updateVehicle($id: Int!, $photo: Upload, $data: UpdateVehicleDTO!) {
   updateVehicle(photo: $photo, data: $data, id: $id) {
-    ...VehicleFields
+    ...VehicleScalarFields
   }
 }
 
 mutation setVehicleTrackers($id: Int!, $trackerIds: [Int!]!) {
   setVehicleTrackers(id: $id, trackerIds: $trackerIds) {
-    ...VehicleFields
+    ...VehicleScalarFields
     trackers {
       id
       identifier
@@ -31,28 +31,11 @@ mutation setVehicleTrackers($id: Int!, $trackerIds: [Int!]!) {
 
 mutation installNewTrackerOnVehicle($id: Int!, $tracker: CreateTrackerDTO!) {
   installNewTrackerOnVehicle(id: $id, tracker: $tracker) {
-    ...VehicleFields
+    ...VehicleScalarFields
     trackers {
       id
       identifier
       model
-    }
-  }
-}
-
-mutation removeTrackerFromVehicle(
-  $trackerId: Int!
-  $removeSimsFromTracker: Boolean
-) {
-  removeTrackerFromVehicle(
-    trackerId: $trackerId
-    removeSimsFromTracker: $removeSimsFromTracker
-  ) {
-    id
-    identifier
-    model
-    vehicle {
-      id
     }
   }
 }

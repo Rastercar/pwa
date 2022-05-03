@@ -15,12 +15,7 @@ query listSimCards(
     installedOnTracker: $installedOnTracker
   ) {
     nodes {
-      id
-      ssn
-      apnUser
-      apnAddress
-      apnPassword
-      phoneNumber
+      ...SimCardScalarFields
     }
     pageInfo {
       total

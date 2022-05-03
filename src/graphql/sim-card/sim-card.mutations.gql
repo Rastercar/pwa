@@ -1,11 +1,6 @@
 mutation removeSimCardFromTracker($simCardId: Int!) {
   removeSimCardFromTracker(id: $simCardId) {
-    id
-    ssn
-    phoneNumber
-    apnUser
-    apnAddress
-    apnPassword
+    ...SimCardScalarFields
     tracker {
       id
     }

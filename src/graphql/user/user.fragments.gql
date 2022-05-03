@@ -1,9 +1,13 @@
-fragment FullUser on UserModel {
-  id
+fragment UserScalarFields on UserModel {
   email
-  username
   emailVerified
   googleProfileId
+  id
+  username
+}
+
+fragment FullUser on UserModel {
+  ...UserScalarFields
   organization {
     id
     name
@@ -18,15 +22,7 @@ fragment FullUser on UserModel {
   }
 }
 
-fragment UserSimpleFields on UserModel {
-  id
-  email
-  username
-  emailVerified
-  googleProfileId
-}
-
-fragment MasterUserSimpleFields on MasterUserModel {
+fragment MasterUserScalarFields on MasterUserModel {
   id
   email
   username
@@ -34,10 +30,7 @@ fragment MasterUserSimpleFields on MasterUserModel {
 }
 
 fragment FullMasterUser on MasterUserModel {
-  id
-  email
-  username
-  emailVerified
+  ...MasterUserScalarFields
   accessLevel {
     id
     name

@@ -1,4 +1,4 @@
-fragment VehicleFields on VehicleModel {
+fragment VehicleScalarFields on VehicleModel {
   id
   brand
   color

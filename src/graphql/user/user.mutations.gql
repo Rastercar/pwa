@@ -17,6 +17,6 @@ mutation registerUser($user: RegisterUserDTO!) {
 
 mutation updateMyProfile($profileData: UpdateUserDTO!) {
   updateMyProfile(profileData: $profileData) {
-    ...UserSimpleFields
+    ...UserScalarFields
   }
 }

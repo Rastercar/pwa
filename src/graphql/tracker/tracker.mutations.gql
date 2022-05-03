@@ -1,12 +1,8 @@
 mutation setTrackerSimCards($id: Int!, $simCardIds: [Int!]!) {
   setTrackerSimCards(id: $id, simCardIds: $simCardIds) {
-    id
+    ...TrackerScalarFields
     simCards {
-      id
-      ssn
-      apnUser
-      apnAddress
-      apnPassword
+      ...SimCardScalarFields
     }
   }
 }
@@ -16,16 +12,21 @@ mutation installNewSimCardOnTracker(
   $simCard: CreateSimCardDTO!
 ) {
   installNewSimCardOnTracker(id: $trackerId, simCard: $simCard) {
-    id
-    model
-    identifier
+    ...TrackerScalarFields
     simCards {
-      id
-      ssn
-      phoneNumber
-      apnUser
-      apnAddress
-      apnPassword
+      ...SimCardScalarFields
     }
+  }
+}
+
+mutation removeTrackerFromVehicle(
+  $trackerId: Int!
+  $removeSimsFromTracker: Boolean
+) {
+  removeTrackerFromVehicle(
+    trackerId: $trackerId
+    removeSimsFromTracker: $removeSimsFromTracker
+  ) {
+    ...TrackerScalarFields
   }
 }

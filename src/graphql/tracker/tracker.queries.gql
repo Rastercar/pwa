@@ -33,9 +33,7 @@ query listTrackers(
     installedOnVehicle: $installedOnVehicle
   ) {
     nodes {
-      id
-      identifier
-      model
+      ...TrackerScalarFields
     }
     pageInfo {
       total

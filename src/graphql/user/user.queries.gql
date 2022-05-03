@@ -12,10 +12,10 @@ query currentUser {
 query currentUserSimple {
   me {
     ... on UserModel {
-      ...UserSimpleFields
+      ...UserScalarFields
     }
     ... on MasterUserModel {
-      ...MasterUserSimpleFields
+      ...MasterUserScalarFields
     }
   }
 }

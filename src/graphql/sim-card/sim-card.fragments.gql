@@ -1,0 +1,8 @@
+fragment SimCardScalarFields on SimCardModel {
+  apnAddress
+  apnPassword
+  apnUser
+  id
+  phoneNumber
+  ssn
+}

@@ -38,7 +38,7 @@ query listVehicles(
 
 query fullVehicle($id: Int!) {
   vehicle(id: $id) {
-    ...VehicleFields
+    ...VehicleScalarFields
     trackers {
       id
       identifier
