@@ -386,6 +386,8 @@ export type TrackerModel = {
   id: Scalars['Int']
   /** A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2 */
   identifier: Scalars['String']
+  /** If the tracker is in maintenance, meaning it wont fire any event like communication failure, etc */
+  inMaintenance: Scalars['Boolean']
   lastPosition?: Maybe<LatLng>
   model: Scalars['String']
   organization: SimpleOrganizationModel
@@ -672,6 +674,7 @@ export type TrackerScalarFieldsFragment = {
   id: number
   identifier: string
   model: string
+  inMaintenance: boolean
 }
 
 export type SetTrackerSimCardsMutationVariables = Exact<{
@@ -686,6 +689,7 @@ export type SetTrackerSimCardsMutation = {
     id: number
     identifier: string
     model: string
+    inMaintenance: boolean
     simCards: Array<{
       __typename?: 'SimCardModel'
       apnAddress: string
@@ -710,6 +714,7 @@ export type InstallNewSimCardOnTrackerMutation = {
     id: number
     identifier: string
     model: string
+    inMaintenance: boolean
     simCards: Array<{
       __typename?: 'SimCardModel'
       apnAddress: string
@@ -734,6 +739,7 @@ export type RemoveTrackerFromVehicleMutation = {
     id: number
     identifier: string
     model: string
+    inMaintenance: boolean
   }
 }
 
@@ -746,6 +752,7 @@ export type ListActiveTrackersQuery = {
     id: number
     identifier: string
     model: string
+    inMaintenance: boolean
     lastPosition?:
       | { __typename?: 'LatLng'; lat: number; lng: number }
       | null
@@ -782,6 +789,59 @@ export type ListTrackersQuery = {
           id: number
           identifier: string
           model: string
+          inMaintenance: boolean
+        }>
+      | null
+      | undefined
+    pageInfo: {
+      __typename?: 'OffsetPageInfo'
+      total: number
+      hasMore: boolean
+      hasPrevious: boolean
+    }
+  }
+}
+
+export type ListTrackersWithVehiclesQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>
+  limit?: InputMaybe<Scalars['Int']>
+  orderBy?: InputMaybe<Scalars['String']>
+  descending?: InputMaybe<Scalars['Boolean']>
+  search?: InputMaybe<Scalars['String']>
+  installedOnVehicle?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type ListTrackersWithVehiclesQuery = {
+  __typename?: 'Query'
+  trackers: {
+    __typename?: 'OffsetPaginatedTracker'
+    nodes?:
+      | Array<{
+          __typename?: 'TrackerModel'
+          id: number
+          identifier: string
+          model: string
+          inMaintenance: boolean
+          vehicle?:
+            | {
+                __typename?: 'VehicleModel'
+                id: number
+                brand?: string | null | undefined
+                color?: string | null | undefined
+                model?: string | null | undefined
+                photo?: string | null | undefined
+                plate: string
+                renavam?: string | null | undefined
+                modelYear?: number | null | undefined
+                chassisNumber?: string | null | undefined
+                fabricationYear?: number | null | undefined
+              }
+            | null
+            | undefined
+          lastPosition?:
+            | { __typename?: 'LatLng'; lat: number; lng: number }
+            | null
+            | undefined
         }>
       | null
       | undefined
@@ -1292,6 +1352,7 @@ export const TrackerScalarFieldsFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
           { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inMaintenance' } },
         ],
       },
     },
@@ -2361,9 +2422,10 @@ export const ListActiveTrackersDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'identifier' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'TrackerScalarFields' },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'lastPosition' },
@@ -2394,6 +2456,7 @@ export const ListActiveTrackersDocument = {
         ],
       },
     },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   ListActiveTrackersQuery,
@@ -2555,6 +2618,199 @@ export const ListTrackersDocument = {
     ...TrackerScalarFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<ListTrackersQuery, ListTrackersQueryVariables>
+export const ListTrackersWithVehiclesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'listTrackersWithVehicles' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderBy' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'descending' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'installedOnVehicle' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'trackers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderBy' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'descending' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'descending' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'search' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'search' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'installedOnVehicle' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'installedOnVehicle' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'TrackerScalarFields' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'vehicle' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'FragmentSpread',
+                              name: {
+                                kind: 'Name',
+                                value: 'VehicleScalarFields',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastPosition' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'lat' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'lng' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasMore' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasPrevious' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TrackerScalarFieldsFragmentDoc.definitions,
+    ...VehicleScalarFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  ListTrackersWithVehiclesQuery,
+  ListTrackersWithVehiclesQueryVariables
+>
 export const ListenToTrackerByIdDocument = {
   kind: 'Document',
   definitions: [

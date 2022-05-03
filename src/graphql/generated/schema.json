@@ -2790,6 +2790,22 @@
             "deprecationReason": null
           },
           {
+            "name": "inMaintenance",
+            "description": "If the tracker is in maintenance, meaning it wont fire any event like communication failure, etc",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "lastPosition",
             "description": null,
             "args": [],

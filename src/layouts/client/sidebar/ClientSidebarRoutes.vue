@@ -31,6 +31,11 @@ const routes = computed(() => {
       label: 'Meus veículos',
       route: { name: 'cliente-veiculos' },
     },
+    {
+      icon: 'fa fa-microchip',
+      label: 'Meus Rastreadores',
+      route: { name: 'cliente-rastreadores' },
+    },
   ]
 
   if (process.env.NODE_ENV === 'development') {

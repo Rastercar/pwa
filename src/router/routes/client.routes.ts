@@ -59,6 +59,12 @@ export const clientRoutes: RouteRecordRaw[] = [
         props: mapParamsToProps({ id: 'integer' }),
         meta: { auth: { requiresLogin: true } },
       },
+      {
+        path: 'rastreadores',
+        name: 'cliente-rastreadores',
+        component: () => import('src/pages/client/trackers/Index.vue'),
+        meta: { auth: { requiresLogin: true } },
+      },
     ],
   },
 ]

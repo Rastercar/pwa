@@ -3,7 +3,7 @@ import {
   ListVehiclesDocument,
   ListVehiclesQuery,
 } from 'src/graphql/generated/graphql-operations'
-import CreateVehicleOverlay from './index/create-vehicle-overlay/CreateVehicleOverlay.vue'
+import CreateVehicleOverlay from 'src/components/overlay/CreateVehicleOverlay.vue'
 import VehicleDataTableHeader from './index/vehicle-data-table/VehicleDataTableHeader.vue'
 import { vehicleColumns } from './index/vehicle-data-table/vehicle-datatable.common'
 import type { VehicleModel } from 'src/graphql/generated/graphql-operations'
@@ -88,7 +88,6 @@ const showCreateVehicleOverlay = ref(false)
   <q-page class="justify-center" style="background-color: #f9f9f9" padding>
     <q-table
       v-model:pagination="pagination"
-      title="Meus Veículos"
       class="vehicle-table"
       :class="{ 'bg-white': grid, 'shadow-2': grid }"
       :rows="rows"

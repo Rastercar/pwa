@@ -1,8 +1,6 @@
 query listActiveTrackers {
   activeTrackers {
-    id
-    identifier
-    model
+    ...TrackerScalarFields
     lastPosition {
       lat
       lng
@@ -34,6 +32,40 @@ query listTrackers(
   ) {
     nodes {
       ...TrackerScalarFields
+    }
+    pageInfo {
+      total
+      hasMore
+      hasPrevious
+    }
+  }
+}
+
+query listTrackersWithVehicles(
+  $offset: Int
+  $limit: Int
+  $orderBy: String
+  $descending: Boolean
+  $search: String
+  $installedOnVehicle: Boolean
+) {
+  trackers(
+    offset: $offset
+    limit: $limit
+    orderBy: $orderBy
+    descending: $descending
+    search: $search
+    installedOnVehicle: $installedOnVehicle
+  ) {
+    nodes {
+      ...TrackerScalarFields
+      vehicle {
+        ...VehicleScalarFields
+      }
+      lastPosition {
+        lat
+        lng
+      }
     }
     pageInfo {
       total

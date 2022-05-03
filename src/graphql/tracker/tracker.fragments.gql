@@ -2,4 +2,5 @@ fragment TrackerScalarFields on TrackerModel {
   id
   identifier
   model
+  inMaintenance
 }

@@ -290,6 +290,11 @@ type TrackerModel {
 
   """A human readable identifier, ex: MXT013-BOX-33, Tracker 123 lote 2"""
   identifier: String!
+
+  """
+  If the tracker is in maintenance, meaning it wont fire any event like communication failure, etc
+  """
+  inMaintenance: Boolean!
   lastPosition: LatLng
   model: String!
   organization: SimpleOrganizationModel!
